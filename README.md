@@ -1,7 +1,41 @@
 # Gasing Circle — Academy News Theme Component
 
-A Discourse Theme Component implementing a **Master-Detail split-pane layout**
-for the `gasing-academy-news` category, matching the Figma redesign.
+## Overview
+This Discourse Theme Component transforms the `/c/ga-updates/10` category page into a **Master-Detail layout** matching the Gasing Circle UI redesign.
+
+### Features
+- ✅ Hero Banner with integrated search
+- ✅ Master-Detail split pane (Topic feed left / Reading pane right)
+- ✅ Topic cards with thumbnails, excerpts, tags, and stats
+- ✅ Pill-shaped Latest / Trending toggles
+- ✅ Filter popup (Pendidikan, Pelatihan, Dunia, Lainnya)
+- ✅ Date-range picker popup with dual-calendar
+- ✅ Full topic reading pane with comments thread
+- ✅ Context menu (Simpan / Laporkan) on comment actions
+- ✅ Client-side search in hero bar
+- ✅ Responsive (collapses to single column on mobile)
+- ✅ Scoped to `/c/ga-updates/10` — does NOT affect other categories
+
+---
+
+## Installation
+
+### Method 1: Via Admin UI (Recommended)
+
+1. Go to **Admin → Customize → Themes**
+2. Click **Install** → **From a git repository**
+3. Paste your repository URL, or choose **Upload** and provide the ZIP
+4. After installing, go to the component's settings and **Enable** it
+5. Add it as a **component** to your active theme
+
+### Method 2: Manual File Upload
+
+1. Create a new **Theme Component** in Admin → Customize → Themes → New
+2. Set the name: `Gasing Circle Academy News`
+3. Use the **Edit CSS/HTML** tab to paste the contents of each file:
+   - `common/common.scss` → **CSS** tab (Common)
+   - `common/head_tag.html` → **HTML** tab → `</head>`
+   - `javascripts/discourse/api-initializers/custom-layout.js` → **JS** tab
 
 ---
 
@@ -9,122 +43,86 @@ for the `gasing-academy-news` category, matching the Figma redesign.
 
 ```
 gasing-circle-theme/
-├── about.json                          # Component metadata
-├── settings.yml                        # Admin-configurable settings
+├── about.json                          # Theme metadata
 ├── common/
-│   └── common.scss                     # All CSS variables, layout, components
-├── mobile.scss                         # Responsive & dark mode overrides
+│   ├── common.scss                     # All styles (CSS variables, layout, components)
+│   └── head_tag.html                   # Google Fonts preload
+├── config/
+│   └── locales/
+│       └── en.yml                      # Locale strings
 └── javascripts/
     └── discourse/
-        ├── api-initializers/
-        │   └── custom-layout.js        # Main JS entry — layout engine
-        └── templates/
-            └── discovery/
-                └── topics.hbs          # Template override with mount anchor
+        └── api-initializers/
+            └── custom-layout.js        # Main JS: layout injection, API calls, popups
 ```
 
 ---
 
-## Installation
+## Architecture Decision: Why Not Ember Route Override?
 
-### Method A — Admin UI (Recommended)
+The **Master-Detail layout** is implemented as a **DOM injection layer** rather than a full Ember route/template override, for these reasons:
 
-1. Go to **Admin → Customize → Themes**
-2. Click **Install** → **From a git repository**
-3. Enter your repo URL (or use **Upload** if you have a zip)
-4. Once installed, click the component and toggle **Enabled**
-5. Add it as a component to your active theme
+1. **Stability** — Discourse's Ember internals change frequently. DOM injection via `apiInitializer` + `onPageChange` is the safest long-term approach.
+2. **No Ruby backend needed** — Pure frontend Theme Component.
+3. **API-driven** — Topic data is fetched via Discourse's public JSON API (`/c/ga-updates/10.json` and `/t/{slug}/{id}.json`), keeping the component decoupled from Discourse internals.
+4. **Scoped** — The `body.category-ga-updates` CSS class ensures zero style bleed to other pages.
 
-### Method B — Direct ZIP Upload
+### Layout Strategy
+```
+#main-outlet
+  └── #gc-category-wrapper          (injected by JS)
+        ├── #gc-hero-banner         (teal gradient header + search)
+        ├── #gc-action-bar          (pills + icon buttons)
+        └── #gc-master-detail
+              ├── #gc-topic-feed    (left: scrollable card list)
+              └── #gc-topic-detail  (right: topic reading pane)
+```
 
-1. Zip the entire `gasing-circle-theme/` folder
-2. Go to **Admin → Customize → Themes → Install → From ZIP file**
-3. Upload the ZIP, then enable and associate with your theme
-
----
-
-## Configuration (settings.yml)
-
-| Key | Default | Description |
-|-----|---------|-------------|
-| `hero_title` | `Gasing Academy News` | Hero banner heading |
-| `hero_subtitle` | `Ikuti berita…` | Subtitle below heading |
-| `target_category_slug` | `gasing-academy-news` | Category to activate on |
-| `filter_labels` | `Pendidikan\|Pelatihan\|Dunia\|Lainnya` | Pipe-separated filter tags |
+The default Discourse `table.topic-list` is hidden via `display: none` using the scoped body class selector.
 
 ---
 
-## Architecture Decisions
+## Customization
 
-### Why JS injection instead of full Ember override?
-
-Discourse's topic list is rendered by complex Ember components
-(`Discovery::Layout`, `TopicList`, etc.) with router-managed state.
-A full Ember override requires either a full plugin (Ruby + JS) or
-risks breaking on Discourse updates.
-
-**The chosen approach:**
-
-1. The `topics.hbs` template override inserts a `#gc-discovery-anchor` mount point
-   **before** the standard `<Discovery::Layout>` component.
-2. The CSS hides the standard layout for the target category.
-3. The JS `GasingNewsLayout` class mounts into that anchor, fetches topics
-   via Discourse's public JSON API (`/c/slug.json`, `/t/id.json`), and
-   renders the full Master-Detail UI imperatively.
-4. `api.onPageChange()` handles SPA navigation (unmounts on other pages,
-   remounts on return).
-5. A `MutationObserver` catches async Ember renders as a fallback.
-
-This is the **most stable** approach — zero Ember internals touched,
-survives Discourse upgrades cleanly.
-
-### Master-Detail "split pane"
-
-- Left: scrollable topic card list (`gc-topic-feed`)
-- Right: inline reading pane (`gc-reading-pane`) populated via `/t/:id.json`
-- Clicking a card fetches the full post stream and renders it in the pane
-- **No page navigation** — URL stays at the category page (tradeoff: no deep-linking per topic)
-- For mobile: right pane overlays full screen with a back button
-
-### Filter & Date Popup
-
-Both are pure HTML/CSS dropdowns positioned relatively to their trigger buttons.
-They close on any outside `document` click via a single delegated listener.
-No external libraries needed — lightweight and compatible with all Discourse versions.
-
----
-
-## Known Limitations & Workarounds
-
-| Limitation | Workaround |
-|------------|-----------|
-| URL doesn't update per-topic (no deep link) | Acceptable tradeoff for SPA-style pane; can add `history.pushState` if needed |
-| Discourse updates may change outlet structure | MutationObserver + `onPageChange` provides resilience |
-| Topic images require `image_url` in API response | Enabled via `serialize_topic_excerpts: true` in about.json |
-| Very long post streams (200+ replies) | Pane only loads first page; add paginator if needed |
-
----
-
-## Extending
-
-### Add topic image thumbnails
-Enable in site settings: **Admin → Settings → search "crawl images"**
-→ enable `crawl_images` and `embed_thumbnails`.
-
-### Custom tag color mapping
-Edit `getTagClass()` in `custom-layout.js` and add CSS classes in `common.scss`.
-
-### Enable deep-linking per topic
-After `this.fetchPostsForTopic(topic.id)`, add:
+### Change the target route
+In `custom-layout.js`, update the `isTargetRoute()` function:
 ```js
-history.pushState(null, "", `/t/${topic.slug}/${topic.id}`);
+function isTargetRoute() {
+  return window.location.pathname.startsWith("/c/your-category-slug");
+}
 ```
+Also update the API fetch URL:
+```js
+const res = await fetch("/c/your-category-slug/YOUR_ID.json?no_definitions=true", ...);
+```
+
+### Change the color palette
+All colors are CSS variables in `common.scss` under the `:root` block:
+```scss
+:root {
+  --gc-blue-primary: #4A6CF7;
+  --gc-hero-grad-start: #3ABFBF;
+  // ...
+}
+```
+
+### Add more filter tags
+In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` array, and update the `TAG_CLASSES` map accordingly.
+
+---
+
+## Known Limitations
+
+1. **Discourse version compatibility**: Tested against Discourse 3.1+. The `api.onPageChange` hook is available in Plugin API v0.8+.
+2. **Topic detail fetch**: Each topic click triggers a network request to `/t/{slug}/{id}.json`. This is Discourse's standard JSON API and requires no authentication for public categories.
+3. **Image URLs**: Discourse sometimes serves images through its CDN optimizer. If thumbnails don't load, check your Discourse CDN settings.
+4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates/10.json?order=activity` or the `top.json` endpoint.
 
 ---
 
 ## Browser Support
-Chrome 88+, Firefox 85+, Safari 14+, Edge 88+
+Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
-## Discourse Version
-Minimum: 3.1.0.beta (Plugin API 0.8+)
-Tested on: 3.2.x, 3.3.x
+---
+
+*Built by Ery Prasetyo — Miracle Game / Gasing Community Platform*
