@@ -1,0 +1,14 @@
+{
+  "name": "Gasing Circle - News Layout",
+  "about_url": null,
+  "license_url": null,
+  "component": true,
+  "authors": "Ery Prasetyo",
+  "theme_version": "1.0.0",
+  "minimum_discourse_version": "3.1.0",
+  "assets": [],
+  "color_schemes": [],
+  "modifiers": {
+    "serialize_topic_excerpts": true
+  }
+}

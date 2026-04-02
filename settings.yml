@@ -1,0 +1,7 @@
+hero_title: "Gasing Academy News"
+hero_subtitle: "Ikuti berita dan perkembangan terkini seputar Gasing!"
+hero_gradient_start: "#1a73e8"
+hero_gradient_end: "#0d47a1"
+target_category_slug: "gasing-academy-news"
+enable_master_detail: true
+filter_labels: "Pendidikan|Pelatihan|Dunia|Lainnya"
