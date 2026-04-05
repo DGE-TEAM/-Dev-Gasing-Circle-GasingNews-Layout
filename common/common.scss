@@ -204,23 +204,39 @@ body.category-ga-updates {
 }
 
 /* ----------------------------------------------------------
-   6. ACTION BAR (Pills + Icon buttons) — single compact row
+   6. ACTION BAR (Pills + Icon buttons) — single compact cohesive row
    ---------------------------------------------------------- */
 #gc-action-bar {
-  display: flex;
-  align-items: center;
-  gap: 8px;
+  display: block;           /* block, not flex — avoids any parent flex interference */
   padding: 10px 16px;
   background: #FFFFFF;
   border-bottom: 1.5px solid var(--gc-card-border);
   position: relative;
   z-index: 10;
 
-  .gc-pills {
-    display: flex;
-    gap: 6px;
-    flex: 1;
+  /* Inner flex row — this is the element that controls tight grouping */
+  .gc-action-bar-inner {
+    display: inline-flex;   /* inline-flex = shrink-wraps to content, never full-width */
     align-items: center;
+    gap: 0;
+  }
+
+  .gc-pills {
+    display: inline-flex;
+    gap: 6px;
+    align-items: center;
+    flex: none;
+  }
+
+  /* Thin vertical divider between pills and icon buttons */
+  .gc-bar-divider {
+    display: inline-block;
+    width: 1px;
+    height: 20px;
+    background: var(--gc-divider);
+    margin: 0 8px;
+    flex-shrink: 0;
+    vertical-align: middle;
   }
 
   .gc-pill {
@@ -272,11 +288,10 @@ body.category-ga-updates {
   }
 
   .gc-icon-buttons {
-    display: flex;
+    display: inline-flex;
     gap: 6px;
     align-items: center;
-    position: relative;  /* anchor for popups */
-    margin-left: auto;
+    position: relative;   /* popup anchor — do NOT remove */
   }
 
   .gc-icon-btn {
@@ -559,8 +574,10 @@ body.category-ga-updates {
     }
   }
 
-  /* Post content image */
+  /* Post content image — now rendered inline within the body by Discourse's cooked HTML.
+     These rules style <img> tags and <figure> elements that appear naturally in the content. */
   .gc-detail-image {
+    /* Keep rule for backward compat, though no longer injected by JS */
     width: 100%;
     border-radius: 10px;
     overflow: hidden;
@@ -578,7 +595,7 @@ body.category-ga-updates {
     }
   }
 
-  /* Body text */
+  /* Body text — renders full Discourse cooked HTML including images */
   .gc-detail-body {
     font-size: 0.875rem;
     line-height: 1.78;
@@ -587,6 +604,75 @@ body.category-ga-updates {
     p { margin: 0 0 14px; }
 
     strong { font-weight: 700; color: var(--gc-text-primary); }
+
+    /* Style images that appear naturally inside the cooked post body */
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 10px;
+      margin: 4px 0 6px;
+    }
+
+    figure {
+      margin: 0 0 14px;
+      border-radius: 10px;
+      overflow: hidden;
+
+      img {
+        margin: 0;
+        border-radius: 0;
+      }
+
+      figcaption {
+        font-size: 0.72rem;
+        color: var(--gc-text-muted);
+        padding: 6px 10px;
+        font-style: italic;
+        background: #FAFBFD;
+      }
+    }
+
+    /* Discourse lightbox wrapper */
+    .lightbox-wrapper {
+      margin: 0 0 14px;
+
+      a.lightbox {
+        display: block;
+        border-radius: 10px;
+        overflow: hidden;
+
+        img { border-radius: 0; margin: 0; }
+      }
+
+      .meta {
+        font-size: 0.72rem;
+        color: var(--gc-text-muted);
+        padding: 5px 10px;
+        font-style: italic;
+        background: #FAFBFD;
+      }
+    }
+
+    blockquote {
+      border-left: 3px solid var(--gc-blue-primary);
+      margin: 0 0 14px;
+      padding: 8px 14px;
+      background: var(--gc-blue-light);
+      border-radius: 0 6px 6px 0;
+      color: var(--gc-text-secondary);
+      font-size: 0.85rem;
+    }
+
+    pre, code {
+      font-family: 'Fira Mono', monospace;
+      font-size: 0.82rem;
+      background: #F4F6FB;
+      border-radius: 5px;
+    }
+
+    pre { padding: 10px 14px; overflow-x: auto; margin: 0 0 14px; }
+    code { padding: 1px 5px; }
   }
 
   /* Reply CTA button — sits ABOVE the bottom separator */

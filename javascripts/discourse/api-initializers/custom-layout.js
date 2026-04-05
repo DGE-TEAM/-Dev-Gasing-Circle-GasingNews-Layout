@@ -160,13 +160,16 @@ function buildHeroBanner() {
 function buildActionBar() {
   return `
     <div id="gc-action-bar">
-      <div class="gc-pills">
-        <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge">8</span></button>
-        <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge">4</span></button>
-      </div>
-      <div class="gc-icon-buttons" style="position:relative">
-        <button class="gc-icon-btn" id="gc-date-btn" title="Filter by date">${SVG.calendar}</button>
-        <button class="gc-icon-btn" id="gc-filter-btn" title="Filter by category">${SVG.filter}</button>
+      <div class="gc-action-bar-inner">
+        <div class="gc-pills">
+          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge">8</span></button>
+          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge">4</span></button>
+        </div>
+        <div class="gc-bar-divider"></div>
+        <div class="gc-icon-buttons">
+          <button class="gc-icon-btn" id="gc-date-btn" title="Filter by date">${SVG.calendar}</button>
+          <button class="gc-icon-btn" id="gc-filter-btn" title="Filter by category">${SVG.filter}</button>
+        </div>
       </div>
     </div>
   `;
@@ -277,11 +280,6 @@ function buildTopicDetail(topic, posts) {
   const firstPost = posts?.[0];
   const cooked = firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`;
 
-  // Find image from cooked HTML
-  const imgMatch = cooked.match(/<img[^>]+src="([^"]+)"[^>]*>/i);
-  const imgSrc = topic.image_url || (imgMatch ? imgMatch[1] : null);
-  const imgCaption = "Dokumentasi kegiatan GASING Academy";
-
   // Reply posts (skip OP)
   const replyPosts = posts?.slice(1) || [];
   const commentsHtml = replyPosts.map((post, idx) => {
@@ -311,16 +309,26 @@ function buildTopicDetail(topic, posts) {
     `;
   }).join("");
 
-  // Strip cooked to get body text (remove images, keep paragraphs)
-  const bodyText = cooked
-    .replace(/<img[^>]*>/gi, "")
-    .replace(/<figure[^>]*>.*?<\/figure>/gis, "")
-    .substring(0, 2000);
-
-  // Subtitle: always render excerpt text below title
+  // Subtitle: the plain-text excerpt shown directly below the title.
+  // Comes from topic.excerpt (same text as the card excerpt in the left feed).
   const subtitleText = topic.excerpt
-    ? topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 160)
+    ? topic.excerpt.replace(/<[^>]*>/g, "").trim()
     : "";
+
+  // Body text: full cooked HTML with images in their natural position.
+  // Strip the opening paragraph from cooked if it duplicates the subtitle
+  // (Discourse copies the excerpt as the first <p> in the post body).
+  let bodyText = cooked.trim();
+  if (subtitleText) {
+    // Normalise both strings to bare words for comparison (strip tags + collapse whitespace)
+    const normalise = (s) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+    const normSub = normalise(subtitleText).substring(0, 80);  // compare first 80 chars
+    // Match the first <p>…</p> block and remove it only if it starts with the subtitle text
+    bodyText = bodyText.replace(/^(<p>)([\s\S]*?)(<\/p>)/, (match, open, inner, close) => {
+      const normInner = normalise(inner).substring(0, 80);
+      return normInner.startsWith(normSub) ? "" : match;
+    }).trim();
+  }
 
   // Reusable stats markup
   const statsRow = `
@@ -343,13 +351,6 @@ function buildTopicDetail(topic, posts) {
       <hr class="gc-detail-sep" />
 
       <div class="gc-detail-stats">${statsRow}</div>
-
-      ${imgSrc ? `
-        <div class="gc-detail-image">
-          <img src="${imgSrc}" alt="${topic.title}" loading="lazy" />
-          <div class="gc-image-caption">${imgCaption}</div>
-        </div>
-      ` : ""}
 
       <div class="gc-detail-body">${bodyText}</div>
 
