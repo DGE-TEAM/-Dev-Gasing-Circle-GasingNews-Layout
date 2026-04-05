@@ -162,8 +162,8 @@ function buildActionBar() {
     <div id="gc-action-bar">
       <div class="gc-action-bar-inner">
         <div class="gc-pills">
-          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge">8</span></button>
-          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge">4</span></button>
+          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge">45</span></button>
+          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge">12</span></button>
         </div>
         <div class="gc-bar-divider"></div>
         <div class="gc-icon-buttons">
