@@ -317,29 +317,50 @@ function buildTopicDetail(topic, posts) {
     .replace(/<figure[^>]*>.*?<\/figure>/gis, "")
     .substring(0, 2000);
 
+  // Subtitle: always render excerpt text below title
+  const subtitleText = topic.excerpt
+    ? topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 160)
+    : "";
+
+  // Reusable stats markup
+  const statsRow = `
+    <span class="gc-stat">${SVG.heart} ${likes}</span>
+    <span class="gc-stat">${SVG.chat} ${replies}</span>
+    <span class="gc-stat">${SVG.eye} ${views}</span>
+    <div class="gc-detail-actions">
+      <button class="gc-action-icon" title="Simpan">${SVG.bookmark}</button>
+      <button class="gc-action-icon" title="Bagikan">${SVG.share}</button>
+    </div>
+  `;
+
   return `
     <div class="gc-detail-inner">
+
       <div class="gc-detail-date">${date} ${tagHtml}</div>
       <h2 class="gc-detail-title">${topic.title}</h2>
-      <p class="gc-detail-subtitle">${topic.excerpt ? topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 120) + "..." : ""}</p>
-      <div class="gc-detail-stats">
-        <span class="gc-stat">${SVG.heart} ${likes}</span>
-        <span class="gc-stat">${SVG.chat} ${replies}</span>
-        <span class="gc-stat">${SVG.eye} ${views}</span>
-        <div class="gc-detail-actions">
-          <button class="gc-action-icon" title="Simpan">${SVG.bookmark}</button>
-          <button class="gc-action-icon" title="Bagikan">${SVG.share}</button>
-        </div>
-      </div>
+      ${subtitleText ? `<p class="gc-detail-subtitle">${subtitleText}</p>` : ""}
+
+      <hr class="gc-detail-sep" />
+
+      <div class="gc-detail-stats">${statsRow}</div>
+
       ${imgSrc ? `
         <div class="gc-detail-image">
           <img src="${imgSrc}" alt="${topic.title}" loading="lazy" />
           <div class="gc-image-caption">${imgCaption}</div>
         </div>
       ` : ""}
+
       <div class="gc-detail-body">${bodyText}</div>
+
       <button class="gc-reply-btn">${SVG.reply} Balas</button>
+
+      <hr class="gc-detail-sep-bottom" />
+
+      <div class="gc-detail-bottom-stats">${statsRow}</div>
+
       ${replyPosts.length > 0 ? `<div class="gc-comments">${commentsHtml}</div>` : ""}
+
     </div>
   `;
 }
