@@ -7,50 +7,50 @@
    1. CSS VARIABLES / COLOR PALETTE
    ---------------------------------------------------------- */
 :root {
-  --gc-blue-primary:    #4A6CF7;
-  --gc-blue-dark:       #1B2E7B;
-  --gc-blue-medium:     #3B5BDB;
-  --gc-blue-light:      #EEF2FF;
-  --gc-teal-header:     #2BB5E0;
-  --gc-hero-grad-start: #2BB5E0;
-  --gc-hero-grad-end:   #4A7CF7;
-  --gc-card-bg:         #FFFFFF;
-  --gc-card-border:     #E8ECF4;
-  --gc-card-hover:      #F7F9FF;
-  --gc-text-primary:    #1A1F36;
-  --gc-text-secondary:  #6B7280;
-  --gc-text-muted:      #9CA3AF;
-  --gc-tag-pelatihan:   #FF9500;
-  --gc-tag-pendidikan:  #4A6CF7;
-  --gc-tag-dunia:       #10B981;
-  --gc-tag-lainnya:     #8B5CF6;
-  --gc-divider:         #E5E7EB;
-  --gc-search-bg:       rgba(255,255,255,0.18);
-  --gc-search-border:   rgba(255,255,255,0.40);
-  --gc-pill-active-bg:  #1B2E7B;
-  --gc-pill-active-text:#FFFFFF;
-  --gc-pill-bg:         #FFFFFF;
-  --gc-pill-border:     #D1D5DB;
-  --gc-icon-btn-bg:     #FFFFFF;
-  --gc-popup-shadow:    0 8px 32px rgba(74,108,247,0.15);
-  --gc-radius-card:     12px;
-  --gc-radius-pill:     999px;
-  --gc-radius-popup:    10px;
-  --gc-list-width:      340px;
-  --gc-font-body:       'Nunito', 'Segoe UI', sans-serif;
+  --gc-blue-primary: #4a6cf7;
+  --gc-blue-dark: #1b2e7b;
+  --gc-blue-medium: #3b5bdb;
+  --gc-blue-light: #eef2ff;
+  --gc-teal-header: #2bb5e0;
+  --gc-hero-grad-start: #2bb5e0;
+  --gc-hero-grad-end: #4a7cf7;
+  --gc-card-bg: #ffffff;
+  --gc-card-border: #e8ecf4;
+  --gc-card-hover: #f7f9ff;
+  --gc-text-primary: #1a1f36;
+  --gc-text-secondary: #6b7280;
+  --gc-text-muted: #9ca3af;
+  --gc-tag-pelatihan: #ff9500;
+  --gc-tag-pendidikan: #4a6cf7;
+  --gc-tag-dunia: #10b981;
+  --gc-tag-lainnya: #8b5cf6;
+  --gc-divider: #e5e7eb;
+  --gc-search-bg: rgba(255, 255, 255, 0.18);
+  --gc-search-border: rgba(255, 255, 255, 0.4);
+  --gc-pill-active-bg: #1b2e7b;
+  --gc-pill-active-text: #ffffff;
+  --gc-pill-bg: #ffffff;
+  --gc-pill-border: #d1d5db;
+  --gc-icon-btn-bg: #ffffff;
+  --gc-popup-shadow: 0 8px 32px rgba(74, 108, 247, 0.15);
+  --gc-radius-card: 12px;
+  --gc-radius-pill: 999px;
+  --gc-radius-popup: 10px;
+  --gc-list-width: 340px;
+  --gc-font-body: "Nunito", "Segoe UI", sans-serif;
 }
 
 /* ----------------------------------------------------------
    2. FONT IMPORT
    ---------------------------------------------------------- */
-@import url('https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap");
 
 /* ----------------------------------------------------------
    3. GLOBAL BODY OVERRIDES (only on ga-updates category)
    ---------------------------------------------------------- */
 body.category-ga-updates {
   font-family: var(--gc-font-body);
-  background: #F4F6FB;
+  background: #f4f6fb;
 }
 
 /* Section 4 (Sidebar Styling) removed — handled by separate theme component */
@@ -63,7 +63,11 @@ body.category-ga-updates {
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  background: linear-gradient(120deg, var(--gc-hero-grad-start) 0%, var(--gc-hero-grad-end) 100%);
+  background: linear-gradient(
+    120deg,
+    var(--gc-hero-grad-start) 0%,
+    var(--gc-hero-grad-end) 100%
+  );
   padding: 28px 24px 20px;
   border-radius: 0 0 0 0;
   position: relative;
@@ -71,22 +75,26 @@ body.category-ga-updates {
   margin-bottom: 0;
 
   &::before {
-    content: '';
+    content: "";
     position: absolute;
-    top: -40px; right: -40px;
-    width: 220px; height: 220px;
+    top: -40px;
+    right: -40px;
+    width: 220px;
+    height: 220px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.07);
+    background: rgba(255, 255, 255, 0.07);
     pointer-events: none;
   }
 
   &::after {
-    content: '';
+    content: "";
     position: absolute;
-    bottom: -30px; left: -20px;
-    width: 160px; height: 160px;
+    bottom: -30px;
+    left: -20px;
+    width: 160px;
+    height: 160px;
     border-radius: 50%;
-    background: rgba(255,255,255,0.05);
+    background: rgba(255, 255, 255, 0.05);
     pointer-events: none;
   }
 
@@ -107,7 +115,7 @@ body.category-ga-updates {
 
   p.gc-hero-subtitle {
     font-size: 0.8rem;
-    color: rgba(255,255,255,0.85);
+    color: rgba(255, 255, 255, 0.85);
     margin: 0 0 14px;
     text-align: center;
   }
@@ -128,15 +136,19 @@ body.category-ga-updates {
       font-size: 0.83rem;
       padding: 0 16px 0 40px;
       outline: none;
-      transition: background 0.2s, box-shadow 0.2s;
+      transition:
+        background 0.2s,
+        box-shadow 0.2s;
       font-family: var(--gc-font-body);
-      box-shadow: 0 2px 12px rgba(0,0,0,0.10);
+      box-shadow: 0 2px 12px rgba(0, 0, 0, 0.1);
 
-      &::placeholder { color: #9CA3AF; }
+      &::placeholder {
+        color: #9ca3af;
+      }
 
       &:focus {
         background: #fff;
-        box-shadow: 0 2px 16px rgba(0,0,0,0.14);
+        box-shadow: 0 2px 16px rgba(0, 0, 0, 0.14);
       }
     }
 
@@ -145,12 +157,16 @@ body.category-ga-updates {
       left: 13px;
       top: 50%;
       transform: translateY(-50%);
-      color: #9CA3AF;
+      color: #9ca3af;
       pointer-events: none;
       display: flex;
       align-items: center;
 
-      svg { width: 15px; height: 15px; fill: currentColor; }
+      svg {
+        width: 15px;
+        height: 15px;
+        fill: currentColor;
+      }
     }
   }
 }
@@ -159,16 +175,16 @@ body.category-ga-updates {
    6. ACTION BAR (Pills + Icon buttons) — single compact cohesive row
    ---------------------------------------------------------- */
 #gc-action-bar {
-  display: block;           /* block, not flex — avoids any parent flex interference */
+  display: block; /* block, not flex — avoids any parent flex interference */
   padding: 10px 16px;
-  background: #FFFFFF;
+  background: #ffffff;
   border-bottom: 1.5px solid var(--gc-card-border);
   position: relative;
   z-index: 10;
 
   /* Inner flex row — this is the element that controls tight grouping */
   .gc-action-bar-inner {
-    display: inline-flex;   /* inline-flex = shrink-wraps to content, never full-width */
+    display: inline-flex; /* inline-flex = shrink-wraps to content, never full-width */
     align-items: center;
     gap: 0;
   }
@@ -228,7 +244,7 @@ body.category-ga-updates {
       color: var(--gc-pill-active-text);
 
       .gc-pill-badge {
-        background: rgba(255,255,255,0.28);
+        background: rgba(255, 255, 255, 0.28);
         color: #fff;
       }
     }
@@ -243,7 +259,7 @@ body.category-ga-updates {
     display: inline-flex;
     gap: 6px;
     align-items: center;
-    position: relative;   /* popup anchor — do NOT remove */
+    position: relative; /* popup anchor — do NOT remove */
   }
 
   .gc-icon-btn {
@@ -260,9 +276,13 @@ body.category-ga-updates {
     transition: all 0.15s;
     position: relative;
 
-    svg { width: 14px; height: 14px; }
+    svg {
+      width: 14px;
+      height: 14px;
+    }
 
-    &:hover, &.active {
+    &:hover,
+    &.active {
       border-color: var(--gc-blue-primary);
       color: var(--gc-blue-primary);
       background: var(--gc-blue-light);
@@ -274,10 +294,11 @@ body.category-ga-updates {
    7. MASTER-DETAIL LAYOUT CONTAINER
    ---------------------------------------------------------- */
 body.category-ga-updates {
-
   /* Hide the default topic list header */
   .topic-list-header,
-  thead.topic-list-header { display: none !important; }
+  thead.topic-list-header {
+    display: none !important;
+  }
 
   /* Wrap the discovery outlet in the master-detail shell */
   .discovery-topics-list-container,
@@ -291,7 +312,7 @@ body.category-ga-updates {
     display: flex;
     gap: 0;
     min-height: calc(100vh - 180px);
-    background: #F4F6FB;
+    background: #f4f6fb;
   }
 
   /* LEFT PANEL — Topic Feed */
@@ -307,8 +328,13 @@ body.category-ga-updates {
     flex-direction: column;
     gap: 10px;
 
-    &::-webkit-scrollbar { width: 4px; }
-    &::-webkit-scrollbar-thumb { background: var(--gc-divider); border-radius: 4px; }
+    &::-webkit-scrollbar {
+      width: 4px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--gc-divider);
+      border-radius: 4px;
+    }
   }
 
   /* RIGHT PANEL — Topic Detail */
@@ -320,8 +346,13 @@ body.category-ga-updates {
     overflow-y: auto;
     min-height: calc(100vh - 180px);
 
-    &::-webkit-scrollbar { width: 5px; }
-    &::-webkit-scrollbar-thumb { background: var(--gc-divider); border-radius: 4px; }
+    &::-webkit-scrollbar {
+      width: 5px;
+    }
+    &::-webkit-scrollbar-thumb {
+      background: var(--gc-divider);
+      border-radius: 4px;
+    }
   }
 }
 
@@ -334,7 +365,10 @@ body.category-ga-updates {
   border-radius: var(--gc-radius-card);
   padding: 12px;
   cursor: pointer;
-  transition: border-color 0.15s, box-shadow 0.15s, background 0.15s;
+  transition:
+    border-color 0.15s,
+    box-shadow 0.15s,
+    background 0.15s;
   display: flex;
   gap: 10px;
   align-items: flex-start;
@@ -342,7 +376,7 @@ body.category-ga-updates {
 
   &:hover {
     border-color: var(--gc-blue-primary);
-    box-shadow: 0 2px 12px rgba(74,108,247,0.10);
+    box-shadow: 0 2px 12px rgba(74, 108, 247, 0.1);
     background: var(--gc-card-hover);
   }
 
@@ -350,13 +384,14 @@ body.category-ga-updates {
     border-color: var(--gc-blue-primary);
     background: var(--gc-blue-light);
 
-    &::before {
-      content: '';
-      position: absolute;
-      left: -12px; top: 20px;
-      border: 8px solid transparent;
-      border-right-color: var(--gc-blue-primary);
-    }
+    // &::before {
+    //   content: "";
+    //   position: absolute;
+    //   left: -12px;
+    //   top: 20px;
+    //   border: 8px solid transparent;
+    //   border-right-color: var(--gc-blue-primary);
+    // }
   }
 
   .gc-card-thumbnail {
@@ -368,7 +403,8 @@ body.category-ga-updates {
     background: var(--gc-blue-light);
 
     img {
-      width: 100%; height: 100%;
+      width: 100%;
+      height: 100%;
       object-fit: cover;
     }
   }
@@ -414,11 +450,16 @@ body.category-ga-updates {
       color: var(--gc-text-muted);
       font-weight: 500;
 
-      svg { width: 11px; height: 11px; opacity: 0.7; }
+      svg {
+        width: 11px;
+        height: 11px;
+        opacity: 0.7;
+      }
     }
 
     .gc-avatar {
-      width: 18px; height: 18px;
+      width: 18px;
+      height: 18px;
       border-radius: 50%;
       object-fit: cover;
     }
@@ -437,17 +478,28 @@ body.category-ga-updates {
   letter-spacing: 0.02em;
   margin-bottom: 4px;
 
-  &.gc-tag--pelatihan { background: #FFF3DC; color: var(--gc-tag-pelatihan); }
-  &.gc-tag--pendidikan { background: var(--gc-blue-light); color: var(--gc-tag-pendidikan); }
-  &.gc-tag--dunia { background: #D1FAE5; color: var(--gc-tag-dunia); }
-  &.gc-tag--lainnya { background: #EDE9FE; color: var(--gc-tag-lainnya); }
+  &.gc-tag--pelatihan {
+    background: #fff3dc;
+    color: var(--gc-tag-pelatihan);
+  }
+  &.gc-tag--pendidikan {
+    background: var(--gc-blue-light);
+    color: var(--gc-tag-pendidikan);
+  }
+  &.gc-tag--dunia {
+    background: #d1fae5;
+    color: var(--gc-tag-dunia);
+  }
+  &.gc-tag--lainnya {
+    background: #ede9fe;
+    color: var(--gc-tag-lainnya);
+  }
 }
 
 /* ----------------------------------------------------------
    10. TOPIC DETAIL PANEL (Right side)
    ---------------------------------------------------------- */
 #gc-topic-detail {
-
   .gc-detail-inner {
     max-width: 740px;
     margin: 0 auto;
@@ -502,7 +554,10 @@ body.category-ga-updates {
       font-size: 0.78rem;
       color: var(--gc-text-muted);
 
-      svg { width: 13px; height: 13px; }
+      svg {
+        width: 13px;
+        height: 13px;
+      }
     }
 
     .gc-detail-actions {
@@ -510,18 +565,28 @@ body.category-ga-updates {
       display: flex;
       gap: 8px;
 
-      button, .gc-action-icon {
+      button,
+      .gc-action-icon {
         background: none;
         border: none;
         cursor: pointer;
         color: var(--gc-text-muted);
         padding: 4px;
         border-radius: 6px;
-        transition: color 0.15s, background 0.15s;
+        transition:
+          color 0.15s,
+          background 0.15s;
 
-        &:hover { color: var(--gc-blue-primary); background: var(--gc-blue-light); }
+        &:hover {
+          color: var(--gc-blue-primary);
+          background: var(--gc-blue-light);
+        }
 
-        svg { width: 15px; height: 15px; display: block; }
+        svg {
+          width: 15px;
+          height: 15px;
+          display: block;
+        }
       }
     }
   }
@@ -536,14 +601,18 @@ body.category-ga-updates {
     margin-bottom: 14px;
     background: var(--gc-blue-light);
 
-    img { width: 100%; height: auto; display: block; }
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+    }
 
     .gc-image-caption {
       font-size: 0.72rem;
       color: var(--gc-text-muted);
       padding: 6px 10px;
       font-style: italic;
-      background: #FAFBFD;
+      background: #fafbfd;
     }
   }
 
@@ -553,9 +622,14 @@ body.category-ga-updates {
     line-height: 1.78;
     color: var(--gc-text-primary);
 
-    p { margin: 0 0 14px; }
+    p {
+      margin: 0 0 14px;
+    }
 
-    strong { font-weight: 700; color: var(--gc-text-primary); }
+    strong {
+      font-weight: 700;
+      color: var(--gc-text-primary);
+    }
 
     /* Style images that appear naturally inside the cooked post body */
     img {
@@ -581,7 +655,7 @@ body.category-ga-updates {
         color: var(--gc-text-muted);
         padding: 6px 10px;
         font-style: italic;
-        background: #FAFBFD;
+        background: #fafbfd;
       }
     }
 
@@ -594,7 +668,10 @@ body.category-ga-updates {
         border-radius: 10px;
         overflow: hidden;
 
-        img { border-radius: 0; margin: 0; }
+        img {
+          border-radius: 0;
+          margin: 0;
+        }
       }
 
       .meta {
@@ -602,7 +679,7 @@ body.category-ga-updates {
         color: var(--gc-text-muted);
         padding: 5px 10px;
         font-style: italic;
-        background: #FAFBFD;
+        background: #fafbfd;
       }
     }
 
@@ -616,15 +693,22 @@ body.category-ga-updates {
       font-size: 0.85rem;
     }
 
-    pre, code {
-      font-family: 'Fira Mono', monospace;
+    pre,
+    code {
+      font-family: "Fira Mono", monospace;
       font-size: 0.82rem;
-      background: #F4F6FB;
+      background: #f4f6fb;
       border-radius: 5px;
     }
 
-    pre { padding: 10px 14px; overflow-x: auto; margin: 0 0 14px; }
-    code { padding: 1px 5px; }
+    pre {
+      padding: 10px 14px;
+      overflow-x: auto;
+      margin: 0 0 14px;
+    }
+    code {
+      padding: 1px 5px;
+    }
   }
 
   /* Reply CTA button — sits ABOVE the bottom separator */
@@ -645,9 +729,14 @@ body.category-ga-updates {
     transition: background 0.15s;
     font-family: var(--gc-font-body);
 
-    &:hover { background: var(--gc-blue-dark); }
+    &:hover {
+      background: var(--gc-blue-dark);
+    }
 
-    svg { width: 14px; height: 14px; }
+    svg {
+      width: 14px;
+      height: 14px;
+    }
   }
 
   /* Bottom separator: between reply btn and comment stats / comments */
@@ -672,7 +761,10 @@ body.category-ga-updates {
       font-size: 0.78rem;
       color: var(--gc-text-muted);
 
-      svg { width: 13px; height: 13px; }
+      svg {
+        width: 13px;
+        height: 13px;
+      }
     }
 
     .gc-detail-actions {
@@ -680,18 +772,28 @@ body.category-ga-updates {
       display: flex;
       gap: 8px;
 
-      button, .gc-action-icon {
+      button,
+      .gc-action-icon {
         background: none;
         border: none;
         cursor: pointer;
         color: var(--gc-text-muted);
         padding: 4px;
         border-radius: 6px;
-        transition: color 0.15s, background 0.15s;
+        transition:
+          color 0.15s,
+          background 0.15s;
 
-        &:hover { color: var(--gc-blue-primary); background: var(--gc-blue-light); }
+        &:hover {
+          color: var(--gc-blue-primary);
+          background: var(--gc-blue-light);
+        }
 
-        svg { width: 15px; height: 15px; display: block; }
+        svg {
+          width: 15px;
+          height: 15px;
+          display: block;
+        }
       }
     }
   }
@@ -711,9 +813,11 @@ body.category-ga-updates {
       margin-left: 36px;
 
       &::before {
-        content: '';
+        content: "";
         position: absolute;
-        left: -18px; top: 0; bottom: 0;
+        left: -18px;
+        top: 0;
+        bottom: 0;
         width: 2px;
         background: var(--gc-divider);
         border-radius: 2px;
@@ -721,7 +825,8 @@ body.category-ga-updates {
     }
 
     .gc-comment-avatar {
-      width: 32px; height: 32px;
+      width: 32px;
+      height: 32px;
       border-radius: 50%;
       object-fit: cover;
       flex-shrink: 0;
@@ -783,9 +888,18 @@ body.category-ga-updates {
           transition: color 0.15s;
           font-family: var(--gc-font-body);
 
-          &:hover { color: var(--gc-blue-primary); }
+          &:hover {
+            color: var(--gc-blue-primary);
+          }
 
-          svg { width: 11px; height: 11px; }
+          svg {
+            width: 11px;
+            height: 11px;
+          }
+        }
+
+        .gc-comment-like.liked {
+          color: var(--gc-blue-primary);
         }
 
         .gc-comment-reply-btn {
@@ -810,7 +924,8 @@ body.category-ga-updates {
   /* Context menu popup (Simpan / Laporkan) */
   .gc-context-menu {
     position: absolute;
-    right: 0; top: 24px;
+    right: 0;
+    top: 24px;
     background: #fff;
     border: 1px solid var(--gc-card-border);
     border-radius: var(--gc-radius-popup);
@@ -829,11 +944,20 @@ body.category-ga-updates {
       cursor: pointer;
       transition: background 0.1s;
 
-      svg { width: 13px; height: 13px; color: var(--gc-text-muted); }
+      svg {
+        width: 13px;
+        height: 13px;
+        color: var(--gc-text-muted);
+      }
 
-      &:hover { background: var(--gc-blue-light); color: var(--gc-blue-primary); }
+      &:hover {
+        background: var(--gc-blue-light);
+        color: var(--gc-blue-primary);
+      }
 
-      &:not(:last-child) { border-bottom: 1px solid var(--gc-divider); }
+      &:not(:last-child) {
+        border-bottom: 1px solid var(--gc-divider);
+      }
     }
   }
 }
@@ -855,8 +979,14 @@ body.category-ga-updates {
 }
 
 @keyframes gcPopupIn {
-  from { opacity: 0; transform: translateY(-6px) scale(0.97); }
-  to   { opacity: 1; transform: translateY(0) scale(1); }
+  from {
+    opacity: 0;
+    transform: translateY(-6px) scale(0.97);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
 }
 
 #gc-filter-popup {
@@ -871,10 +1001,13 @@ body.category-ga-updates {
     cursor: pointer;
     transition: background 0.1s;
 
-    &:hover { background: var(--gc-blue-light); }
+    &:hover {
+      background: var(--gc-blue-light);
+    }
 
     input[type="checkbox"] {
-      width: 15px; height: 15px;
+      width: 15px;
+      height: 15px;
       accent-color: var(--gc-blue-primary);
       cursor: pointer;
     }
@@ -911,7 +1044,10 @@ body.category-ga-updates {
       border-radius: 6px;
       transition: background 0.1s;
 
-      &:hover { background: var(--gc-blue-light); color: var(--gc-blue-primary); }
+      &:hover {
+        background: var(--gc-blue-light);
+        color: var(--gc-blue-primary);
+      }
     }
   }
 
@@ -951,13 +1087,18 @@ body.category-ga-updates {
       padding: 5px 2px;
       border-radius: 50%;
       cursor: pointer;
-      transition: background 0.1s, color 0.1s;
+      transition:
+        background 0.1s,
+        color 0.1s;
       aspect-ratio: 1;
       display: flex;
       align-items: center;
       justify-content: center;
 
-      &:hover { background: var(--gc-blue-light); color: var(--gc-blue-primary); }
+      &:hover {
+        background: var(--gc-blue-light);
+        color: var(--gc-blue-primary);
+      }
 
       &.in-range {
         background: var(--gc-blue-light);
@@ -965,7 +1106,8 @@ body.category-ga-updates {
         border-radius: 0;
       }
 
-      &.range-start, &.range-end {
+      &.range-start,
+      &.range-end {
         background: var(--gc-blue-primary);
         color: #fff;
         border-radius: 50%;
@@ -976,7 +1118,10 @@ body.category-ga-updates {
         border: 1.5px solid var(--gc-blue-primary);
       }
 
-      &.other-month { color: var(--gc-text-muted); opacity: 0.5; }
+      &.other-month {
+        color: var(--gc-text-muted);
+        opacity: 0.5;
+      }
     }
   }
 
@@ -992,10 +1137,14 @@ body.category-ga-updates {
    ---------------------------------------------------------- */
 body.category-ga-updates {
   /* Hide default topic table structures */
-  table.topic-list { display: none !important; }
+  table.topic-list {
+    display: none !important;
+  }
 
   /* Hide default category header (we replace it) */
-  .category-title-header { display: none !important; }
+  .category-title-header {
+    display: none !important;
+  }
 
   /* Adjust main outlet padding */
   #main-outlet {
@@ -1004,7 +1153,9 @@ body.category-ga-updates {
 
   /* Category route breadcrumb - hide */
   .extra-info-wrapper .topic-statuses,
-  .navigation-container { display: none !important; }
+  .navigation-container {
+    display: none !important;
+  }
 
   /* Custom wrapper that holds hero + layout */
   #gc-category-wrapper {
@@ -1027,7 +1178,11 @@ body.category-ga-updates {
   color: var(--gc-text-muted);
   gap: 12px;
 
-  svg { width: 48px; height: 48px; opacity: 0.3; }
+  svg {
+    width: 48px;
+    height: 48px;
+    opacity: 0.3;
+  }
 
   p {
     font-size: 0.85rem;
@@ -1046,8 +1201,12 @@ body.category-ga-updates {
 }
 
 @keyframes gcSkeleton {
-  from { background-position: 200% 0; }
-  to   { background-position: -200% 0; }
+  from {
+    background-position: 200% 0;
+  }
+  to {
+    background-position: -200% 0;
+  }
 }
 
 /* ----------------------------------------------------------
@@ -1067,7 +1226,9 @@ body.category-ga-updates {
     #gc-topic-detail {
       display: none;
 
-      &.mobile-visible { display: block; }
+      &.mobile-visible {
+        display: block;
+      }
     }
   }
 

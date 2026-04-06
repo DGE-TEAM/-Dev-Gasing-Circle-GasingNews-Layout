@@ -1,12 +1,14 @@
 // =============================================================
 // GASING CIRCLE — Academy News Theme Component
 // File: javascripts/discourse/api-initializers/custom-layout.js
-// Target Route: /c/ga-updates/10
 // =============================================================
 
 import { apiInitializer } from "discourse/lib/api";
 import { later, scheduleOnce } from "@ember/runloop";
 import { getOwner } from "@ember/application";
+import { ajax } from "discourse/lib/ajax";
+import { popupAjaxError } from "discourse/lib/ajax-error";
+import moment from "moment";
 
 // ─────────────────────────────────────────────────────────────
 // HELPER: SVG ICONS
@@ -41,6 +43,8 @@ const STATE = {
   activeTopicId: null,
   calendarMonth: { left: null, right: null },
 };
+
+let discourseApi = null; // Store the API object for global use
 
 // ─────────────────────────────────────────────────────────────
 // UTILITY: Is this the target category route?
@@ -85,23 +89,23 @@ function getTopicTag(topic) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// FORMAT DATE
-// ─────────────────────────────────────────────────────────────
-function formatDate(dateStr) {
-  if (!dateStr) return "";
-  const d = new Date(dateStr);
-  const months = ["Jan","Feb","Mar","Apr","Mei","Jun","Jul","Agu","Sep","Okt","Nov","Des"];
-  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
-}
-
-// ─────────────────────────────────────────────────────────────
 // CALENDAR HELPERS
 // ─────────────────────────────────────────────────────────────
 const MONTH_NAMES = [
-  "January","February","March","April","May","June",
-  "July","August","September","October","November","December"
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
 ];
-const DOW = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
   const firstDay = new Date(year, month, 1).getDay();
@@ -112,7 +116,9 @@ function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
     <div class="gc-cal-header">${MONTH_NAMES[month]} ${year}</div>
     <div class="gc-cal-grid">`;
 
-  DOW.forEach(d => { html += `<div class="gc-cal-dow">${d}</div>`; });
+  DOW.forEach((d) => {
+    html += `<div class="gc-cal-dow">${d}</div>`;
+  });
 
   // Leading empty cells
   for (let i = 0; i < firstDay; i++) {
@@ -124,12 +130,18 @@ function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
     const ts = date.getTime();
     let cls = "gc-cal-day";
 
-    if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) {
+    if (
+      today.getDate() === day &&
+      today.getMonth() === month &&
+      today.getFullYear() === year
+    ) {
       cls += " today";
     }
-    if (rangeStart && Math.abs(ts - rangeStart) < 86400000) cls += " range-start";
+    if (rangeStart && Math.abs(ts - rangeStart) < 86400000)
+      cls += " range-start";
     if (rangeEnd && Math.abs(ts - rangeEnd) < 86400000) cls += " range-end";
-    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd) cls += " in-range";
+    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd)
+      cls += " in-range";
 
     html += `<div class="${cls}" data-ts="${ts}">${day}</div>`;
   }
@@ -180,13 +192,17 @@ function buildActionBar() {
 // ─────────────────────────────────────────────────────────────
 function buildFilterPopup() {
   const filters = ["Pendidikan", "Pelatihan", "Dunia", "Lainnya"];
-  const items = filters.map(f => `
+  const items = filters
+    .map(
+      (f) => `
     <div class="gc-filter-item">
       <input type="checkbox" id="gc-filter-${f.toLowerCase()}" data-filter="${f.toLowerCase()}"
         ${STATE.selectedFilters.includes(f.toLowerCase()) ? "checked" : ""} />
       <label for="gc-filter-${f.toLowerCase()}">${f}</label>
     </div>
-  `).join("");
+  `,
+    )
+    .join("");
   return `<div id="gc-filter-popup">${items}</div>`;
 }
 
@@ -196,8 +212,14 @@ function buildFilterPopup() {
 function buildDatePopup() {
   const now = new Date();
   if (!STATE.calendarMonth.left) {
-    STATE.calendarMonth.left = { year: now.getFullYear(), month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1 };
-    STATE.calendarMonth.right = { year: now.getFullYear(), month: now.getMonth() };
+    STATE.calendarMonth.left = {
+      year: now.getFullYear(),
+      month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1,
+    };
+    STATE.calendarMonth.right = {
+      year: now.getFullYear(),
+      month: now.getMonth(),
+    };
   }
   const { left, right } = STATE.calendarMonth;
 
@@ -235,7 +257,7 @@ function buildTopicCard(topic) {
   const likes = topic.like_count || 0;
   const replies = topic.posts_count ? topic.posts_count - 1 : 0;
   const views = topic.views || 0;
-  const date = formatDate(topic.created_at);
+  const date = moment(topic.created_at).format("D MMM YYYY");
 
   return `
     <div class="gc-topic-card" data-topic-id="${topic.id}" data-topic-slug="${topic.slug}">
@@ -271,43 +293,60 @@ function buildTopicDetail(topic, posts) {
 
   const tag = getTopicTag(topic);
   const tagHtml = tag ? renderTag(tag) : "";
-  const date = formatDate(topic.created_at);
+  const date = moment(topic.created_at).format("D MMM YYYY");
   const likes = topic.like_count || 0;
-  const replies = topic.posts_count ? topic.posts_count - 1 : 0;
+  const replies = topic.reply_count || 0;
   const views = topic.views || 0;
 
   // First post (OP)
   const firstPost = posts?.[0];
   const cooked = firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`;
 
-  // Reply posts (skip OP)
+  // Reply posts (comments)
   const replyPosts = posts?.slice(1) || [];
-  const commentsHtml = replyPosts.map((post, idx) => {
-    const avatarUrl = post.avatar_template?.replace("{size}", "32") || "";
-    const isReply = idx > 0 && post.reply_to_post_number;
-    const role = post.staff ? "Trainer Utama" : (post.trust_level >= 2 ? "Trainer Kelas" : "");
-    const timeAgo = getRelativeTime(post.created_at);
+  const commentsHtml = replyPosts
+    .map((post) => {
+      const avatarUrl = post.avatar_template?.replace("{size}", "32") || "";
+      const isReply = post.reply_to_post_number > 0;
+      const role =
+        post.user_title ||
+        (post.staff
+          ? "Trainer Utama"
+          : post.trust_level >= 2
+            ? "Trainer Kelas"
+            : "");
+      const timeAgo = moment(post.created_at).fromNow();
 
-    return `
-      <div class="gc-comment ${isReply ? "gc-comment--reply" : ""}">
-        ${avatarUrl ? `<img class="gc-comment-avatar" src="${avatarUrl}" alt="" />` : ""}
+      // Dynamic like data from actions_summary
+      const likeAction = post.actions_summary?.find((a) => a.id === 2);
+      const likeCount = likeAction?.count || 0;
+      const userLiked = likeAction?.acted || false;
+
+      return `
+      <div class="gc-comment ${isReply ? "gc-comment--reply" : ""}" data-post-id="${post.id}">
+        <img class="gc-comment-avatar" src="${avatarUrl}" alt="${post.username}" />
         <div class="gc-comment-content">
           <div class="gc-comment-header">
-            <span class="gc-comment-author">${post.username || "User"}</span>
+            <span class="gc-comment-author">${post.name || post.username}</span>
             ${role ? `<span class="gc-comment-role">${role}</span>` : ""}
             <span class="gc-comment-time">${timeAgo}</span>
           </div>
-          <div class="gc-comment-text">${(post.cooked || "").replace(/<[^>]*>/g, "").substring(0, 200)}</div>
+          <div class="gc-comment-text">${post.cooked}</div>
           <div class="gc-comment-actions">
-            <button class="gc-comment-like">${SVG.heart} ${post.like_count || 49}</button>
-            <button class="gc-comment-more">${SVG.more}</button>
-            <button class="gc-comment-reply-btn">${SVG.reply} Balas</button>
-            ${post.reply_count > 0 ? `<span class="gc-reply-badge">${post.reply_count} Balasan</span>` : ""}
+            <button class="gc-comment-like ${userLiked ? "liked" : ""}" data-post-id="${post.id}" title="${userLiked ? "Batal Suka" : "Suka"}">
+              ${SVG.heart} ${likeCount}
+            </button>
+            <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
+            <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
+              ${SVG.reply} Balas
+            </button>
+            ${post.reply_count > 0 ? `<button class="gc-reply-badge" data-post-id="${post.id}">${post.reply_count} Balasan</button>` : ""}
           </div>
         </div>
       </div>
     `;
-  }).join("");
+    })
+    .join("");
 
   // Subtitle: the plain-text excerpt shown directly below the title.
   // Comes from topic.excerpt (same text as the card excerpt in the left feed).
@@ -321,13 +360,20 @@ function buildTopicDetail(topic, posts) {
   let bodyText = cooked.trim();
   if (subtitleText) {
     // Normalise both strings to bare words for comparison (strip tags + collapse whitespace)
-    const normalise = (s) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
-    const normSub = normalise(subtitleText).substring(0, 80);  // compare first 80 chars
+    const normalise = (s) =>
+      s
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
+    const normSub = normalise(subtitleText).substring(0, 80); // compare first 80 chars
     // Match the first <p>…</p> block and remove it only if it starts with the subtitle text
-    bodyText = bodyText.replace(/^(<p>)([\s\S]*?)(<\/p>)/, (match, open, inner, close) => {
-      const normInner = normalise(inner).substring(0, 80);
-      return normInner.startsWith(normSub) ? "" : match;
-    }).trim();
+    bodyText = bodyText
+      .replace(/^(<p>)([\s\S]*?)(<\/p>)/, (match, open, inner, close) => {
+        const normInner = normalise(inner).substring(0, 80);
+        return normInner.startsWith(normSub) ? "" : match;
+      })
+      .trim();
   }
 
   // Reusable stats markup
@@ -336,8 +382,8 @@ function buildTopicDetail(topic, posts) {
     <span class="gc-stat">${SVG.chat} ${replies}</span>
     <span class="gc-stat">${SVG.eye} ${views}</span>
     <div class="gc-detail-actions">
-      <button class="gc-action-icon" title="Simpan">${SVG.bookmark}</button>
-      <button class="gc-action-icon" title="Bagikan">${SVG.share}</button>
+      <button class="gc-action-icon gc-topic-bookmark-btn" title="Simpan">${SVG.bookmark}</button>
+      <button class="gc-action-icon gc-topic-share-btn" title="Bagikan">${SVG.share}</button>
     </div>
   `;
 
@@ -354,7 +400,7 @@ function buildTopicDetail(topic, posts) {
 
       <div class="gc-detail-body">${bodyText}</div>
 
-      <button class="gc-reply-btn">${SVG.reply} Balas</button>
+      <button class="gc-reply-btn" data-topic-id="${topic.id}">${SVG.reply} Balas</button>
 
       <hr class="gc-detail-sep-bottom" />
 
@@ -366,23 +412,16 @@ function buildTopicDetail(topic, posts) {
   `;
 }
 
-function getRelativeTime(dateStr) {
-  if (!dateStr) return "";
-  const diff = Date.now() - new Date(dateStr).getTime();
-  const hrs = Math.floor(diff / 3600000);
-  if (hrs < 1) return "baru saja";
-  if (hrs < 24) return `${hrs} jam yang lalu`;
-  const days = Math.floor(hrs / 24);
-  return `${days} hari yang lalu`;
-}
-
 // ─────────────────────────────────────────────────────────────
 // FETCH TOPICS from API
 // ─────────────────────────────────────────────────────────────
 async function fetchCategoryTopics() {
   try {
     const res = await fetch("/c/ga-updates/10.json?no_definitions=true", {
-      headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
     });
     if (!res.ok) return [];
     const data = await res.json();
@@ -399,7 +438,10 @@ async function fetchCategoryTopics() {
 async function fetchTopicPosts(topicId, topicSlug) {
   try {
     const res = await fetch(`/t/${topicSlug}/${topicId}.json`, {
-      headers: { "Accept": "application/json", "X-Requested-With": "XMLHttpRequest" }
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
     });
     if (!res.ok) return { topic: null, posts: [] };
     const data = await res.json();
@@ -444,7 +486,9 @@ async function renderLayout() {
     ${buildActionBar()}
     <div id="gc-master-detail">
       <div id="gc-topic-feed">
-        ${[1,2,3,4,5].map(() => `
+        ${[1, 2, 3, 4, 5]
+          .map(
+            () => `
           <div class="gc-topic-card" style="pointer-events:none">
             <div class="gc-card-body">
               <div class="gc-skeleton" style="height:14px;width:60%;margin-bottom:6px"></div>
@@ -452,7 +496,9 @@ async function renderLayout() {
               <div class="gc-skeleton" style="height:11px;width:70%"></div>
             </div>
           </div>
-        `).join("")}
+        `,
+          )
+          .join("")}
       </div>
       <div id="gc-topic-detail">
         <div id="gc-empty-detail">
@@ -476,7 +522,10 @@ async function renderLayout() {
   // Update badge counts dynamically
   const latestCount = topics.length;
   const TRENDING_VIEW_THRESHOLD = 50;
-  const trendingTopics = topics.filter(t => (t.views || 0) >= TRENDING_VIEW_THRESHOLD || (t.like_count || 0) >= 10);
+  const trendingTopics = topics.filter(
+    (t) =>
+      (t.views || 0) >= TRENDING_VIEW_THRESHOLD || (t.like_count || 0) >= 10,
+  );
   const trendingCount = trendingTopics.length;
 
   const latestBadge = document.getElementById("gc-badge-latest");
@@ -487,7 +536,7 @@ async function renderLayout() {
     if (topics.length === 0) {
       feed.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gc-text-muted);font-size:0.82rem">Tidak ada artikel ditemukan.</div>`;
     } else {
-      feed.innerHTML = topics.map(t => buildTopicCard(t)).join("");
+      feed.innerHTML = topics.map((t) => buildTopicCard(t)).join("");
       bindTopicCardClicks(topics);
 
       // Auto-select first topic
@@ -518,7 +567,9 @@ function bindTopicCardClicks(topics) {
     if (!topicId) return;
 
     // Mark active
-    feed.querySelectorAll(".gc-topic-card").forEach(c => c.classList.remove("active"));
+    feed
+      .querySelectorAll(".gc-topic-card")
+      .forEach((c) => c.classList.remove("active"));
     card.classList.add("active");
     STATE.activeTopicId = topicId;
 
@@ -527,22 +578,26 @@ function bindTopicCardClicks(topics) {
     if (detail) {
       detail.innerHTML = `
         <div class="gc-detail-inner">
-          ${[1,2,3].map(() => `
+          ${[1, 2, 3]
+            .map(
+              () => `
             <div class="gc-skeleton" style="height:18px;width:80%;margin-bottom:10px"></div>
             <div class="gc-skeleton" style="height:12px;width:95%;margin-bottom:6px"></div>
             <div class="gc-skeleton" style="height:200px;width:100%;margin-bottom:10px;border-radius:10px"></div>
-          `).join("")}
+          `,
+            )
+            .join("")}
         </div>
       `;
     }
 
     const { topic, posts } = await fetchTopicPosts(topicId, topicSlug);
-    const topicMeta = topics.find(t => t.id === topicId);
+    const topicMeta = topics.find((t) => t.id === topicId);
 
     if (detail) {
       detail.innerHTML = buildTopicDetail(topic || topicMeta, posts);
       detail.scrollTop = 0;
-      bindContextMenus(detail);
+      bindDetailEventListeners(detail, topic || topicMeta, posts);
     }
   });
 }
@@ -557,7 +612,9 @@ function bindActionBar(topics) {
   document.addEventListener("click", (e) => {
     const pill = e.target.closest(".gc-pill");
     if (pill) {
-      document.querySelectorAll(".gc-pill").forEach(p => p.classList.remove("active"));
+      document
+        .querySelectorAll(".gc-pill")
+        .forEach((p) => p.classList.remove("active"));
       pill.classList.add("active");
       STATE.activeFilter = pill.dataset.pill;
 
@@ -565,13 +622,15 @@ function bindActionBar(topics) {
       const feed = document.getElementById("gc-topic-feed");
       if (feed) {
         const cards = feed.querySelectorAll(".gc-topic-card");
-        cards.forEach(card => {
+        cards.forEach((card) => {
           const topicId = parseInt(card.dataset.topicId);
-          const topic = topics.find(t => t.id === topicId);
+          const topic = topics.find((t) => t.id === topicId);
           if (!topic) return;
 
           if (STATE.activeFilter === "trending") {
-            const isTrending = (topic.views || 0) >= TRENDING_VIEW_THRESHOLD || (topic.like_count || 0) >= 10;
+            const isTrending =
+              (topic.views || 0) >= TRENDING_VIEW_THRESHOLD ||
+              (topic.like_count || 0) >= 10;
             card.style.display = isTrending ? "" : "none";
           } else {
             card.style.display = "";
@@ -621,8 +680,12 @@ function bindActionBar(topics) {
 
   // Close popups on outside click
   document.addEventListener("click", (e) => {
-    if (!e.target.closest("#gc-filter-popup") && !e.target.closest("#gc-filter-btn") &&
-        !e.target.closest("#gc-date-popup") && !e.target.closest("#gc-date-btn")) {
+    if (
+      !e.target.closest("#gc-filter-popup") &&
+      !e.target.closest("#gc-filter-btn") &&
+      !e.target.closest("#gc-date-popup") &&
+      !e.target.closest("#gc-date-btn")
+    ) {
       closeAllPopups();
     }
   });
@@ -647,13 +710,14 @@ function bindFilterPopup() {
   const popup = document.getElementById("gc-filter-popup");
   if (!popup) return;
 
-  popup.querySelectorAll("input[type='checkbox']").forEach(cb => {
+  popup.querySelectorAll("input[type='checkbox']").forEach((cb) => {
     cb.addEventListener("change", () => {
       const val = cb.dataset.filter;
       if (cb.checked) {
-        if (!STATE.selectedFilters.includes(val)) STATE.selectedFilters.push(val);
+        if (!STATE.selectedFilters.includes(val))
+          STATE.selectedFilters.push(val);
       } else {
-        STATE.selectedFilters = STATE.selectedFilters.filter(f => f !== val);
+        STATE.selectedFilters = STATE.selectedFilters.filter((f) => f !== val);
       }
       filterTopicFeed();
     });
@@ -662,14 +726,14 @@ function bindFilterPopup() {
 
 function filterTopicFeed() {
   const cards = document.querySelectorAll(".gc-topic-card");
-  cards.forEach(card => {
+  cards.forEach((card) => {
     const tag = card.querySelector(".gc-tag");
     if (STATE.selectedFilters.length === 0) {
       card.style.display = "";
       return;
     }
     const tagClass = tag ? tag.className : "";
-    const matches = STATE.selectedFilters.some(f => tagClass.includes(f));
+    const matches = STATE.selectedFilters.some((f) => tagClass.includes(f));
     card.style.display = matches ? "" : "none";
   });
 }
@@ -690,12 +754,15 @@ function bindDatePopup() {
   });
 
   // Day clicks
-  popup.querySelectorAll(".gc-cal-day").forEach(day => {
+  popup.querySelectorAll(".gc-cal-day").forEach((day) => {
     const ts = parseInt(day.dataset.ts);
     if (!ts) return;
 
     day.addEventListener("click", () => {
-      if (!STATE.dateRange.start || (STATE.dateRange.start && STATE.dateRange.end)) {
+      if (
+        !STATE.dateRange.start ||
+        (STATE.dateRange.start && STATE.dateRange.end)
+      ) {
         STATE.dateRange = { start: ts, end: null };
       } else {
         if (ts < STATE.dateRange.start) {
@@ -717,10 +784,22 @@ function navigateCalendar(dir) {
   let rm = r.month + dir;
   let ry = r.year;
 
-  if (lm < 0) { lm = 11; ly--; }
-  if (lm > 11) { lm = 0; ly++; }
-  if (rm < 0) { rm = 11; ry--; }
-  if (rm > 11) { rm = 0; ry++; }
+  if (lm < 0) {
+    lm = 11;
+    ly--;
+  }
+  if (lm > 11) {
+    lm = 0;
+    ly++;
+  }
+  if (rm < 0) {
+    rm = 11;
+    ry--;
+  }
+  if (rm > 11) {
+    rm = 0;
+    ry++;
+  }
 
   STATE.calendarMonth = {
     left: { year: ly, month: lm },
@@ -750,10 +829,13 @@ function bindSearch(topics) {
   input.addEventListener("input", (e) => {
     const q = e.target.value.toLowerCase().trim();
     const cards = document.querySelectorAll(".gc-topic-card");
-    cards.forEach(card => {
-      const title = card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
-      const excerpt = card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
-      card.style.display = (!q || title.includes(q) || excerpt.includes(q)) ? "" : "none";
+    cards.forEach((card) => {
+      const title =
+        card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
+      const excerpt =
+        card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
+      card.style.display =
+        !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
     });
   });
 }
@@ -761,27 +843,125 @@ function bindSearch(topics) {
 // ─────────────────────────────────────────────────────────────
 // BIND CONTEXT MENUS (Simpan / Laporkan)
 // ─────────────────────────────────────────────────────────────
-function bindContextMenus(container) {
-  container.querySelectorAll(".gc-comment-more").forEach(btn => {
+function bindContextMenus(container, posts) {
+  container.querySelectorAll(".gc-comment-more").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
       // Remove existing context menus
-      document.querySelectorAll(".gc-context-menu").forEach(m => m.remove());
+      document.querySelectorAll(".gc-context-menu").forEach((m) => m.remove());
 
+      const postId = e.currentTarget.dataset.postId;
       const menu = document.createElement("div");
       menu.className = "gc-context-menu";
       menu.innerHTML = `
-        <div class="gc-context-item">${SVG.save} Simpan</div>
-        <div class="gc-context-item">${SVG.report} Laporkan</div>
+        <div class="gc-context-item" data-action="bookmark">${SVG.save} Simpan</div>
+        <div class="gc-context-item" data-action="report">${SVG.report} Laporkan</div>
       `;
       btn.closest(".gc-comment-content").style.position = "relative";
       btn.closest(".gc-comment-content").appendChild(menu);
+
+      // Bookmark Action
+      menu
+        .querySelector('[data-action="bookmark"]')
+        .addEventListener("click", async () => {
+          try {
+            await ajax(`/post_actions`, {
+              type: "POST",
+              data: { id: postId, post_action_type_id: 1, flag_topic: false },
+            });
+            // Optionally show a success notification
+          } catch (error) {
+            popupAjaxError(error);
+          }
+          menu.remove();
+        });
+
+      // Report Action
+      menu
+        .querySelector('[data-action="report"]')
+        .addEventListener("click", () => {
+          if (discourseApi) {
+            const post = posts.find((p) => p.id == postId);
+            discourseApi.container.lookup("controller:modals").show("flag", {
+              post: post,
+              flagTopic: false,
+            });
+          }
+          menu.remove();
+        });
 
       setTimeout(() => {
         document.addEventListener("click", () => menu.remove(), { once: true });
       }, 0);
     });
   });
+}
+
+// ─────────────────────────────────────────────────────────────
+// BIND DYNAMIC DETAIL VIEW ACTIONS
+// ─────────────────────────────────────────────────────────────
+function bindDetailEventListeners(container, topic, posts) {
+  if (!discourseApi?.currentUser) return;
+
+  // Per-post Like button
+  container.querySelectorAll(".gc-comment-like").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const postId = btn.dataset.postId;
+      const isLiked = btn.classList.contains("liked");
+      try {
+        const result = await ajax(
+          `/post_actions${isLiked ? `/${postId}` : ""}`,
+          {
+            type: isLiked ? "DELETE" : "POST",
+            data: isLiked
+              ? { post_action_type_id: 2 }
+              : { id: postId, post_action_type_id: 2, flag_topic: false },
+          },
+        );
+
+        btn.classList.toggle("liked");
+        const newCount = result.post.actions_summary.find(
+          (a) => a.id === 2,
+        ).count;
+        btn.innerHTML = `${SVG.heart} ${newCount}`;
+      } catch (error) {
+        popupAjaxError(error);
+      }
+    });
+  });
+
+  // Per-post Reply button
+  container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      const postNumber = btn.dataset.postNumber;
+      const targetPost = posts.find((p) => p.post_number == postNumber);
+      if (targetPost && discourseApi) {
+        const composer = discourseApi.container.lookup("controller:composer");
+        composer.open({
+          action: "reply",
+          post: targetPost,
+          topic: topic,
+        });
+      }
+    });
+  });
+
+  // Main topic Reply button
+  const mainReplyBtn = container.querySelector(".gc-reply-btn");
+  if (mainReplyBtn) {
+    mainReplyBtn.addEventListener("click", () => {
+      if (discourseApi) {
+        const composer = discourseApi.container.lookup("controller:composer");
+        composer.open({
+          action: "reply",
+          topic: topic,
+        });
+      }
+    });
+  }
+
+  // Bind context menus for comments
+  bindContextMenus(container, posts);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -796,6 +976,8 @@ function cleanupLayout() {
 // API INITIALIZER
 // ─────────────────────────────────────────────────────────────
 export default apiInitializer("1.8.0", (api) => {
+  discourseApi = api; // Store for global access
+
   // Hook into Discourse's page change events
   api.onPageChange((url) => {
     // Clean up first
@@ -819,10 +1001,15 @@ export default apiInitializer("1.8.0", (api) => {
 
   // Fallback: watch for DOM readiness
   if (isTargetRoute()) {
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
       later(renderLayout, 300);
     } else {
-      document.addEventListener("DOMContentLoaded", () => later(renderLayout, 300));
+      document.addEventListener("DOMContentLoaded", () =>
+        later(renderLayout, 300),
+      );
     }
   }
 
