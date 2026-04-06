@@ -1,73 +1,57 @@
 /* ============================================================
    GASING CIRCLE - Academy News Theme Component
-   Target Route: /c/ga-updates/10
+   Target Route: /c/ga-updates/
    ============================================================ */
 
 /* ----------------------------------------------------------
    1. CSS VARIABLES / COLOR PALETTE
-   (Nilai bersumber dari Theme Settings — dapat diubah admin)
    ---------------------------------------------------------- */
 :root {
-  --gc-blue-primary: #{$gc_primary_color};
-  --gc-blue-dark: #{$gc_primary_dark_color};
+  --gc-blue-primary: #4a6cf7;
+  --gc-blue-dark: #1b2e7b;
   --gc-blue-medium: #3b5bdb;
-  --gc-blue-light: #{$gc_primary_light_color};
-  --gc-teal-header: #{$gc_hero_start_color};
-  --gc-hero-grad-start: #{$gc_hero_start_color};
-  --gc-hero-grad-end: #{$gc_hero_end_color};
-  --gc-card-bg: #{$gc_card_bg_color};
-  --gc-card-border: #{$gc_card_border_color};
+  --gc-blue-light: #eef2ff;
+  --gc-teal-header: #2bb5e0;
+  --gc-hero-grad-start: #2bb5e0;
+  --gc-hero-grad-end: #4a7cf7;
+  --gc-card-bg: #ffffff;
+  --gc-card-border: #e8ecf4;
   --gc-card-hover: #f7f9ff;
-  --gc-text-primary: #{$gc_text_primary_color};
-  --gc-text-secondary: #{$gc_text_secondary_color};
-  --gc-text-muted: #{$gc_text_muted_color};
-  --gc-tag-pelatihan: #{$gc_tag_pelatihan_color};
-  --gc-tag-pendidikan: #{$gc_tag_pendidikan_color};
-  --gc-tag-dunia: #{$gc_tag_dunia_color};
-  --gc-tag-lainnya: #{$gc_tag_lainnya_color};
-  --gc-divider: #{$gc_divider_color};
+  --gc-text-primary: #1a1f36;
+  --gc-text-secondary: #6b7280;
+  --gc-text-muted: #9ca3af;
+  --gc-tag-pelatihan: #ff9500;
+  --gc-tag-pendidikan: #4a6cf7;
+  --gc-tag-dunia: #10b981;
+  --gc-tag-lainnya: #8b5cf6;
+  --gc-divider: #e5e7eb;
   --gc-search-bg: rgba(255, 255, 255, 0.18);
   --gc-search-border: rgba(255, 255, 255, 0.4);
-  --gc-pill-active-bg: #{$gc_primary_dark_color};
+  --gc-pill-active-bg: #1b2e7b;
   --gc-pill-active-text: #ffffff;
-  --gc-pill-bg: #{$gc_card_bg_color};
-  --gc-pill-border: #{$gc_divider_color};
-  --gc-icon-btn-bg: #{$gc_card_bg_color};
+  --gc-pill-bg: #ffffff;
+  --gc-pill-border: #d1d5db;
+  --gc-icon-btn-bg: #ffffff;
   --gc-popup-shadow: 0 8px 32px rgba(74, 108, 247, 0.15);
   --gc-radius-card: 12px;
   --gc-radius-pill: 999px;
   --gc-radius-popup: 10px;
   --gc-list-width: 340px;
-
-  @if $gc_font_body == "Inter" {
-    --gc-font-body: "Inter", "Segoe UI", sans-serif;
-  } @else if $gc_font_body == "Poppins" {
-    --gc-font-body: "Poppins", "Segoe UI", sans-serif;
-  } @else if $gc_font_body == "Roboto" {
-    --gc-font-body: "Roboto", "Segoe UI", sans-serif;
-  } @else if $gc_font_body == "Open Sans" {
-    --gc-font-body: "Open Sans", "Segoe UI", sans-serif;
-  } @else if $gc_font_body == "Lato" {
-    --gc-font-body: "Lato", "Segoe UI", sans-serif;
-  } @else {
-    --gc-font-body: "Nunito", "Segoe UI", sans-serif;
-  }
+  --gc-font-body: "Nunito", "Segoe UI", sans-serif;
 }
 
 /* ----------------------------------------------------------
    2. FONT IMPORT
-   (Font dimuat via head_tag.html — semua pilihan tersedia)
    ---------------------------------------------------------- */
+@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap");
 
 /* ----------------------------------------------------------
    3. GLOBAL BODY OVERRIDES (only on ga-updates category)
    ---------------------------------------------------------- */
 body.category-ga-updates {
   font-family: var(--gc-font-body);
-  background: #{$gc_page_bg_color};
+  background: #f4f6fb;
 }
-
-/* Section 4 (Sidebar Styling) removed — handled by separate theme component */
 
 /* ----------------------------------------------------------
    5. HERO BANNER
@@ -83,7 +67,7 @@ body.category-ga-updates {
     var(--gc-hero-grad-end) 100%
   );
   padding: 28px 24px 20px;
-  border-radius: 0 0 0 0;
+  border-radius: 0;
   position: relative;
   overflow: hidden;
   margin-bottom: 0;
@@ -186,19 +170,18 @@ body.category-ga-updates {
 }
 
 /* ----------------------------------------------------------
-   6. ACTION BAR (Pills + Icon buttons) — single compact cohesive row
+   6. ACTION BAR
    ---------------------------------------------------------- */
 #gc-action-bar {
-  display: block; /* block, not flex — avoids any parent flex interference */
+  display: block;
   padding: 10px 16px;
   background: #ffffff;
   border-bottom: 1.5px solid var(--gc-card-border);
   position: relative;
   z-index: 10;
 
-  /* Inner flex row — this is the element that controls tight grouping */
   .gc-action-bar-inner {
-    display: inline-flex; /* inline-flex = shrink-wraps to content, never full-width */
+    display: inline-flex;
     align-items: center;
     gap: 0;
   }
@@ -210,7 +193,6 @@ body.category-ga-updates {
     flex: none;
   }
 
-  /* Thin vertical divider between pills and icon buttons */
   .gc-bar-divider {
     display: inline-block;
     width: 1px;
@@ -273,7 +255,7 @@ body.category-ga-updates {
     display: inline-flex;
     gap: 6px;
     align-items: center;
-    position: relative; /* popup anchor — do NOT remove */
+    position: relative;
   }
 
   .gc-icon-btn {
@@ -308,28 +290,24 @@ body.category-ga-updates {
    7. MASTER-DETAIL LAYOUT CONTAINER
    ---------------------------------------------------------- */
 body.category-ga-updates {
-  /* Hide the default topic list header */
   .topic-list-header,
   thead.topic-list-header {
     display: none !important;
   }
 
-  /* Wrap the discovery outlet in the master-detail shell */
   .discovery-topics-list-container,
   .container.list-container {
     max-width: 100%;
     padding: 0;
   }
 
-  /* Main split layout */
   #gc-master-detail {
     display: flex;
     gap: 0;
     min-height: calc(100vh - 180px);
-    background: #{$gc_page_bg_color};
+    background: #f4f6fb;
   }
 
-  /* LEFT PANEL — Topic Feed */
   #gc-topic-feed {
     width: var(--gc-list-width);
     min-width: 280px;
@@ -351,7 +329,6 @@ body.category-ga-updates {
     }
   }
 
-  /* RIGHT PANEL — Topic Detail */
   #gc-topic-detail {
     flex: 1;
     background: var(--gc-card-bg);
@@ -397,15 +374,6 @@ body.category-ga-updates {
   &.active {
     border-color: var(--gc-blue-primary);
     background: var(--gc-blue-light);
-
-    // &::before {
-    //   content: "";
-    //   position: absolute;
-    //   left: -12px;
-    //   top: 20px;
-    //   border: 8px solid transparent;
-    //   border-right-color: var(--gc-blue-primary);
-    // }
   }
 
   .gc-card-thumbnail {
@@ -539,7 +507,6 @@ body.category-ga-updates {
     letter-spacing: -0.02em;
   }
 
-  /* Sub-title / excerpt — always shown below title */
   .gc-detail-subtitle {
     font-size: 0.83rem;
     color: var(--gc-text-secondary);
@@ -547,30 +514,31 @@ body.category-ga-updates {
     margin: 0 0 14px;
   }
 
-  /* Top separator: sits between subtitle and stats row */
   .gc-detail-sep {
     border: none;
     border-top: 1.5px solid var(--gc-divider);
     margin: 0 0 12px;
   }
 
-  /* Stats row (likes / comments / views + bookmark/share) */
-  .gc-detail-stats {
+  /* Stats row */
+  .gc-detail-stats,
+  .gc-comment-section-stats {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 14px;
     margin-bottom: 16px;
 
     .gc-stat {
       display: inline-flex;
       align-items: center;
-      gap: 4px;
-      font-size: 0.78rem;
+      gap: 5px;
+      font-size: 0.82rem;
       color: var(--gc-text-muted);
+      font-weight: 500;
 
       svg {
-        width: 13px;
-        height: 13px;
+        width: 16px;
+        height: 16px;
       }
     }
 
@@ -596,41 +564,20 @@ body.category-ga-updates {
           background: var(--gc-blue-light);
         }
 
+        &.gc-bookmarked {
+          color: var(--gc-blue-primary);
+        }
+
         svg {
-          width: 15px;
-          height: 15px;
+          width: 18px;
+          height: 18px;
           display: block;
         }
       }
     }
   }
 
-  /* Post content image — now rendered inline within the body by Discourse's cooked HTML.
-     These rules style <img> tags and <figure> elements that appear naturally in the content. */
-  .gc-detail-image {
-    /* Keep rule for backward compat, though no longer injected by JS */
-    width: 100%;
-    border-radius: 10px;
-    overflow: hidden;
-    margin-bottom: 14px;
-    background: var(--gc-blue-light);
-
-    img {
-      width: 100%;
-      height: auto;
-      display: block;
-    }
-
-    .gc-image-caption {
-      font-size: 0.72rem;
-      color: var(--gc-text-muted);
-      padding: 6px 10px;
-      font-style: italic;
-      background: #fafbfd;
-    }
-  }
-
-  /* Body text — renders full Discourse cooked HTML including images */
+  /* Detail body */
   .gc-detail-body {
     font-size: 0.875rem;
     line-height: 1.78;
@@ -645,7 +592,6 @@ body.category-ga-updates {
       color: var(--gc-text-primary);
     }
 
-    /* Style images that appear naturally inside the cooked post body */
     img {
       width: 100%;
       height: auto;
@@ -673,7 +619,6 @@ body.category-ga-updates {
       }
     }
 
-    /* Discourse lightbox wrapper */
     .lightbox-wrapper {
       margin: 0 0 14px;
 
@@ -724,253 +669,482 @@ body.category-ga-updates {
       padding: 1px 5px;
     }
   }
+}
 
-  /* Reply CTA button — sits ABOVE the bottom separator */
-  .gc-reply-btn {
-    display: inline-flex;
-    align-items: center;
-    gap: 6px;
-    background: var(--gc-blue-primary);
-    color: #fff;
-    border: none;
-    border-radius: var(--gc-radius-pill);
-    padding: 8px 20px;
-    font-size: 0.82rem;
-    font-weight: 700;
-    cursor: pointer;
-    float: right;
-    margin: 12px 0 16px;
-    transition: background 0.15s;
-    font-family: var(--gc-font-body);
+/* ==========================================================
+   COMMENT SECTION — Redesigned to match reference image
+   ========================================================== */
 
-    &:hover {
-      background: var(--gc-blue-dark);
+/* Comment Section Wrapper */
+.gc-comment-section {
+  margin-top: 24px;
+  border-top: 1.5px solid var(--gc-divider);
+  padding-top: 16px;
+}
+
+/* Header: Big "Balas" button top-right */
+.gc-comment-section-header {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 16px;
+}
+
+.gc-main-reply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+  background: var(--gc-blue-primary);
+  color: #fff;
+  border: none;
+  border-radius: var(--gc-radius-pill);
+  padding: 10px 24px;
+  font-size: 0.88rem;
+  font-weight: 800;
+  cursor: pointer;
+  transition:
+    background 0.15s,
+    box-shadow 0.15s;
+  font-family: var(--gc-font-body);
+  box-shadow: 0 2px 8px rgba(74, 108, 247, 0.25);
+  letter-spacing: 0.01em;
+
+  &:hover {
+    background: var(--gc-blue-dark);
+    box-shadow: 0 4px 14px rgba(74, 108, 247, 0.35);
+  }
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Stats row below the Balas button */
+.gc-comment-section-stats {
+  padding-bottom: 16px;
+  border-bottom: 1px solid var(--gc-divider);
+  margin-bottom: 20px;
+}
+
+/* Comments container */
+.gc-comments {
+  clear: both;
+}
+
+/* ──────────────────────────────────────────────
+   INDIVIDUAL COMMENT — Top Level
+   ────────────────────────────────────────────── */
+.gc-comment--top-level {
+  margin-bottom: 8px;
+  padding-bottom: 8px;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #f0f1f5;
+  }
+}
+
+.gc-comment-main-row {
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+}
+
+/* Avatar column — holds avatar + thread line */
+.gc-comment-avatar-col {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  flex-shrink: 0;
+  width: 44px;
+}
+
+.gc-comment-avatar-wrap,
+.gc-nested-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+}
+
+.gc-comment-avatar {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  object-fit: cover;
+  display: block;
+}
+
+/* Verified badge — small blue checkmark overlapping bottom-right of avatar */
+.gc-verified-badge {
+  position: absolute;
+  bottom: -2px;
+  right: -2px;
+  width: 18px;
+  height: 18px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: #fff;
+  border-radius: 50%;
+  line-height: 0;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+}
+
+/* Thread line — vertical connector from avatar to nested replies */
+.gc-thread-line {
+  width: 2px;
+  flex: 1;
+  background: transparent;
+  margin-top: 4px;
+  border-radius: 2px;
+  min-height: 0;
+  transition: background 0.2s;
+
+  &.gc-thread-line--active {
+    background: #d1d5db;
+    min-height: 20px;
+  }
+}
+
+/* Comment content */
+.gc-comment-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.gc-comment-header {
+  display: flex;
+  align-items: baseline;
+  gap: 8px;
+  margin-bottom: 3px;
+  flex-wrap: wrap;
+}
+
+.gc-comment-author {
+  font-size: 0.88rem;
+  font-weight: 800;
+  color: var(--gc-text-primary);
+  letter-spacing: -0.01em;
+}
+
+.gc-comment-role {
+  font-size: 0.75rem;
+  color: var(--gc-text-muted);
+  font-weight: 500;
+}
+
+.gc-comment-time {
+  font-size: 0.75rem;
+  color: var(--gc-text-muted);
+  margin-left: auto;
+  white-space: nowrap;
+}
+
+.gc-comment-text {
+  font-size: 0.88rem;
+  color: var(--gc-text-primary);
+  line-height: 1.55;
+  margin-bottom: 6px;
+
+  p {
+    margin: 0 0 4px;
+
+    &:last-child {
+      margin-bottom: 0;
     }
+  }
+
+  img {
+    max-width: 100%;
+    border-radius: 8px;
+    margin: 4px 0;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   COMMENT ACTIONS ROW — matches reference exactly
+   Layout: [Reply Badge (left)] ... [Heart Count] [More] [Balas (right)]
+   ────────────────────────────────────────────── */
+.gc-comment-actions {
+  display: flex;
+  align-items: center;
+  gap: 0;
+  margin-top: 6px;
+  min-height: 28px;
+}
+
+/* Reply count badge — left side, blue pill */
+.gc-reply-toggle-row {
+  flex-shrink: 0;
+}
+
+.gc-reply-count-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: var(--gc-blue-light);
+  color: var(--gc-blue-primary);
+  font-size: 0.72rem;
+  font-weight: 700;
+  padding: 4px 12px;
+  border-radius: var(--gc-radius-pill);
+  cursor: pointer;
+  border: none;
+  font-family: var(--gc-font-body);
+  transition: background 0.15s;
+  white-space: nowrap;
+
+  &:hover {
+    background: #dde4ff;
+  }
+}
+
+/* Right-side action buttons group */
+.gc-comment-actions-right {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-left: auto;
+  position: relative;
+}
+
+/* Like button */
+.gc-comment-like {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.78rem;
+  color: var(--gc-text-muted);
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 6px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.12s;
+  font-family: var(--gc-font-body);
+  font-weight: 500;
+
+  svg {
+    width: 16px;
+    height: 16px;
+  }
+
+  .gc-like-count {
+    font-size: 0.78rem;
+    font-weight: 600;
+  }
+
+  &:hover {
+    color: var(--gc-blue-primary);
+    background: var(--gc-blue-light);
+  }
+
+  &.liked {
+    color: var(--gc-blue-primary);
+
+    svg {
+      fill: var(--gc-blue-primary);
+    }
+  }
+}
+
+/* More button (three dots) */
+.gc-comment-more {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gc-text-muted);
+  padding: 4px;
+  border-radius: 6px;
+  transition:
+    color 0.15s,
+    background 0.12s;
+
+  svg {
+    width: 18px;
+    height: 18px;
+  }
+
+  &:hover {
+    color: var(--gc-blue-primary);
+    background: var(--gc-blue-light);
+  }
+}
+
+/* Reply button — blue text with arrow icon */
+.gc-comment-reply-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  font-size: 0.82rem;
+  color: var(--gc-blue-primary);
+  font-weight: 800;
+  cursor: pointer;
+  background: none;
+  border: none;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.12s;
+  font-family: var(--gc-font-body);
+  white-space: nowrap;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: var(--gc-blue-light);
+  }
+}
+
+/* ──────────────────────────────────────────────
+   NESTED REPLIES — indented with thread line
+   ────────────────────────────────────────────── */
+.gc-nested-replies {
+  margin-left: 22px;
+  padding-left: 22px;
+  border-left: 2px solid #d1d5db;
+  margin-top: 4px;
+  margin-bottom: 4px;
+}
+
+.gc-comment--nested {
+  display: flex;
+  gap: 10px;
+  align-items: flex-start;
+  padding: 10px 0;
+
+  &:not(:last-child) {
+    border-bottom: 1px solid #f5f5f8;
+  }
+
+  .gc-comment-avatar {
+    width: 36px;
+    height: 36px;
+  }
+
+  .gc-nested-avatar-wrap {
+    width: 36px;
+    height: 36px;
+    flex-shrink: 0;
+  }
+
+  .gc-verified-badge {
+    width: 15px;
+    height: 15px;
+    bottom: -1px;
+    right: -1px;
+
+    svg {
+      width: 13px;
+      height: 13px;
+    }
+  }
+
+  .gc-comment-author {
+    font-size: 0.82rem;
+  }
+}
+
+/* ──────────────────────────────────────────────
+   COLLAPSE ROW — "Lompat ke postingan"
+   ────────────────────────────────────────────── */
+.gc-collapse-row {
+  display: flex;
+  align-items: center;
+  margin-left: 22px;
+  padding-left: 22px;
+  border-left: 2px solid #d1d5db;
+  padding-top: 4px;
+  padding-bottom: 8px;
+}
+
+.gc-collapse-btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: var(--gc-blue-primary);
+  font-size: 0.78rem;
+  font-weight: 600;
+  font-family: var(--gc-font-body);
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: background 0.12s;
+
+  svg {
+    width: 14px;
+    height: 14px;
+  }
+
+  &:hover {
+    background: var(--gc-blue-light);
+  }
+}
+
+/* ──────────────────────────────────────────────
+   CONTEXT MENU (Simpan / Laporkan)
+   ────────────────────────────────────────────── */
+.gc-context-menu {
+  position: absolute;
+  right: 0;
+  top: calc(100% + 4px);
+  background: #fff;
+  border: 1px solid var(--gc-card-border);
+  border-radius: var(--gc-radius-popup);
+  box-shadow: var(--gc-popup-shadow);
+  z-index: 100;
+  min-width: 150px;
+  overflow: hidden;
+  animation: gcPopupIn 0.12s ease;
+
+  .gc-context-item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 16px;
+    font-size: 0.82rem;
+    color: var(--gc-text-primary);
+    cursor: pointer;
+    transition: background 0.1s;
+    font-weight: 500;
 
     svg {
       width: 14px;
       height: 14px;
-    }
-  }
-
-  /* Bottom separator: between reply btn and comment stats / comments */
-  .gc-detail-sep-bottom {
-    border: none;
-    border-top: 1.5px solid var(--gc-divider);
-    margin: 0 0 14px;
-    clear: both;
-  }
-
-  /* Bottom stats row (repeated likes/comments/views before comments) */
-  .gc-detail-bottom-stats {
-    display: flex;
-    align-items: center;
-    gap: 12px;
-    margin-bottom: 16px;
-
-    .gc-stat {
-      display: inline-flex;
-      align-items: center;
-      gap: 4px;
-      font-size: 0.78rem;
       color: var(--gc-text-muted);
-
-      svg {
-        width: 13px;
-        height: 13px;
-      }
-    }
-
-    .gc-detail-actions {
-      margin-left: auto;
-      display: flex;
-      gap: 8px;
-
-      button,
-      .gc-action-icon {
-        background: none;
-        border: none;
-        cursor: pointer;
-        color: var(--gc-text-muted);
-        padding: 4px;
-        border-radius: 6px;
-        transition:
-          color 0.15s,
-          background 0.15s;
-
-        &:hover {
-          color: var(--gc-blue-primary);
-          background: var(--gc-blue-light);
-        }
-
-        svg {
-          width: 15px;
-          height: 15px;
-          display: block;
-        }
-      }
-    }
-  }
-
-  /* Comments section */
-  .gc-comments {
-    clear: both;
-  }
-
-  .gc-comment {
-    display: flex;
-    gap: 10px;
-    margin-bottom: 14px;
-    position: relative;
-
-    &.gc-comment--reply {
-      margin-left: 36px;
-
-      &::before {
-        content: "";
-        position: absolute;
-        left: -18px;
-        top: 0;
-        bottom: 0;
-        width: 2px;
-        background: var(--gc-divider);
-        border-radius: 2px;
-      }
-    }
-
-    .gc-comment-avatar {
-      width: 32px;
-      height: 32px;
-      border-radius: 50%;
-      object-fit: cover;
       flex-shrink: 0;
     }
 
-    .gc-comment-content {
-      flex: 1;
-
-      .gc-comment-header {
-        display: flex;
-        align-items: baseline;
-        gap: 6px;
-        margin-bottom: 2px;
-
-        .gc-comment-author {
-          font-size: 0.8rem;
-          font-weight: 700;
-          color: var(--gc-text-primary);
-        }
-
-        .gc-comment-role {
-          font-size: 0.68rem;
-          color: var(--gc-text-muted);
-          font-weight: 500;
-        }
-
-        .gc-comment-time {
-          font-size: 0.68rem;
-          color: var(--gc-text-muted);
-          margin-left: auto;
-        }
-      }
-
-      .gc-comment-text {
-        font-size: 0.8rem;
-        color: var(--gc-text-secondary);
-        line-height: 1.55;
-      }
-
-      .gc-comment-actions {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-        margin-top: 4px;
-
-        .gc-comment-like,
-        .gc-comment-more,
-        .gc-comment-reply-btn {
-          display: inline-flex;
-          align-items: center;
-          gap: 3px;
-          font-size: 0.7rem;
-          color: var(--gc-text-muted);
-          cursor: pointer;
-          background: none;
-          border: none;
-          padding: 2px 4px;
-          border-radius: 4px;
-          transition: color 0.15s;
-          font-family: var(--gc-font-body);
-
-          &:hover {
-            color: var(--gc-blue-primary);
-          }
-
-          svg {
-            width: 11px;
-            height: 11px;
-          }
-        }
-
-        .gc-comment-like.liked {
-          color: var(--gc-blue-primary);
-        }
-
-        .gc-comment-reply-btn {
-          color: var(--gc-blue-primary);
-          font-weight: 700;
-        }
-
-        .gc-reply-badge {
-          display: inline-block;
-          background: var(--gc-blue-light);
-          color: var(--gc-blue-primary);
-          font-size: 0.68rem;
-          font-weight: 600;
-          padding: 1px 7px;
-          border-radius: 9px;
-          cursor: pointer;
-        }
-      }
+    &:hover {
+      background: var(--gc-blue-light);
+      color: var(--gc-blue-primary);
     }
-  }
 
-  /* Context menu popup (Simpan / Laporkan) */
-  .gc-context-menu {
-    position: absolute;
-    right: 0;
-    top: 24px;
-    background: #fff;
-    border: 1px solid var(--gc-card-border);
-    border-radius: var(--gc-radius-popup);
-    box-shadow: var(--gc-popup-shadow);
-    z-index: 100;
-    min-width: 130px;
-    overflow: hidden;
+    &:not(:last-child) {
+      border-bottom: 1px solid var(--gc-divider);
+    }
 
-    .gc-context-item {
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      padding: 9px 14px;
-      font-size: 0.8rem;
-      color: var(--gc-text-primary);
-      cursor: pointer;
-      transition: background 0.1s;
-
-      svg {
-        width: 13px;
-        height: 13px;
-        color: var(--gc-text-muted);
-      }
-
+    &.gc-context-item--report {
       &:hover {
-        background: var(--gc-blue-light);
-        color: var(--gc-blue-primary);
-      }
+        background: #fef2f2;
+        color: #dc2626;
 
-      &:not(:last-child) {
-        border-bottom: 1px solid var(--gc-divider);
+        svg {
+          color: #dc2626;
+        }
       }
     }
   }
@@ -1139,7 +1313,6 @@ body.category-ga-updates {
     }
   }
 
-  /* Divider between calendars */
   .gc-calendars .gc-calendar:first-child {
     border-right: 1.5px solid var(--gc-divider);
     padding-right: 16px;
@@ -1150,28 +1323,23 @@ body.category-ga-updates {
    13. HIDE DEFAULT DISCOVERY ELEMENTS ON TARGET ROUTE
    ---------------------------------------------------------- */
 body.category-ga-updates {
-  /* Hide default topic table structures */
   table.topic-list {
     display: none !important;
   }
 
-  /* Hide default category header (we replace it) */
   .category-title-header {
     display: none !important;
   }
 
-  /* Adjust main outlet padding */
   #main-outlet {
     padding-top: 0 !important;
   }
 
-  /* Category route breadcrumb - hide */
   .extra-info-wrapper .topic-statuses,
   .navigation-container {
     display: none !important;
   }
 
-  /* Custom wrapper that holds hero + layout */
   #gc-category-wrapper {
     display: flex;
     flex-direction: column;
@@ -1224,7 +1392,7 @@ body.category-ga-updates {
 }
 
 /* ----------------------------------------------------------
-   16. RESPONSIVE — hide detail panel on mobile
+   16. RESPONSIVE
    ---------------------------------------------------------- */
 @media (max-width: 768px) {
   body.category-ga-updates {
@@ -1258,6 +1426,16 @@ body.category-ga-updates {
       border-bottom: 1.5px solid var(--gc-divider);
       padding-right: 0;
       padding-bottom: 12px;
+    }
+  }
+
+  .gc-comment-header {
+    flex-wrap: wrap;
+
+    .gc-comment-time {
+      margin-left: 0;
+      width: 100%;
+      order: 3;
     }
   }
 }

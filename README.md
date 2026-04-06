@@ -1,9 +1,11 @@
 # Gasing Circle — Academy News Theme Component
 
 ## Overview
-This Discourse Theme Component transforms the `/c/ga-updates/10` category page into a **Master-Detail layout** matching the Gasing Circle UI redesign.
+
+This Discourse Theme Component transforms the `/c/ga-updates/` category page into a **Master-Detail layout** matching the Gasing Circle UI redesign.
 
 ### Features
+
 - ✅ Hero Banner with integrated search
 - ✅ Master-Detail split pane (Topic feed left / Reading pane right)
 - ✅ Topic cards with thumbnails, excerpts, tags, and stats
@@ -14,7 +16,7 @@ This Discourse Theme Component transforms the `/c/ga-updates/10` category page i
 - ✅ Context menu (Simpan / Laporkan) on comment actions
 - ✅ Client-side search in hero bar
 - ✅ Responsive (collapses to single column on mobile)
-- ✅ Scoped to `/c/ga-updates/10` — does NOT affect other categories
+- ✅ Scoped to `/c/ga-updates/` — does NOT affect other categories
 
 ---
 
@@ -64,10 +66,11 @@ The **Master-Detail layout** is implemented as a **DOM injection layer** rather 
 
 1. **Stability** — Discourse's Ember internals change frequently. DOM injection via `apiInitializer` + `onPageChange` is the safest long-term approach.
 2. **No Ruby backend needed** — Pure frontend Theme Component.
-3. **API-driven** — Topic data is fetched via Discourse's public JSON API (`/c/ga-updates/10.json` and `/t/{slug}/{id}.json`), keeping the component decoupled from Discourse internals.
+3. **API-driven** — Topic data is fetched via Discourse's public JSON API (`/c/ga-updates/.json` and `/t/{slug}/{id}.json`), keeping the component decoupled from Discourse internals.
 4. **Scoped** — The `body.category-ga-updates` CSS class ensures zero style bleed to other pages.
 
 ### Layout Strategy
+
 ```
 #main-outlet
   └── #gc-category-wrapper          (injected by JS)
@@ -85,28 +88,35 @@ The default Discourse `table.topic-list` is hidden via `display: none` using the
 ## Customization
 
 ### Change the target route
+
 In `custom-layout.js`, update the `isTargetRoute()` function:
+
 ```js
 function isTargetRoute() {
   return window.location.pathname.startsWith("/c/your-category-slug");
 }
 ```
+
 Also update the API fetch URL:
+
 ```js
 const res = await fetch("/c/your-category-slug/YOUR_ID.json?no_definitions=true", ...);
 ```
 
 ### Change the color palette
+
 All colors are CSS variables in `common.scss` under the `:root` block:
+
 ```scss
 :root {
-  --gc-blue-primary: #4A6CF7;
-  --gc-hero-grad-start: #3ABFBF;
+  --gc-blue-primary: #4a6cf7;
+  --gc-hero-grad-start: #3abfbf;
   // ...
 }
 ```
 
 ### Add more filter tags
+
 In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` array, and update the `TAG_CLASSES` map accordingly.
 
 ---
@@ -116,13 +126,14 @@ In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` arra
 1. **Discourse version compatibility**: Tested against Discourse 3.1+. The `api.onPageChange` hook is available in Plugin API v0.8+.
 2. **Topic detail fetch**: Each topic click triggers a network request to `/t/{slug}/{id}.json`. This is Discourse's standard JSON API and requires no authentication for public categories.
 3. **Image URLs**: Discourse sometimes serves images through its CDN optimizer. If thumbnails don't load, check your Discourse CDN settings.
-4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates/10.json?order=activity` or the `top.json` endpoint.
+4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates/.json?order=activity` or the `top.json` endpoint.
 
 ---
 
 ## Browser Support
+
 Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
 ---
 
-*Built by Ery Prasetyo — Miracle Game / Gasing Community Platform*
+_Built by Ery Prasetyo — Miracle Game / Gasing Community Platform_
