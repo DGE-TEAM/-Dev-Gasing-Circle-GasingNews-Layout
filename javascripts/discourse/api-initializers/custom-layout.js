@@ -83,9 +83,12 @@ function getTopicTag(topic) {
   if (!topic) return null;
   const tags = topic.tags || [];
   for (const t of tags) {
-    if (TAG_CLASSES[t.toLowerCase()]) return t;
+    const tagName = typeof t === "string" ? t : t?.name || t?.id || String(t);
+    if (TAG_CLASSES[tagName.toLowerCase()]) return tagName;
   }
-  return tags[0] || null;
+  const first = tags[0];
+  if (!first) return null;
+  return typeof first === "string" ? first : first?.name || first?.id || String(first);
 }
 
 // ─────────────────────────────────────────────────────────────
