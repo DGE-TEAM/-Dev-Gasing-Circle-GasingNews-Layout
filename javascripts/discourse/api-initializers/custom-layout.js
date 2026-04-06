@@ -88,34 +88,59 @@ function getTopicTag(topic) {
   if (!topic) return null;
   const tags = topic.tags || [];
   for (const t of tags) {
-    const name = typeof t === "string" ? t : (t?.name || t?.id || String(t));
+    const name = typeof t === "string" ? t : t?.name || t?.id || String(t);
     if (TAG_CLASSES[name.toLowerCase()]) return name;
   }
   const first = tags[0];
   if (!first) return null;
-  return typeof first === "string" ? first : (first?.name || first?.id || String(first));
+  return typeof first === "string"
+    ? first
+    : first?.name || first?.id || String(first);
 }
 
 // ─────────────────────────────────────────────────────────────
 // CALENDAR HELPERS
 // ─────────────────────────────────────────────────────────────
-const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
-const DOW = ["Su","Mo","Tu","We","Th","Fr","Sa"];
+const MONTH_NAMES = [
+  "January",
+  "February",
+  "March",
+  "April",
+  "May",
+  "June",
+  "July",
+  "August",
+  "September",
+  "October",
+  "November",
+  "December",
+];
+const DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
 
 function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
   let html = `<div class="gc-calendar"><div class="gc-cal-header">${MONTH_NAMES[month]} ${year}</div><div class="gc-cal-grid">`;
-  DOW.forEach((d) => { html += `<div class="gc-cal-dow">${d}</div>`; });
-  for (let i = 0; i < firstDay; i++) html += `<div class="gc-cal-day other-month"></div>`;
+  DOW.forEach((d) => {
+    html += `<div class="gc-cal-dow">${d}</div>`;
+  });
+  for (let i = 0; i < firstDay; i++)
+    html += `<div class="gc-cal-day other-month"></div>`;
   for (let day = 1; day <= daysInMonth; day++) {
     const ts = new Date(year, month, day).getTime();
     let cls = "gc-cal-day";
-    if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) cls += " today";
-    if (rangeStart && Math.abs(ts - rangeStart) < 86400000) cls += " range-start";
+    if (
+      today.getDate() === day &&
+      today.getMonth() === month &&
+      today.getFullYear() === year
+    )
+      cls += " today";
+    if (rangeStart && Math.abs(ts - rangeStart) < 86400000)
+      cls += " range-start";
     if (rangeEnd && Math.abs(ts - rangeEnd) < 86400000) cls += " range-end";
-    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd) cls += " in-range";
+    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd)
+      cls += " in-range";
     html += `<div class="${cls}" data-ts="${ts}">${day}</div>`;
   }
   html += `</div></div>`;
@@ -158,18 +183,28 @@ function buildActionBar() {
 // ─────────────────────────────────────────────────────────────
 function buildFilterPopup() {
   const filters = ["Pendidikan", "Pelatihan", "Dunia", "Lainnya"];
-  return `<div id="gc-filter-popup">${filters.map((f) => `
+  return `<div id="gc-filter-popup">${filters
+    .map(
+      (f) => `
     <div class="gc-filter-item">
       <input type="checkbox" id="gc-filter-${f.toLowerCase()}" data-filter="${f.toLowerCase()}" ${STATE.selectedFilters.includes(f.toLowerCase()) ? "checked" : ""} />
       <label for="gc-filter-${f.toLowerCase()}">${f}</label>
-    </div>`).join("")}</div>`;
+    </div>`,
+    )
+    .join("")}</div>`;
 }
 
 function buildDatePopup() {
   const now = new Date();
   if (!STATE.calendarMonth.left) {
-    STATE.calendarMonth.left = { year: now.getFullYear(), month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1 };
-    STATE.calendarMonth.right = { year: now.getFullYear(), month: now.getMonth() };
+    STATE.calendarMonth.left = {
+      year: now.getFullYear(),
+      month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1,
+    };
+    STATE.calendarMonth.right = {
+      year: now.getFullYear(),
+      month: now.getMonth(),
+    };
   }
   const { left, right } = STATE.calendarMonth;
   return `<div id="gc-date-popup">
@@ -190,10 +225,15 @@ function buildTopicCard(topic) {
   if (!topic) return "";
   const tag = getTopicTag(topic);
   const tagHtml = tag ? renderTag(tag) : "";
-  const img = topic.image_url ? `<div class="gc-card-thumbnail"><img src="${topic.image_url}" alt="" loading="lazy" /></div>` : "";
-  const excerpt = topic.excerpt ? `<p class="gc-card-excerpt">${topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 100)}...</p>` : "";
+  const img = topic.image_url
+    ? `<div class="gc-card-thumbnail"><img src="${topic.image_url}" alt="" loading="lazy" /></div>`
+    : "";
+  const excerpt = topic.excerpt
+    ? `<p class="gc-card-excerpt">${topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 100)}...</p>`
+    : "";
   const avatar = topic.posters?.[0]?.user?.avatar_template
-    ? `<img class="gc-avatar" src="${topic.posters[0].user.avatar_template.replace("{size}", "24")}" alt="" />` : "";
+    ? `<img class="gc-avatar" src="${topic.posters[0].user.avatar_template.replace("{size}", "24")}" alt="" />`
+    : "";
   return `
     <div class="gc-topic-card" data-topic-id="${topic.id}" data-topic-slug="${topic.slug}">
       ${img}
@@ -252,11 +292,15 @@ function buildCommentHTML(post, isNested) {
         </div>
         <div class="gc-comment-text">${post.cooked}</div>
         <div class="gc-comment-actions">
-          ${hasReplies ? `
+          ${
+            hasReplies
+              ? `
             <button class="gc-replies-pill" data-post-id="${post.id}" data-expanded="${isExpanded}">
               ${isExpanded ? SVG.chevronUp : SVG.chevronDown}
               ${post.reply_count} Balasan
-            </button>` : ""}
+            </button>`
+              : ""
+          }
           <button class="gc-comment-like${liked ? " is-liked" : ""}" data-post-id="${post.id}">
             ${liked ? SVG.heartFilled : SVG.heartOutline}
             <span class="gc-like-count">${likeCount > 0 ? likeCount : ""}</span>
@@ -282,23 +326,38 @@ function buildTopicDetail(topic, posts) {
   const tag = getTopicTag(topic);
   const tagHtml = tag ? renderTag(tag) : "";
   const likes = topic.like_count || 0;
-  const replies = topic.reply_count || (topic.posts_count ? topic.posts_count - 1 : 0);
+  const replies =
+    topic.reply_count || (topic.posts_count ? topic.posts_count - 1 : 0);
   const views = topic.views || 0;
 
   const firstPost = posts?.[0];
   let bodyText = (firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`).trim();
 
-  const subtitleText = topic.excerpt ? topic.excerpt.replace(/<[^>]*>/g, "").trim() : "";
+  const subtitleText = topic.excerpt
+    ? topic.excerpt.replace(/<[^>]*>/g, "").trim()
+    : "";
   if (subtitleText) {
-    const norm = (s) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+    const norm = (s) =>
+      s
+        .replace(/<[^>]*>/g, "")
+        .replace(/\s+/g, " ")
+        .trim()
+        .toLowerCase();
     const ns = norm(subtitleText).substring(0, 80);
-    bodyText = bodyText.replace(/^(<p>)([\s\S]*?)(<\/p>)/, (m, o, inner, c) =>
-      norm(inner).substring(0, 80).startsWith(ns) ? "" : m
-    ).trim();
+    bodyText = bodyText
+      .replace(/^(<p>)([\s\S]*?)(<\/p>)/, (m, o, inner, c) =>
+        norm(inner).substring(0, 80).startsWith(ns) ? "" : m,
+      )
+      .trim();
   }
 
-  const topLevelPosts = posts?.slice(1) || [];
-  const commentsHtml = topLevelPosts.map((p) => buildCommentHTML(p, false)).join("");
+  const topLevelPosts =
+    posts
+      ?.slice(1)
+      .filter((p) => !p.reply_to_post_number && p.post_type === 1) || [];
+  const commentsHtml = topLevelPosts
+    .map((p) => buildCommentHTML(p, false))
+    .join("");
 
   return `
     <div class="gc-detail-inner">
@@ -345,34 +404,55 @@ function buildTopicDetail(topic, posts) {
 async function fetchCategoryTopics() {
   try {
     const res = await fetch("/c/ga-updates.json?no_definitions=true", {
-      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
     });
     if (!res.ok) return [];
     const data = await res.json();
     return data.topic_list?.topics || [];
-  } catch (e) { return []; }
+  } catch (e) {
+    return [];
+  }
 }
 
 async function fetchTopicPosts(topicId, topicSlug) {
   try {
     const res = await fetch(`/t/${topicSlug}/${topicId}.json`, {
-      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
+      headers: {
+        Accept: "application/json",
+        "X-Requested-With": "XMLHttpRequest",
+      },
     });
     if (!res.ok) return { topic: null, posts: [] };
     const data = await res.json();
     return { topic: data, posts: data.post_stream?.posts || [] };
-  } catch (e) { return { topic: null, posts: [] }; }
+  } catch (e) {
+    return { topic: null, posts: [] };
+  }
 }
 
 async function fetchPostReplies(topicId, postNumber) {
   try {
-    const res = await fetch(`/t/${topicId}/posts.json?post_number=${postNumber}&asc=true`, {
-      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
-    });
+    const res = await fetch(
+      `/t/${topicId}/posts.json?post_number=${postNumber}&asc=true`,
+      {
+        headers: {
+          Accept: "application/json",
+          "X-Requested-With": "XMLHttpRequest",
+        },
+      },
+    );
     if (!res.ok) return [];
+
     const data = await res.json();
-    return (data.post_stream?.posts || []).filter((p) => p.reply_to_post_number === postNumber);
-  } catch (e) { return []; }
+    return (data.post_stream?.posts || []).filter(
+      (p) => p.reply_to_post_number === postNumber && p.post_type === 1,
+    );
+  } catch (e) {
+    return [];
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -394,11 +474,15 @@ async function renderLayout() {
     ${buildActionBar()}
     <div id="gc-master-detail">
       <div id="gc-topic-feed">
-        ${[1,2,3,4,5].map(() => `<div class="gc-topic-card" style="pointer-events:none"><div class="gc-card-body">
+        ${[1, 2, 3, 4, 5]
+          .map(
+            () => `<div class="gc-topic-card" style="pointer-events:none"><div class="gc-card-body">
           <div class="gc-skeleton" style="height:14px;width:60%;margin-bottom:6px"></div>
           <div class="gc-skeleton" style="height:11px;width:90%;margin-bottom:4px"></div>
           <div class="gc-skeleton" style="height:11px;width:70%"></div>
-        </div></div>`).join("")}
+        </div></div>`,
+          )
+          .join("")}
       </div>
       <div id="gc-topic-detail">
         <div id="gc-empty-detail">${SVG.newspaper}<p>Pilih artikel untuk membaca</p></div>
@@ -414,7 +498,10 @@ async function renderLayout() {
   const latestBadge = document.getElementById("gc-badge-latest");
   const trendingBadge = document.getElementById("gc-badge-trending");
   if (latestBadge) latestBadge.textContent = topics.length;
-  if (trendingBadge) trendingBadge.textContent = topics.filter((t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10).length;
+  if (trendingBadge)
+    trendingBadge.textContent = topics.filter(
+      (t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10,
+    ).length;
 
   if (feed) {
     if (!topics.length) {
@@ -444,23 +531,32 @@ function bindTopicCardClicks(topics) {
     const topicSlug = card.dataset.topicSlug;
     if (!topicId) return;
 
-    feed.querySelectorAll(".gc-topic-card").forEach((c) => c.classList.remove("active"));
+    feed
+      .querySelectorAll(".gc-topic-card")
+      .forEach((c) => c.classList.remove("active"));
     card.classList.add("active");
     STATE.activeTopicId = topicId;
     STATE.expandedReplies = {};
 
     const detail = document.getElementById("gc-topic-detail");
     if (detail) {
-      detail.innerHTML = `<div class="gc-detail-inner">${[1,2,3].map(() => `
+      detail.innerHTML = `<div class="gc-detail-inner">${[1, 2, 3]
+        .map(
+          () => `
         <div class="gc-skeleton" style="height:18px;width:80%;margin-bottom:10px"></div>
         <div class="gc-skeleton" style="height:12px;width:95%;margin-bottom:6px"></div>
         <div class="gc-skeleton" style="height:200px;width:100%;margin-bottom:10px;border-radius:10px"></div>
-      `).join("")}</div>`;
+      `,
+        )
+        .join("")}</div>`;
     }
 
     const { topic, posts } = await fetchTopicPosts(topicId, topicSlug);
     if (detail) {
-      detail.innerHTML = buildTopicDetail(topic || topics.find((t) => t.id === topicId), posts);
+      detail.innerHTML = buildTopicDetail(
+        topic || topics.find((t) => t.id === topicId),
+        posts,
+      );
       detail.scrollTop = 0;
       bindDetailActions(detail, topic, posts);
     }
@@ -475,7 +571,9 @@ function bindDetailActions(container, topic, posts) {
   container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
       if (!discourseApi?.currentUser) return;
-      discourseApi.container.lookup("controller:composer").open({ action: "reply", topic });
+      discourseApi.container
+        .lookup("controller:composer")
+        .open({ action: "reply", topic });
     });
   });
 
@@ -486,7 +584,9 @@ function bindDetailActions(container, topic, posts) {
       try {
         await ajax(`/t/${topic.id}/bookmark`, { type: "PUT" });
         btn.classList.toggle("is-bookmarked");
-      } catch (err) { popupAjaxError(err); }
+      } catch (err) {
+        popupAjaxError(err);
+      }
     });
   });
 
@@ -516,20 +616,28 @@ function bindDetailActions(container, topic, posts) {
       const currentCount = parseInt(countEl?.textContent || "0") || 0;
 
       try {
-        const result = await ajax(`/post_actions${isLiked ? `/${postId}` : ""}`, {
-          type: isLiked ? "DELETE" : "POST",
-          data: isLiked
-            ? { post_action_type_id: 2 }
-            : { id: postId, post_action_type_id: 2, flag_topic: false },
-        });
+        const result = await ajax(
+          `/post_actions${isLiked ? `/${postId}` : ""}`,
+          {
+            type: isLiked ? "DELETE" : "POST",
+            data: isLiked
+              ? { post_action_type_id: 2 }
+              : { id: postId, post_action_type_id: 2, flag_topic: false },
+          },
+        );
 
         btn.classList.toggle("is-liked");
         const nowLiked = btn.classList.contains("is-liked");
-        const newLikeAction = result?.post?.actions_summary?.find((a) => a.id === 2);
-        const newCount = newLikeAction?.count ?? currentCount + (nowLiked ? 1 : -1);
+        const newLikeAction = result?.post?.actions_summary?.find(
+          (a) => a.id === 2,
+        );
+        const newCount =
+          newLikeAction?.count ?? currentCount + (nowLiked ? 1 : -1);
 
         btn.innerHTML = `${nowLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${newCount > 0 ? newCount : ""}</span>`;
-      } catch (err) { popupAjaxError(err); }
+      } catch (err) {
+        popupAjaxError(err);
+      }
     });
   });
 
@@ -555,26 +663,42 @@ function bindDetailActions(container, topic, posts) {
       btn.style.position = "relative";
       btn.appendChild(menu);
 
-      menu.querySelector('[data-action="bookmark"]')?.addEventListener("click", async () => {
-        try { await ajax(`/post_actions`, { type: "POST", data: { id: postId, post_action_type_id: 1, flag_topic: false } }); }
-        catch (err) { popupAjaxError(err); }
-        menu.remove();
-      });
+      menu
+        .querySelector('[data-action="bookmark"]')
+        ?.addEventListener("click", async () => {
+          try {
+            await ajax(`/post_actions`, {
+              type: "POST",
+              data: { id: postId, post_action_type_id: 1, flag_topic: false },
+            });
+          } catch (err) {
+            popupAjaxError(err);
+          }
+          menu.remove();
+        });
 
-      menu.querySelector('[data-action="report"]')?.addEventListener("click", () => {
-        if (discourseApi && post) {
-          discourseApi.container.lookup("controller:modals")?.show("flag", { post, flagTopic: false });
-        }
-        menu.remove();
-      });
+      menu
+        .querySelector('[data-action="report"]')
+        ?.addEventListener("click", () => {
+          if (discourseApi && post) {
+            discourseApi.container
+              .lookup("controller:modals")
+              ?.show("flag", { post, flagTopic: false });
+          }
+          menu.remove();
+        });
 
-      menu.querySelector('[data-action="delete"]')?.addEventListener("click", async () => {
-        try {
-          await ajax(`/posts/${postId}`, { type: "DELETE" });
-          btn.closest(".gc-comment")?.remove();
-        } catch (err) { popupAjaxError(err); }
-        menu.remove();
-      });
+      menu
+        .querySelector('[data-action="delete"]')
+        ?.addEventListener("click", async () => {
+          try {
+            await ajax(`/posts/${postId}`, { type: "DELETE" });
+            btn.closest(".gc-comment")?.remove();
+          } catch (err) {
+            popupAjaxError(err);
+          }
+          menu.remove();
+        });
 
       setTimeout(() => {
         document.addEventListener("click", () => menu.remove(), { once: true });
@@ -587,9 +711,13 @@ function bindDetailActions(container, topic, posts) {
     btn.addEventListener("click", () => {
       if (!discourseApi?.currentUser) return;
       const postNumber = btn.dataset.postNumber;
-      const targetPost = posts.find((p) => String(p.post_number) === String(postNumber));
+      const targetPost = posts.find(
+        (p) => String(p.post_number) === String(postNumber),
+      );
       if (!targetPost) return;
-      discourseApi.container.lookup("controller:composer").open({ action: "reply", post: targetPost, topic });
+      discourseApi.container
+        .lookup("controller:composer")
+        .open({ action: "reply", post: targetPost, topic });
     });
   });
 
@@ -616,7 +744,9 @@ function bindDetailActions(container, topic, posts) {
           if (post && topicId) {
             const replies = await fetchPostReplies(topicId, post.post_number);
             if (replies.length > 0) {
-              nestedContainer.innerHTML = replies.map((r) => buildCommentHTML(r, true)).join("");
+              nestedContainer.innerHTML = replies
+                .map((r) => buildCommentHTML(r, true))
+                .join("");
               bindDetailActions(nestedContainer, topic, [...posts, ...replies]);
             } else {
               nestedContainer.innerHTML = `<p class="gc-no-replies">Belum ada balasan.</p>`;
@@ -641,7 +771,9 @@ function bindActionBar(topics) {
   document.addEventListener("click", (e) => {
     const pill = e.target.closest(".gc-pill");
     if (!pill) return;
-    document.querySelectorAll(".gc-pill").forEach((p) => p.classList.remove("active"));
+    document
+      .querySelectorAll(".gc-pill")
+      .forEach((p) => p.classList.remove("active"));
     pill.classList.add("active");
     STATE.activeFilter = pill.dataset.pill;
 
@@ -649,9 +781,12 @@ function bindActionBar(topics) {
     feed?.querySelectorAll(".gc-topic-card").forEach((card) => {
       const t = topics.find((x) => x.id === parseInt(card.dataset.topicId));
       if (!t) return;
-      card.style.display = STATE.activeFilter === "trending"
-        ? ((t.views || 0) >= 50 || (t.like_count || 0) >= 10 ? "" : "none")
-        : "";
+      card.style.display =
+        STATE.activeFilter === "trending"
+          ? (t.views || 0) >= 50 || (t.like_count || 0) >= 10
+            ? ""
+            : "none"
+          : "";
     });
   });
 
@@ -662,7 +797,9 @@ function bindActionBar(topics) {
     document.getElementById("gc-filter-btn")?.classList.add("active");
     const el = document.createElement("div");
     el.innerHTML = buildFilterPopup();
-    document.querySelector(".gc-icon-buttons").appendChild(el.firstElementChild);
+    document
+      .querySelector(".gc-icon-buttons")
+      .appendChild(el.firstElementChild);
     bindFilterPopup();
   });
 
@@ -673,12 +810,18 @@ function bindActionBar(topics) {
     document.getElementById("gc-date-btn")?.classList.add("active");
     const el = document.createElement("div");
     el.innerHTML = buildDatePopup();
-    document.querySelector(".gc-icon-buttons").appendChild(el.firstElementChild);
+    document
+      .querySelector(".gc-icon-buttons")
+      .appendChild(el.firstElementChild);
     bindDatePopup();
   });
 
   document.addEventListener("click", (e) => {
-    if (!e.target.closest("#gc-filter-popup,#gc-filter-btn,#gc-date-popup,#gc-date-btn")) {
+    if (
+      !e.target.closest(
+        "#gc-filter-popup,#gc-filter-btn,#gc-date-popup,#gc-date-btn",
+      )
+    ) {
       closeAllPopups();
     }
   });
@@ -694,35 +837,59 @@ function closeAllPopups() {
 }
 
 function bindFilterPopup() {
-  document.getElementById("gc-filter-popup")?.querySelectorAll("input[type='checkbox']").forEach((cb) => {
-    cb.addEventListener("change", () => {
-      const val = cb.dataset.filter;
-      if (cb.checked) { if (!STATE.selectedFilters.includes(val)) STATE.selectedFilters.push(val); }
-      else { STATE.selectedFilters = STATE.selectedFilters.filter((f) => f !== val); }
-      document.querySelectorAll(".gc-topic-card").forEach((card) => {
-        const tag = card.querySelector(".gc-tag");
-        if (!STATE.selectedFilters.length) { card.style.display = ""; return; }
-        card.style.display = STATE.selectedFilters.some((f) => (tag?.className || "").includes(f)) ? "" : "none";
+  document
+    .getElementById("gc-filter-popup")
+    ?.querySelectorAll("input[type='checkbox']")
+    .forEach((cb) => {
+      cb.addEventListener("change", () => {
+        const val = cb.dataset.filter;
+        if (cb.checked) {
+          if (!STATE.selectedFilters.includes(val))
+            STATE.selectedFilters.push(val);
+        } else {
+          STATE.selectedFilters = STATE.selectedFilters.filter(
+            (f) => f !== val,
+          );
+        }
+        document.querySelectorAll(".gc-topic-card").forEach((card) => {
+          const tag = card.querySelector(".gc-tag");
+          if (!STATE.selectedFilters.length) {
+            card.style.display = "";
+            return;
+          }
+          card.style.display = STATE.selectedFilters.some((f) =>
+            (tag?.className || "").includes(f),
+          )
+            ? ""
+            : "none";
+        });
       });
     });
-  });
 }
 
 function bindDatePopup() {
   const popup = document.getElementById("gc-date-popup");
   if (!popup) return;
-  popup.querySelector("#gc-date-prev")?.addEventListener("click", () => navigateCalendar(-1));
-  popup.querySelector("#gc-date-next")?.addEventListener("click", () => navigateCalendar(1));
+  popup
+    .querySelector("#gc-date-prev")
+    ?.addEventListener("click", () => navigateCalendar(-1));
+  popup
+    .querySelector("#gc-date-next")
+    ?.addEventListener("click", () => navigateCalendar(1));
   popup.querySelectorAll(".gc-cal-day").forEach((day) => {
     const ts = parseInt(day.dataset.ts);
     if (!ts) return;
     day.addEventListener("click", () => {
-      if (!STATE.dateRange.start || (STATE.dateRange.start && STATE.dateRange.end)) {
+      if (
+        !STATE.dateRange.start ||
+        (STATE.dateRange.start && STATE.dateRange.end)
+      ) {
         STATE.dateRange = { start: ts, end: null };
       } else {
-        STATE.dateRange = ts < STATE.dateRange.start
-          ? { start: ts, end: STATE.dateRange.start }
-          : { start: STATE.dateRange.start, end: ts };
+        STATE.dateRange =
+          ts < STATE.dateRange.start
+            ? { start: ts, end: STATE.dateRange.start }
+            : { start: STATE.dateRange.start, end: ts };
       }
       refreshDatePopup();
     });
@@ -731,10 +898,21 @@ function bindDatePopup() {
 
 function navigateCalendar(dir) {
   const adj = (y, m) => {
-    m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+    m += dir;
+    if (m < 0) {
+      m = 11;
+      y--;
+    }
+    if (m > 11) {
+      m = 0;
+      y++;
+    }
     return { year: y, month: m };
   };
-  STATE.calendarMonth = { left: adj(STATE.calendarMonth.left.year, STATE.calendarMonth.left.month), right: adj(STATE.calendarMonth.right.year, STATE.calendarMonth.right.month) };
+  STATE.calendarMonth = {
+    left: adj(STATE.calendarMonth.left.year, STATE.calendarMonth.left.month),
+    right: adj(STATE.calendarMonth.right.year, STATE.calendarMonth.right.month),
+  };
   refreshDatePopup();
 }
 
@@ -753,9 +931,12 @@ function bindSearch(topics) {
   document.getElementById("gc-search-input")?.addEventListener("input", (e) => {
     const q = e.target.value.toLowerCase().trim();
     document.querySelectorAll(".gc-topic-card").forEach((card) => {
-      const title = card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
-      const excerpt = card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
-      card.style.display = !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
+      const title =
+        card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
+      const excerpt =
+        card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
+      card.style.display =
+        !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
     });
   });
 }
@@ -787,10 +968,15 @@ export default apiInitializer("1.8.0", (api) => {
   });
 
   if (isTargetRoute()) {
-    if (document.readyState === "complete" || document.readyState === "interactive") {
+    if (
+      document.readyState === "complete" ||
+      document.readyState === "interactive"
+    ) {
       later(renderLayout, 300);
     } else {
-      document.addEventListener("DOMContentLoaded", () => later(renderLayout, 300));
+      document.addEventListener("DOMContentLoaded", () =>
+        later(renderLayout, 300),
+      );
     }
   }
 
