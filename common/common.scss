@@ -8,15 +8,12 @@
    ---------------------------------------------------------- */
 :root {
   --gc-blue-primary:    #4A6CF7;
-  --gc-blue-dark:       #2D3A8C;
+  --gc-blue-dark:       #1B2E7B;
   --gc-blue-medium:     #3B5BDB;
   --gc-blue-light:      #EEF2FF;
-  --gc-teal-header:     #3ABFBF;
-  --gc-hero-grad-start: #3ABFBF;
-  --gc-hero-grad-end:   #2D9CDB;
-  --gc-sidebar-bg:      #FFFFFF;
-  --gc-sidebar-active:  #4A6CF7;
-  --gc-sidebar-active-bg: #EEF2FF;
+  --gc-teal-header:     #2BB5E0;
+  --gc-hero-grad-start: #2BB5E0;
+  --gc-hero-grad-end:   #4A7CF7;
   --gc-card-bg:         #FFFFFF;
   --gc-card-border:     #E8ECF4;
   --gc-card-hover:      #F7F9FF;
@@ -30,7 +27,7 @@
   --gc-divider:         #E5E7EB;
   --gc-search-bg:       rgba(255,255,255,0.18);
   --gc-search-border:   rgba(255,255,255,0.40);
-  --gc-pill-active-bg:  #4A6CF7;
+  --gc-pill-active-bg:  #1B2E7B;
   --gc-pill-active-text:#FFFFFF;
   --gc-pill-bg:         #FFFFFF;
   --gc-pill-border:     #D1D5DB;
@@ -39,7 +36,6 @@
   --gc-radius-card:     12px;
   --gc-radius-pill:     999px;
   --gc-radius-popup:    10px;
-  --gc-sidebar-width:   240px;
   --gc-list-width:      340px;
   --gc-font-body:       'Nunito', 'Segoe UI', sans-serif;
 }
@@ -57,51 +53,7 @@ body.category-ga-updates {
   background: #F4F6FB;
 }
 
-/* ----------------------------------------------------------
-   4. SIDEBAR STYLING
-   ---------------------------------------------------------- */
-body.category-ga-updates {
-  .sidebar-wrapper,
-  #sidebar-section-content-community,
-  .d-sidebar {
-    background: var(--gc-sidebar-bg);
-    border-right: 1px solid var(--gc-card-border);
-  }
-
-  .sidebar-section-link-wrapper a,
-  .sidebar-section-link {
-    border-radius: 8px;
-    font-size: 0.875rem;
-    font-weight: 500;
-    color: var(--gc-text-primary);
-    transition: background 0.15s, color 0.15s;
-
-    &:hover {
-      background: var(--gc-sidebar-active-bg);
-      color: var(--gc-blue-primary);
-    }
-
-    &.active,
-    &[aria-current="page"] {
-      background: var(--gc-sidebar-active-bg);
-      color: var(--gc-sidebar-active);
-      font-weight: 700;
-
-      .sidebar-section-link-prefix svg {
-        fill: var(--gc-sidebar-active);
-        stroke: var(--gc-sidebar-active);
-      }
-    }
-  }
-
-  .sidebar-section-header-text {
-    font-size: 0.7rem;
-    font-weight: 700;
-    letter-spacing: 0.08em;
-    text-transform: uppercase;
-    color: var(--gc-text-muted);
-  }
-}
+/* Section 4 (Sidebar Styling) removed — handled by separate theme component */
 
 /* ----------------------------------------------------------
    5. HERO BANNER
