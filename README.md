@@ -2,7 +2,7 @@
 
 ## Overview
 
-This Discourse Theme Component transforms the `/c/ga-updates/` category page into a **Master-Detail layout** matching the Gasing Circle UI redesign.
+This Discourse Theme Component transforms the `/c/ga-updates` category page into a **Master-Detail layout** matching the Gasing Circle UI redesign.
 
 ### Features
 
@@ -16,7 +16,7 @@ This Discourse Theme Component transforms the `/c/ga-updates/` category page int
 - ✅ Context menu (Simpan / Laporkan) on comment actions
 - ✅ Client-side search in hero bar
 - ✅ Responsive (collapses to single column on mobile)
-- ✅ Scoped to `/c/ga-updates/` — does NOT affect other categories
+- ✅ Scoped to `/c/ga-updates` — does NOT affect other categories
 
 ---
 
@@ -66,7 +66,7 @@ The **Master-Detail layout** is implemented as a **DOM injection layer** rather 
 
 1. **Stability** — Discourse's Ember internals change frequently. DOM injection via `apiInitializer` + `onPageChange` is the safest long-term approach.
 2. **No Ruby backend needed** — Pure frontend Theme Component.
-3. **API-driven** — Topic data is fetched via Discourse's public JSON API (`/c/ga-updates/.json` and `/t/{slug}/{id}.json`), keeping the component decoupled from Discourse internals.
+3. **API-driven** — Topic data is fetched via Discourse's public JSON API (`/c/ga-updates.json` and `/t/{slug}/{id}.json`), keeping the component decoupled from Discourse internals.
 4. **Scoped** — The `body.category-ga-updates` CSS class ensures zero style bleed to other pages.
 
 ### Layout Strategy
@@ -126,7 +126,7 @@ In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` arra
 1. **Discourse version compatibility**: Tested against Discourse 3.1+. The `api.onPageChange` hook is available in Plugin API v0.8+.
 2. **Topic detail fetch**: Each topic click triggers a network request to `/t/{slug}/{id}.json`. This is Discourse's standard JSON API and requires no authentication for public categories.
 3. **Image URLs**: Discourse sometimes serves images through its CDN optimizer. If thumbnails don't load, check your Discourse CDN settings.
-4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates/.json?order=activity` or the `top.json` endpoint.
+4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates.json?order=activity` or the `top.json` endpoint.
 
 ---
 

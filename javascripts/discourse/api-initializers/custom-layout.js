@@ -18,12 +18,9 @@ const SVG = {
   calendar: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>`,
   filter: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.553.894l-4 2A1 1 0 016 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg>`,
   heart: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>`,
-  heartOutline: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
   chat: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>`,
-  chatOutline: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/></svg>`,
   eye: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>`,
   bookmark: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>`,
-  bookmarkOutline: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
   share: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/></svg>`,
   reply: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`,
   more: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>`,
@@ -32,9 +29,6 @@ const SVG = {
   newspaper: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>`,
   chevronLeft: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`,
   chevronRight: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>`,
-  chevronUp: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>`,
-  arrowDown: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M16.707 10.293a1 1 0 010 1.414l-6 6a1 1 0 01-1.414 0l-6-6a1 1 0 111.414-1.414L9 14.586V3a1 1 0 012 0v11.586l4.293-4.293a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`,
-  verified: `<svg viewBox="0 0 20 20" fill="#4a6cf7"><path fill-rule="evenodd" d="M6.267 3.455a3.066 3.066 0 001.745-.723 3.066 3.066 0 013.976 0 3.066 3.066 0 001.745.723 3.066 3.066 0 012.812 2.812c.051.643.304 1.254.723 1.745a3.066 3.066 0 010 3.976 3.066 3.066 0 00-.723 1.745 3.066 3.066 0 01-2.812 2.812 3.066 3.066 0 00-1.745.723 3.066 3.066 0 01-3.976 0 3.066 3.066 0 00-1.745-.723 3.066 3.066 0 01-2.812-2.812 3.066 3.066 0 00-.723-1.745 3.066 3.066 0 010-3.976 3.066 3.066 0 00.723-1.745 3.066 3.066 0 012.812-2.812zm7.44 5.252a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd"/></svg>`,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -48,10 +42,9 @@ const STATE = {
   dateRange: { start: null, end: null },
   activeTopicId: null,
   calendarMonth: { left: null, right: null },
-  expandedReplies: {}, // track which post IDs have expanded replies
 };
 
-let discourseApi = null;
+let discourseApi = null; // Store the API object for global use
 
 // ─────────────────────────────────────────────────────────────
 // UTILITY: Is this the target category route?
@@ -90,9 +83,14 @@ function getTopicTag(topic) {
   if (!topic) return null;
   const tags = topic.tags || [];
   for (const t of tags) {
-    if (TAG_CLASSES[t.toLowerCase()]) return t;
+    const tagName = typeof t === "string" ? t : t?.name || t?.id || String(t);
+    if (TAG_CLASSES[tagName.toLowerCase()]) return tagName;
   }
-  return tags[0] || null;
+  const first = tags[0];
+  if (!first) return null;
+  return typeof first === "string"
+    ? first
+    : first?.name || first?.id || String(first);
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -127,6 +125,7 @@ function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
     html += `<div class="gc-cal-dow">${d}</div>`;
   });
 
+  // Leading empty cells
   for (let i = 0; i < firstDay; i++) {
     html += `<div class="gc-cal-day other-month"></div>`;
   }
@@ -285,159 +284,7 @@ function buildTopicCard(topic) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// HELPER: Determine user role display
-// ─────────────────────────────────────────────────────────────
-function getUserRole(post) {
-  if (post.user_title) return post.user_title;
-  if (post.admin) return "Admin";
-  if (post.moderator) return "Moderator";
-  if (post.staff) return "Trainer Utama";
-  if (post.trust_level >= 4) return "Trainer Utama";
-  if (post.trust_level >= 2) return "Trainer Kelas";
-  return "";
-}
-
-// ─────────────────────────────────────────────────────────────
-// HELPER: Check if user has a verified-style badge (groups)
-// ─────────────────────────────────────────────────────────────
-function isVerifiedUser(post) {
-  // Show verified badge for staff, admins, moderators, or trust_level >= 2
-  return post.staff || post.admin || post.moderator || post.trust_level >= 2;
-}
-
-// ─────────────────────────────────────────────────────────────
-// BUILD COMMENT HTML — matches reference image exactly
-// ─────────────────────────────────────────────────────────────
-function buildCommentHTML(post, allPosts) {
-  const avatarUrl = post.avatar_template?.replace("{size}", "44") || "";
-  const role = getUserRole(post);
-  const timeAgo = moment(post.created_at).fromNow();
-  const verified = isVerifiedUser(post);
-
-  // Dynamic like data from actions_summary
-  const likeAction = post.actions_summary?.find((a) => a.id === 2);
-  const likeCount = likeAction?.count || 0;
-  const userLiked = likeAction?.acted || false;
-
-  // Find direct replies to this post
-  const directReplies = allPosts.filter(
-    (p) => p.reply_to_post_number === post.post_number,
-  );
-  const replyCount = post.reply_count || directReplies.length;
-
-  // Build nested replies HTML (initially hidden, expandable)
-  let nestedRepliesHtml = "";
-  if (replyCount > 0) {
-    const replyItems = directReplies
-      .map((reply) => {
-        const rAvatarUrl = reply.avatar_template?.replace("{size}", "36") || "";
-        const rRole = getUserRole(reply);
-        const rTimeAgo = moment(reply.created_at).fromNow();
-        const rVerified = isVerifiedUser(reply);
-        const rLikeAction = reply.actions_summary?.find((a) => a.id === 2);
-        const rLikeCount = rLikeAction?.count || 0;
-        const rUserLiked = rLikeAction?.acted || false;
-
-        return `
-        <div class="gc-comment gc-comment--nested" data-post-id="${reply.id}">
-          <div class="gc-nested-avatar-wrap">
-            <img class="gc-comment-avatar" src="${rAvatarUrl}" alt="${reply.username}" />
-            ${rVerified ? `<span class="gc-verified-badge">${SVG.verified}</span>` : ""}
-          </div>
-          <div class="gc-comment-content">
-            <div class="gc-comment-header">
-              <span class="gc-comment-author">${reply.name || reply.username}</span>
-              ${rRole ? `<span class="gc-comment-role">${rRole}</span>` : ""}
-              <span class="gc-comment-time">${rTimeAgo}</span>
-            </div>
-            <div class="gc-comment-text">${reply.cooked}</div>
-            <div class="gc-comment-actions">
-              <div class="gc-comment-actions-right">
-                <button class="gc-comment-like ${rUserLiked ? "liked" : ""}" data-post-id="${reply.id}" title="${rUserLiked ? "Batal Suka" : "Suka"}">
-                  ${rUserLiked ? SVG.heart : SVG.heartOutline} <span class="gc-like-count">${rLikeCount}</span>
-                </button>
-                <button class="gc-comment-more" data-post-id="${reply.id}">${SVG.more}</button>
-                <button class="gc-comment-reply-btn" data-post-id="${reply.id}" data-post-number="${reply.post_number}" data-username="${reply.username}">
-                  ${SVG.reply} Balas
-                </button>
-              </div>
-            </div>
-          </div>
-        </div>
-      `;
-      })
-      .join("");
-
-    nestedRepliesHtml = `
-      <div class="gc-nested-replies" data-parent-post-id="${post.id}" style="display:none;">
-        ${replyItems}
-      </div>
-    `;
-  }
-
-  // Build the collapse/expand row for nested replies
-  let replyToggleHtml = "";
-  if (replyCount > 0) {
-    replyToggleHtml = `
-      <div class="gc-reply-toggle-row" data-parent-post-id="${post.id}">
-        <button class="gc-reply-count-badge" data-post-id="${post.id}" data-expanded="false">
-          ${replyCount} Balasan
-        </button>
-      </div>
-    `;
-  }
-
-  // Build collapse button (shown when replies are expanded)
-  let collapseHtml = "";
-  if (replyCount > 0) {
-    collapseHtml = `
-      <div class="gc-collapse-row" data-parent-post-id="${post.id}" style="display:none;">
-        <button class="gc-collapse-btn" data-post-id="${post.id}">
-          ${SVG.chevronUp} <span>Lompat ke postingan</span>
-        </button>
-      </div>
-    `;
-  }
-
-  return `
-    <div class="gc-comment gc-comment--top-level" data-post-id="${post.id}" data-post-number="${post.post_number}">
-      <div class="gc-comment-main-row">
-        <div class="gc-comment-avatar-col">
-          <div class="gc-comment-avatar-wrap">
-            <img class="gc-comment-avatar" src="${avatarUrl}" alt="${post.username}" />
-            ${verified ? `<span class="gc-verified-badge">${SVG.verified}</span>` : ""}
-          </div>
-          ${replyCount > 0 ? `<div class="gc-thread-line" data-parent-post-id="${post.id}"></div>` : ""}
-        </div>
-        <div class="gc-comment-content">
-          <div class="gc-comment-header">
-            <span class="gc-comment-author">${post.name || post.username}</span>
-            ${role ? `<span class="gc-comment-role">${role}</span>` : ""}
-            <span class="gc-comment-time">${timeAgo}</span>
-          </div>
-          <div class="gc-comment-text">${post.cooked}</div>
-          <div class="gc-comment-actions">
-            ${replyToggleHtml}
-            <div class="gc-comment-actions-right">
-              <button class="gc-comment-like ${userLiked ? "liked" : ""}" data-post-id="${post.id}" title="${userLiked ? "Batal Suka" : "Suka"}">
-                ${userLiked ? SVG.heart : SVG.heartOutline} <span class="gc-like-count">${likeCount}</span>
-              </button>
-              <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
-              <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
-                ${SVG.reply} Balas
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-      ${nestedRepliesHtml}
-      ${collapseHtml}
-    </div>
-  `;
-}
-
-// ─────────────────────────────────────────────────────────────
-// BUILD TOPIC DETAIL PANEL HTML — with redesigned comment section
+// BUILD TOPIC DETAIL PANEL HTML
 // ─────────────────────────────────────────────────────────────
 function buildTopicDetail(topic, posts) {
   if (!topic) {
@@ -460,31 +307,72 @@ function buildTopicDetail(topic, posts) {
   const firstPost = posts?.[0];
   const cooked = firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`;
 
-  // Reply posts (comments) — only top-level (not reply-to-reply)
+  // Reply posts (comments)
   const replyPosts = posts?.slice(1) || [];
-  const topLevelPosts = replyPosts.filter(
-    (p) => !p.reply_to_post_number || p.reply_to_post_number === 1,
-  );
+  const commentsHtml = replyPosts
+    .map((post) => {
+      const avatarUrl = post.avatar_template?.replace("{size}", "32") || "";
+      const isReply = post.reply_to_post_number > 0;
+      const role =
+        post.user_title ||
+        (post.staff
+          ? "Trainer Utama"
+          : post.trust_level >= 2
+            ? "Trainer Kelas"
+            : "");
+      const timeAgo = moment(post.created_at).fromNow();
 
-  const commentsHtml = topLevelPosts
-    .map((post) => buildCommentHTML(post, replyPosts))
+      // Dynamic like data from actions_summary
+      const likeAction = post.actions_summary?.find((a) => a.id === 2);
+      const likeCount = likeAction?.count || 0;
+      const userLiked = likeAction?.acted || false;
+
+      return `
+      <div class="gc-comment ${isReply ? "gc-comment--reply" : ""}" data-post-id="${post.id}">
+        <img class="gc-comment-avatar" src="${avatarUrl}" alt="${post.username}" />
+        <div class="gc-comment-content">
+          <div class="gc-comment-header">
+            <span class="gc-comment-author">${post.name || post.username}</span>
+            ${role ? `<span class="gc-comment-role">${role}</span>` : ""}
+            <span class="gc-comment-time">${timeAgo}</span>
+          </div>
+          <div class="gc-comment-text">${post.cooked}</div>
+          <div class="gc-comment-actions">
+            <button class="gc-comment-like ${userLiked ? "liked" : ""}" data-post-id="${post.id}" title="${userLiked ? "Batal Suka" : "Suka"}">
+              ${SVG.heart} ${likeCount}
+            </button>
+            <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
+            <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
+              ${SVG.reply} Balas
+            </button>
+            ${post.reply_count > 0 ? `<button class="gc-reply-badge" data-post-id="${post.id}">${post.reply_count} Balasan</button>` : ""}
+          </div>
+        </div>
+      </div>
+    `;
+    })
     .join("");
 
-  // Subtitle
+  // Subtitle: the plain-text excerpt shown directly below the title.
+  // Comes from topic.excerpt (same text as the card excerpt in the left feed).
   const subtitleText = topic.excerpt
     ? topic.excerpt.replace(/<[^>]*>/g, "").trim()
     : "";
 
-  // Body text
+  // Body text: full cooked HTML with images in their natural position.
+  // Strip the opening paragraph from cooked if it duplicates the subtitle
+  // (Discourse copies the excerpt as the first <p> in the post body).
   let bodyText = cooked.trim();
   if (subtitleText) {
+    // Normalise both strings to bare words for comparison (strip tags + collapse whitespace)
     const normalise = (s) =>
       s
         .replace(/<[^>]*>/g, "")
         .replace(/\s+/g, " ")
         .trim()
         .toLowerCase();
-    const normSub = normalise(subtitleText).substring(0, 80);
+    const normSub = normalise(subtitleText).substring(0, 80); // compare first 80 chars
+    // Match the first <p>…</p> block and remove it only if it starts with the subtitle text
     bodyText = bodyText
       .replace(/^(<p>)([\s\S]*?)(<\/p>)/, (match, open, inner, close) => {
         const normInner = normalise(inner).substring(0, 80);
@@ -493,13 +381,13 @@ function buildTopicDetail(topic, posts) {
       .trim();
   }
 
-  // Stats row
+  // Reusable stats markup
   const statsRow = `
-    <span class="gc-stat">${SVG.heartOutline} ${likes}</span>
-    <span class="gc-stat">${SVG.chatOutline} ${replies}</span>
+    <span class="gc-stat">${SVG.heart} ${likes}</span>
+    <span class="gc-stat">${SVG.chat} ${replies}</span>
     <span class="gc-stat">${SVG.eye} ${views}</span>
     <div class="gc-detail-actions">
-      <button class="gc-action-icon gc-topic-bookmark-btn" title="Simpan">${SVG.bookmarkOutline}</button>
+      <button class="gc-action-icon gc-topic-bookmark-btn" title="Simpan">${SVG.bookmark}</button>
       <button class="gc-action-icon gc-topic-share-btn" title="Bagikan">${SVG.share}</button>
     </div>
   `;
@@ -517,26 +405,13 @@ function buildTopicDetail(topic, posts) {
 
       <div class="gc-detail-body">${bodyText}</div>
 
-      <!-- Comment Section Header (matches reference image) -->
-      <div class="gc-comment-section">
-        <div class="gc-comment-section-header">
-          <button class="gc-main-reply-btn" data-topic-id="${topic.id}">
-            ${SVG.reply} Balas
-          </button>
-        </div>
+      <button class="gc-reply-btn" data-topic-id="${topic.id}">${SVG.reply} Balas</button>
 
-        <div class="gc-comment-section-stats">
-          <span class="gc-stat">${SVG.heartOutline} ${likes}</span>
-          <span class="gc-stat">${SVG.chatOutline} ${replies}</span>
-          <span class="gc-stat">${SVG.eye} ${views}</span>
-          <div class="gc-detail-actions">
-            <button class="gc-action-icon gc-topic-bookmark-btn" title="Simpan">${SVG.bookmarkOutline}</button>
-            <button class="gc-action-icon gc-topic-share-btn" title="Bagikan">${SVG.share}</button>
-          </div>
-        </div>
+      <hr class="gc-detail-sep-bottom" />
 
-        ${replyPosts.length > 0 ? `<div class="gc-comments">${commentsHtml}</div>` : ""}
-      </div>
+      <div class="gc-detail-bottom-stats">${statsRow}</div>
+
+      ${replyPosts.length > 0 ? `<div class="gc-comments">${commentsHtml}</div>` : ""}
 
     </div>
   `;
@@ -588,17 +463,27 @@ async function fetchTopicPosts(topicId, topicSlug) {
 // ─────────────────────────────────────────────────────────────
 // MASTER RENDER: inject the full layout into the page
 // ─────────────────────────────────────────────────────────────
+let _renderTimeout = null;
+
 async function renderLayout() {
   if (!isTargetRoute()) return;
+
   addBodyClass();
 
+  // Find or create the wrapper
   let outlet = document.getElementById("main-outlet");
   if (!outlet) return;
 
-  if (document.getElementById("gc-category-wrapper")) return;
+  // Prevent double render
+  if (document.getElementById("gc-category-wrapper")) {
+    // Already rendered, just refresh feed
+    return;
+  }
 
+  // Hide existing Discourse content temporarily
   outlet.style.opacity = "0";
 
+  // Build wrapper
   const wrapper = document.createElement("div");
   wrapper.id = "gc-category-wrapper";
   wrapper.innerHTML = `
@@ -629,13 +514,17 @@ async function renderLayout() {
     </div>
   `;
 
+  // Insert after #main-outlet's first child, or prepend to outlet
   const mainContainer = outlet.querySelector(".container") || outlet;
   mainContainer.prepend(wrapper);
+
   outlet.style.opacity = "1";
 
+  // Fetch real topics
   const topics = await fetchCategoryTopics();
   const feed = document.getElementById("gc-topic-feed");
 
+  // Update badge counts dynamically
   const latestCount = topics.length;
   const TRENDING_VIEW_THRESHOLD = 50;
   const trendingTopics = topics.filter(
@@ -648,7 +537,6 @@ async function renderLayout() {
   const trendingBadge = document.getElementById("gc-badge-trending");
   if (latestBadge) latestBadge.textContent = latestCount;
   if (trendingBadge) trendingBadge.textContent = trendingCount;
-
   if (feed) {
     if (topics.length === 0) {
       feed.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gc-text-muted);font-size:0.82rem">Tidak ada artikel ditemukan.</div>`;
@@ -656,8 +544,11 @@ async function renderLayout() {
       feed.innerHTML = topics.map((t) => buildTopicCard(t)).join("");
       bindTopicCardClicks(topics);
 
+      // Auto-select first topic
       const firstCard = feed.querySelector(".gc-topic-card");
-      if (firstCard) firstCard.click();
+      if (firstCard) {
+        firstCard.click();
+      }
     }
   }
 
@@ -680,13 +571,14 @@ function bindTopicCardClicks(topics) {
     const topicSlug = card.dataset.topicSlug;
     if (!topicId) return;
 
+    // Mark active
     feed
       .querySelectorAll(".gc-topic-card")
       .forEach((c) => c.classList.remove("active"));
     card.classList.add("active");
     STATE.activeTopicId = topicId;
-    STATE.expandedReplies = {};
 
+    // Show loading
     const detail = document.getElementById("gc-topic-detail");
     if (detail) {
       detail.innerHTML = `
@@ -721,6 +613,7 @@ function bindTopicCardClicks(topics) {
 function bindActionBar(topics) {
   const TRENDING_VIEW_THRESHOLD = 50;
 
+  // Pill toggles
   document.addEventListener("click", (e) => {
     const pill = e.target.closest(".gc-pill");
     if (pill) {
@@ -730,6 +623,7 @@ function bindActionBar(topics) {
       pill.classList.add("active");
       STATE.activeFilter = pill.dataset.pill;
 
+      // Filter feed based on pill selection
       const feed = document.getElementById("gc-topic-feed");
       if (feed) {
         const cards = feed.querySelectorAll(".gc-topic-card");
@@ -751,6 +645,7 @@ function bindActionBar(topics) {
     }
   });
 
+  // Filter popup toggle
   const filterBtn = document.getElementById("gc-filter-btn");
   if (filterBtn) {
     filterBtn.addEventListener("click", (e) => {
@@ -769,6 +664,7 @@ function bindActionBar(topics) {
     });
   }
 
+  // Date popup toggle
   const dateBtn = document.getElementById("gc-date-btn");
   if (dateBtn) {
     dateBtn.addEventListener("click", (e) => {
@@ -787,6 +683,7 @@ function bindActionBar(topics) {
     });
   }
 
+  // Close popups on outside click
   document.addEventListener("click", (e) => {
     if (
       !e.target.closest("#gc-filter-popup") &&
@@ -804,6 +701,7 @@ function closeAllPopups() {
   if (fp) fp.remove();
   const dp = document.getElementById("gc-date-popup");
   if (dp) dp.remove();
+
   document.getElementById("gc-filter-btn")?.classList.remove("active");
   document.getElementById("gc-date-btn")?.classList.remove("active");
   STATE.filterOpen = false;
@@ -852,6 +750,7 @@ function bindDatePopup() {
   const popup = document.getElementById("gc-date-popup");
   if (!popup) return;
 
+  // Prev/Next nav
   popup.querySelector("#gc-date-prev")?.addEventListener("click", () => {
     navigateCalendar(-1);
   });
@@ -859,6 +758,7 @@ function bindDatePopup() {
     navigateCalendar(1);
   });
 
+  // Day clicks
   popup.querySelectorAll(".gc-cal-day").forEach((day) => {
     const ts = parseInt(day.dataset.ts);
     if (!ts) return;
@@ -960,30 +860,21 @@ function bindContextMenus(container, posts) {
       menu.className = "gc-context-menu";
       menu.innerHTML = `
         <div class="gc-context-item" data-action="bookmark">${SVG.save} Simpan</div>
-        <div class="gc-context-item gc-context-item--report" data-action="report">${SVG.report} Laporkan</div>
+        <div class="gc-context-item" data-action="report">${SVG.report} Laporkan</div>
       `;
-
-      // Position relative to the actions row
-      const actionsRow =
-        btn.closest(".gc-comment-actions-right") ||
-        btn.closest(".gc-comment-actions");
-      if (actionsRow) {
-        actionsRow.style.position = "relative";
-        actionsRow.appendChild(menu);
-      } else {
-        btn.closest(".gc-comment-content").style.position = "relative";
-        btn.closest(".gc-comment-content").appendChild(menu);
-      }
+      btn.closest(".gc-comment-content").style.position = "relative";
+      btn.closest(".gc-comment-content").appendChild(menu);
 
       // Bookmark Action
       menu
         .querySelector('[data-action="bookmark"]')
         .addEventListener("click", async () => {
           try {
-            await ajax(`/bookmarks`, {
+            await ajax(`/post_actions`, {
               type: "POST",
-              data: { bookmarkable_id: postId, bookmarkable_type: "Post" },
+              data: { id: postId, post_action_type_id: 1, flag_topic: false },
             });
+            // Optionally show a success notification
           } catch (error) {
             popupAjaxError(error);
           }
@@ -996,23 +887,10 @@ function bindContextMenus(container, posts) {
         .addEventListener("click", () => {
           if (discourseApi) {
             const post = posts.find((p) => p.id == postId);
-            if (post) {
-              // Use Discourse's native flag modal
-              const container = getOwner(discourseApi);
-              if (container) {
-                try {
-                  const modal = container.lookup("service:modal");
-                  if (modal) {
-                    modal.show("flag", {
-                      model: { flagTarget: post, setHidden: () => {} },
-                    });
-                  }
-                } catch (err) {
-                  // Fallback: navigate to flag URL
-                  window.open(`/posts/${postId}/flags/new`, "_blank");
-                }
-              }
-            }
+            discourseApi.container.lookup("controller:modals").show("flag", {
+              post: post,
+              flagTopic: false,
+            });
           }
           menu.remove();
         });
@@ -1028,11 +906,11 @@ function bindContextMenus(container, posts) {
 // BIND DYNAMIC DETAIL VIEW ACTIONS
 // ─────────────────────────────────────────────────────────────
 function bindDetailEventListeners(container, topic, posts) {
+  if (!discourseApi?.currentUser) return;
+
   // Per-post Like button
   container.querySelectorAll(".gc-comment-like").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      if (!discourseApi?.getCurrentUser()) return;
-
       const postId = btn.dataset.postId;
       const isLiked = btn.classList.contains("liked");
       try {
@@ -1047,21 +925,10 @@ function bindDetailEventListeners(container, topic, posts) {
         );
 
         btn.classList.toggle("liked");
-        const isNowLiked = btn.classList.contains("liked");
-        const likeAction = result?.post?.actions_summary?.find(
+        const newCount = result.post.actions_summary.find(
           (a) => a.id === 2,
-        );
-        const newCount = likeAction?.count || 0;
-        const countEl = btn.querySelector(".gc-like-count");
-        if (countEl) countEl.textContent = newCount;
-
-        // Update icon
-        const svgContainer = btn.querySelector("svg");
-        if (svgContainer) {
-          const tempDiv = document.createElement("div");
-          tempDiv.innerHTML = isNowLiked ? SVG.heart : SVG.heartOutline;
-          btn.replaceChild(tempDiv.firstElementChild, svgContainer);
-        }
+        ).count;
+        btn.innerHTML = `${SVG.heart} ${newCount}`;
       } catch (error) {
         popupAjaxError(error);
       }
@@ -1071,132 +938,39 @@ function bindDetailEventListeners(container, topic, posts) {
   // Per-post Reply button
   container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (!discourseApi) return;
       const postNumber = btn.dataset.postNumber;
       const targetPost = posts.find((p) => p.post_number == postNumber);
-      if (targetPost) {
-        const composer = getOwner(discourseApi)?.lookup("service:composer");
-        if (composer) {
-          composer.open({
-            action: "reply",
-            post: targetPost,
-            topic: topic,
-          });
-        }
-      }
-    });
-  });
-
-  // Main topic Reply button
-  container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (!discourseApi) return;
-      const composer = getOwner(discourseApi)?.lookup("service:composer");
-      if (composer) {
+      if (targetPost && discourseApi) {
+        const composer = discourseApi.container.lookup("controller:composer");
         composer.open({
           action: "reply",
+          post: targetPost,
           topic: topic,
         });
       }
     });
   });
 
-  // Reply count badge toggle (expand/collapse nested replies)
-  container.querySelectorAll(".gc-reply-count-badge").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const postId = btn.dataset.postId;
-      const isExpanded = btn.dataset.expanded === "true";
-      const nestedReplies = container.querySelector(
-        `.gc-nested-replies[data-parent-post-id="${postId}"]`,
-      );
-      const collapseRow = container.querySelector(
-        `.gc-collapse-row[data-parent-post-id="${postId}"]`,
-      );
-      const threadLine = container.querySelector(
-        `.gc-thread-line[data-parent-post-id="${postId}"]`,
-      );
-
-      if (isExpanded) {
-        // Collapse
-        if (nestedReplies) nestedReplies.style.display = "none";
-        if (collapseRow) collapseRow.style.display = "none";
-        if (threadLine) threadLine.classList.remove("gc-thread-line--active");
-        btn.dataset.expanded = "false";
-      } else {
-        // Expand
-        if (nestedReplies) nestedReplies.style.display = "block";
-        if (collapseRow) collapseRow.style.display = "flex";
-        if (threadLine) threadLine.classList.add("gc-thread-line--active");
-        btn.dataset.expanded = "true";
-      }
-    });
-  });
-
-  // Collapse button — scrolls back to parent and collapses
-  container.querySelectorAll(".gc-collapse-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const postId = btn.dataset.postId;
-      const parentComment = container.querySelector(
-        `.gc-comment--top-level[data-post-id="${postId}"]`,
-      );
-      const badge = container.querySelector(
-        `.gc-reply-count-badge[data-post-id="${postId}"]`,
-      );
-      const nestedReplies = container.querySelector(
-        `.gc-nested-replies[data-parent-post-id="${postId}"]`,
-      );
-      const collapseRow = container.querySelector(
-        `.gc-collapse-row[data-parent-post-id="${postId}"]`,
-      );
-      const threadLine = container.querySelector(
-        `.gc-thread-line[data-parent-post-id="${postId}"]`,
-      );
-
-      if (nestedReplies) nestedReplies.style.display = "none";
-      if (collapseRow) collapseRow.style.display = "none";
-      if (badge) badge.dataset.expanded = "false";
-      if (threadLine) threadLine.classList.remove("gc-thread-line--active");
-
-      if (parentComment) {
-        parentComment.scrollIntoView({ behavior: "smooth", block: "center" });
-      }
-    });
-  });
-
-  // Bookmark buttons for topic-level
-  container.querySelectorAll(".gc-topic-bookmark-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      if (!discourseApi?.getCurrentUser()) return;
-      try {
-        await ajax(`/bookmarks`, {
-          type: "POST",
-          data: { bookmarkable_id: topic.id, bookmarkable_type: "Topic" },
+  // Main topic Reply button
+  const mainReplyBtn = container.querySelector(".gc-reply-btn");
+  if (mainReplyBtn) {
+    mainReplyBtn.addEventListener("click", () => {
+      if (discourseApi) {
+        const composer = discourseApi.container.lookup("controller:composer");
+        composer.open({
+          action: "reply",
+          topic: topic,
         });
-        btn.classList.add("gc-bookmarked");
-      } catch (error) {
-        popupAjaxError(error);
       }
     });
-  });
+  }
 
-  // Share buttons
-  container.querySelectorAll(".gc-topic-share-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const url = `${window.location.origin}/t/${topic.slug}/${topic.id}`;
-      if (navigator.share) {
-        navigator.share({ title: topic.title, url });
-      } else if (navigator.clipboard) {
-        navigator.clipboard.writeText(url);
-      }
-    });
-  });
-
-  // Bind context menus
+  // Bind context menus for comments
   bindContextMenus(container, posts);
 }
 
 // ─────────────────────────────────────────────────────────────
-// CLEANUP
+// CLEANUP: remove the custom layout when navigating away
 // ─────────────────────────────────────────────────────────────
 function cleanupLayout() {
   document.getElementById("gc-category-wrapper")?.remove();
@@ -1207,24 +981,30 @@ function cleanupLayout() {
 // API INITIALIZER
 // ─────────────────────────────────────────────────────────────
 export default apiInitializer("1.8.0", (api) => {
-  discourseApi = api;
+  discourseApi = api; // Store for global access
 
+  // Hook into Discourse's page change events
   api.onPageChange((url) => {
+    // Clean up first
     cleanupLayout();
+
     if (url.includes("/c/ga-updates") || url.includes("/c/ga-updates")) {
       addBodyClass();
+      // Small delay to let Discourse render its base elements
       later(() => {
-        scheduleOnce("afterRender", null, renderLayout);
+        scheduleOnce("afterRender", this, renderLayout);
       }, 150);
     }
   });
 
+  // Also run on initial page load if we're already on the route
   api.registerBehaviorTransformer?.("discovery-layout", () => {
     if (isTargetRoute()) {
       later(renderLayout, 200);
     }
   });
 
+  // Fallback: watch for DOM readiness
   if (isTargetRoute()) {
     if (
       document.readyState === "complete" ||
@@ -1238,6 +1018,7 @@ export default apiInitializer("1.8.0", (api) => {
     }
   }
 
+  // Handle Ember route transitions via router service
   try {
     const container = getOwner(api);
     if (container) {

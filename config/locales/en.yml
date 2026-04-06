@@ -1,3 +1,21 @@
 en:
   theme_metadata:
     description: "Gasing Circle Academy News - Custom Master-Detail layout for /c/ga-updates"
+  theme_settings_description:
+    gc_primary_color: "Warna utama (tombol, state aktif, tautan)"
+    gc_primary_dark_color: "Warna utama gelap (hover tombol, pill aktif)"
+    gc_primary_light_color: "Warna utama terang (latar badge, hover background)"
+    gc_hero_start_color: "Warna awal gradasi hero banner (kiri)"
+    gc_hero_end_color: "Warna akhir gradasi hero banner (kanan)"
+    gc_page_bg_color: "Warna latar halaman utama"
+    gc_card_bg_color: "Warna latar kartu artikel dan panel detail"
+    gc_card_border_color: "Warna border kartu artikel"
+    gc_text_primary_color: "Warna teks utama (judul, konten)"
+    gc_text_secondary_color: "Warna teks sekunder (deskripsi, komentar)"
+    gc_text_muted_color: "Warna teks redup (metadata, tanggal)"
+    gc_divider_color: "Warna garis pemisah / divider"
+    gc_tag_pelatihan_color: "Warna teks tag Pelatihan"
+    gc_tag_pendidikan_color: "Warna teks tag Pendidikan"
+    gc_tag_dunia_color: "Warna teks tag Dunia"
+    gc_tag_lainnya_color: "Warna teks tag Lainnya"
+    gc_font_body: "Jenis font untuk seluruh tampilan komponen"
