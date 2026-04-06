@@ -861,20 +861,45 @@ function bindContextMenus(container, posts) {
       btn.closest(".gc-comment-content").appendChild(menu);
 
       // Bookmark Action
-      menu
-        .querySelector('[data-action="bookmark"]')
-        .addEventListener("click", async () => {
-          try {
-            await ajax(`/post_actions`, {
+      const bookmarkBtn = menu.querySelector('[data-action="bookmark"]');
+
+      bookmarkBtn.addEventListener("click", async () => {
+        try {
+          // 1. Tentukan apakah kita ingin menambah atau menghapus bookmark
+          // Kita bisa mengecek dari attribute atau state model jika tersedia
+          const isBookmarked = bookmarkBtn.classList.contains("is-bookmarked");
+
+          if (!isBookmarked) {
+            // Create Bookmark
+            await ajax(`/t/${topicId}/bookmark`, {
               type: "POST",
-              data: { id: postId, post_action_type_id: 1, flag_topic: false },
+              data: {
+                // Anda bisa menambahkan parameter opsional di sini
+                // reminder_at: null,
+                // reminder_type: null
+              },
             });
-            // Optionally show a success notification
-          } catch (error) {
-            popupAjaxError(error);
+            // Update UI (Opsional: jika menu tidak langsung di-remove)
+            bookmarkBtn.classList.add("is-bookmarked");
+          } else {
+            // Delete Bookmark (Discourse menggunakan DELETE pada endpoint yang sama/mirip)
+            // Catatan: Seringkali untuk delete butuh bookmark_id,
+            // tapi jika lewat topic, Discourse biasanya menangani via toggle.
+            await ajax(`/t/${topicId}/bookmark`, { type: "DELETE" });
+            bookmarkBtn.classList.remove("is-bookmarked");
           }
+
+          // Berikan feedback visual kecil (toast notification)
+          // const MessageBus = require("discourse/lib/message-bus").default;
+          // atau gunakan helper notification bawaan jika tersedia.
+        } catch (error) {
+          // Menggunakan helper bawaan Discourse untuk error popup
+          const { popupAjaxError } = require("discourse/lib/ajax-error");
+          popupAjaxError(error);
+        } finally {
           menu.remove();
-        });
+        }
+      });
 
       // Report Action
       menu
