@@ -162,8 +162,8 @@ function buildActionBar() {
     <div id="gc-action-bar">
       <div class="gc-action-bar-inner">
         <div class="gc-pills">
-          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge">45</span></button>
-          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge">12</span></button>
+          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge" id="gc-badge-latest">—</span></button>
+          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge" id="gc-badge-trending">—</span></button>
         </div>
         <div class="gc-bar-divider"></div>
         <div class="gc-icon-buttons">
@@ -472,6 +472,17 @@ async function renderLayout() {
   // Fetch real topics
   const topics = await fetchCategoryTopics();
   const feed = document.getElementById("gc-topic-feed");
+
+  // Update badge counts dynamically
+  const latestCount = topics.length;
+  const TRENDING_VIEW_THRESHOLD = 50;
+  const trendingTopics = topics.filter(t => (t.views || 0) >= TRENDING_VIEW_THRESHOLD || (t.like_count || 0) >= 10);
+  const trendingCount = trendingTopics.length;
+
+  const latestBadge = document.getElementById("gc-badge-latest");
+  const trendingBadge = document.getElementById("gc-badge-trending");
+  if (latestBadge) latestBadge.textContent = latestCount;
+  if (trendingBadge) trendingBadge.textContent = trendingCount;
   if (feed) {
     if (topics.length === 0) {
       feed.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gc-text-muted);font-size:0.82rem">Tidak ada artikel ditemukan.</div>`;
@@ -540,6 +551,8 @@ function bindTopicCardClicks(topics) {
 // BIND ACTION BAR (pills, filter, date)
 // ─────────────────────────────────────────────────────────────
 function bindActionBar(topics) {
+  const TRENDING_VIEW_THRESHOLD = 50;
+
   // Pill toggles
   document.addEventListener("click", (e) => {
     const pill = e.target.closest(".gc-pill");
@@ -547,6 +560,24 @@ function bindActionBar(topics) {
       document.querySelectorAll(".gc-pill").forEach(p => p.classList.remove("active"));
       pill.classList.add("active");
       STATE.activeFilter = pill.dataset.pill;
+
+      // Filter feed based on pill selection
+      const feed = document.getElementById("gc-topic-feed");
+      if (feed) {
+        const cards = feed.querySelectorAll(".gc-topic-card");
+        cards.forEach(card => {
+          const topicId = parseInt(card.dataset.topicId);
+          const topic = topics.find(t => t.id === topicId);
+          if (!topic) return;
+
+          if (STATE.activeFilter === "trending") {
+            const isTrending = (topic.views || 0) >= TRENDING_VIEW_THRESHOLD || (topic.like_count || 0) >= 10;
+            card.style.display = isTrending ? "" : "none";
+          } else {
+            card.style.display = "";
+          }
+        });
+      }
     }
   });
 
