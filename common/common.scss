@@ -5,52 +5,66 @@
 
 /* ----------------------------------------------------------
    1. CSS VARIABLES / COLOR PALETTE
+   (Nilai bersumber dari Theme Settings — dapat diubah admin)
    ---------------------------------------------------------- */
 :root {
-  --gc-blue-primary: #4a6cf7;
-  --gc-blue-dark: #1b2e7b;
+  --gc-blue-primary: #{$gc_primary_color};
+  --gc-blue-dark: #{$gc_primary_dark_color};
   --gc-blue-medium: #3b5bdb;
-  --gc-blue-light: #eef2ff;
-  --gc-teal-header: #2bb5e0;
-  --gc-hero-grad-start: #2bb5e0;
-  --gc-hero-grad-end: #4a7cf7;
-  --gc-card-bg: #ffffff;
-  --gc-card-border: #e8ecf4;
+  --gc-blue-light: #{$gc_primary_light_color};
+  --gc-teal-header: #{$gc_hero_start_color};
+  --gc-hero-grad-start: #{$gc_hero_start_color};
+  --gc-hero-grad-end: #{$gc_hero_end_color};
+  --gc-card-bg: #{$gc_card_bg_color};
+  --gc-card-border: #{$gc_card_border_color};
   --gc-card-hover: #f7f9ff;
-  --gc-text-primary: #1a1f36;
-  --gc-text-secondary: #6b7280;
-  --gc-text-muted: #9ca3af;
-  --gc-tag-pelatihan: #ff9500;
-  --gc-tag-pendidikan: #4a6cf7;
-  --gc-tag-dunia: #10b981;
-  --gc-tag-lainnya: #8b5cf6;
-  --gc-divider: #e5e7eb;
+  --gc-text-primary: #{$gc_text_primary_color};
+  --gc-text-secondary: #{$gc_text_secondary_color};
+  --gc-text-muted: #{$gc_text_muted_color};
+  --gc-tag-pelatihan: #{$gc_tag_pelatihan_color};
+  --gc-tag-pendidikan: #{$gc_tag_pendidikan_color};
+  --gc-tag-dunia: #{$gc_tag_dunia_color};
+  --gc-tag-lainnya: #{$gc_tag_lainnya_color};
+  --gc-divider: #{$gc_divider_color};
   --gc-search-bg: rgba(255, 255, 255, 0.18);
   --gc-search-border: rgba(255, 255, 255, 0.4);
-  --gc-pill-active-bg: #1b2e7b;
+  --gc-pill-active-bg: #{$gc_primary_dark_color};
   --gc-pill-active-text: #ffffff;
-  --gc-pill-bg: #ffffff;
-  --gc-pill-border: #d1d5db;
-  --gc-icon-btn-bg: #ffffff;
+  --gc-pill-bg: #{$gc_card_bg_color};
+  --gc-pill-border: #{$gc_divider_color};
+  --gc-icon-btn-bg: #{$gc_card_bg_color};
   --gc-popup-shadow: 0 8px 32px rgba(74, 108, 247, 0.15);
   --gc-radius-card: 12px;
   --gc-radius-pill: 999px;
   --gc-radius-popup: 10px;
   --gc-list-width: 340px;
-  --gc-font-body: "Nunito", "Segoe UI", sans-serif;
+
+  @if $gc_font_body == "Inter" {
+    --gc-font-body: "Inter", "Segoe UI", sans-serif;
+  } @else if $gc_font_body == "Poppins" {
+    --gc-font-body: "Poppins", "Segoe UI", sans-serif;
+  } @else if $gc_font_body == "Roboto" {
+    --gc-font-body: "Roboto", "Segoe UI", sans-serif;
+  } @else if $gc_font_body == "Open Sans" {
+    --gc-font-body: "Open Sans", "Segoe UI", sans-serif;
+  } @else if $gc_font_body == "Lato" {
+    --gc-font-body: "Lato", "Segoe UI", sans-serif;
+  } @else {
+    --gc-font-body: "Nunito", "Segoe UI", sans-serif;
+  }
 }
 
 /* ----------------------------------------------------------
    2. FONT IMPORT
+   (Font dimuat via head_tag.html — semua pilihan tersedia)
    ---------------------------------------------------------- */
-@import url("https://fonts.googleapis.com/css2?family=Nunito:wght@400;500;600;700;800&display=swap");
 
 /* ----------------------------------------------------------
    3. GLOBAL BODY OVERRIDES (only on ga-updates category)
    ---------------------------------------------------------- */
 body.category-ga-updates {
   font-family: var(--gc-font-body);
-  background: #f4f6fb;
+  background: #{$gc_page_bg_color};
 }
 
 /* Section 4 (Sidebar Styling) removed — handled by separate theme component */
@@ -312,7 +326,7 @@ body.category-ga-updates {
     display: flex;
     gap: 0;
     min-height: calc(100vh - 180px);
-    background: #f4f6fb;
+    background: #{$gc_page_bg_color};
   }
 
   /* LEFT PANEL — Topic Feed */
