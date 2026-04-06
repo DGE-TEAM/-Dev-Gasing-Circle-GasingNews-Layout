@@ -1,6 +1,7 @@
 // =============================================================
 // GASING CIRCLE — Academy News Theme Component
 // File: javascripts/discourse/api-initializers/custom-layout.js
+// Version: 2.1.0 — Comment Section Redesign (Pixel-Perfect)
 // =============================================================
 
 import { apiInitializer } from "discourse/lib/api";
@@ -17,11 +18,13 @@ const SVG = {
   search: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clip-rule="evenodd"/></svg>`,
   calendar: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M6 2a1 1 0 00-1 1v1H4a2 2 0 00-2 2v10a2 2 0 002 2h12a2 2 0 002-2V6a2 2 0 00-2-2h-1V3a1 1 0 10-2 0v1H7V3a1 1 0 00-1-1zm0 5a1 1 0 000 2h8a1 1 0 100-2H6z" clip-rule="evenodd"/></svg>`,
   filter: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-.293.707L12 11.414V15a1 1 0 01-.553.894l-4 2A1 1 0 016 17v-5.586L3.293 6.707A1 1 0 013 6V3z" clip-rule="evenodd"/></svg>`,
+  heartOutline: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
+  heartFilled: `<svg viewBox="0 0 24 24" fill="currentColor"><path d="M20.84 4.61a5.5 5.5 0 0 0-7.78 0L12 5.67l-1.06-1.06a5.5 5.5 0 0 0-7.78 7.78l1.06 1.06L12 21.23l7.78-7.78 1.06-1.06a5.5 5.5 0 0 0 0-7.78z"/></svg>`,
   heart: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M3.172 5.172a4 4 0 015.656 0L10 6.343l1.172-1.171a4 4 0 115.656 5.656L10 17.657l-6.828-6.829a4 4 0 010-5.656z" clip-rule="evenodd"/></svg>`,
   chat: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M18 10c0 3.866-3.582 7-8 7a8.841 8.841 0 01-4.083-.98L2 17l1.338-3.123C2.493 12.767 2 11.434 2 10c0-3.866 3.582-7 8-7s8 3.134 8 7zM7 9H5v2h2V9zm8 0h-2v2h2V9zM9 9h2v2H9V9z" clip-rule="evenodd"/></svg>`,
   eye: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M10 12a2 2 0 100-4 2 2 0 000 4z"/><path fill-rule="evenodd" d="M.458 10C1.732 5.943 5.522 3 10 3s8.268 2.943 9.542 7c-1.274 4.057-5.064 7-9.542 7S1.732 14.057.458 10zM14 10a4 4 0 11-8 0 4 4 0 018 0z" clip-rule="evenodd"/></svg>`,
-  bookmark: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>`,
-  share: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M15 8a3 3 0 10-2.977-2.63l-4.94 2.47a3 3 0 100 4.319l4.94 2.47a3 3 0 10.895-1.789l-4.94-2.47a3.027 3.027 0 000-.74l4.94-2.47C13.456 7.68 14.19 8 15 8z"/></svg>`,
+  bookmark: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21l-7-5-7 5V5a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2z"/></svg>`,
+  share: `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>`,
   reply: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.707 3.293a1 1 0 010 1.414L5.414 7H11a7 7 0 017 7v2a1 1 0 11-2 0v-2a5 5 0 00-5-5H5.414l2.293 2.293a1 1 0 11-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`,
   more: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M6 10a2 2 0 11-4 0 2 2 0 014 0zM12 10a2 2 0 11-4 0 2 2 0 014 0zM16 12a2 2 0 100-4 2 2 0 000 4z"/></svg>`,
   save: `<svg viewBox="0 0 20 20" fill="currentColor"><path d="M5 4a2 2 0 012-2h6a2 2 0 012 2v14l-5-2.5L5 18V4z"/></svg>`,
@@ -29,6 +32,8 @@ const SVG = {
   newspaper: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M2 5a2 2 0 012-2h8a2 2 0 012 2v10a2 2 0 002 2H4a2 2 0 01-2-2V5zm3 1h6v4H5V6zm6 6H5v2h6v-2z" clip-rule="evenodd"/><path d="M15 7h1a2 2 0 012 2v5.5a1.5 1.5 0 01-3 0V7z"/></svg>`,
   chevronLeft: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M12.707 5.293a1 1 0 010 1.414L9.414 10l3.293 3.293a1 1 0 01-1.414 1.414l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 0z" clip-rule="evenodd"/></svg>`,
   chevronRight: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M7.293 14.707a1 1 0 010-1.414L10.586 10 7.293 6.707a1 1 0 011.414-1.414l4 4a1 1 0 010 1.414l-4 4a1 1 0 01-1.414 0z" clip-rule="evenodd"/></svg>`,
+  chevronUp: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M14.707 12.707a1 1 0 01-1.414 0L10 9.414l-3.293 3.293a1 1 0 01-1.414-1.414l4-4a1 1 0 011.414 0l4 4a1 1 0 010 1.414z" clip-rule="evenodd"/></svg>`,
+  chevronDown: `<svg viewBox="0 0 20 20" fill="currentColor"><path fill-rule="evenodd" d="M5.293 7.293a1 1 0 011.414 0L10 10.586l3.293-3.293a1 1 0 111.414 1.414l-4 4a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414z" clip-rule="evenodd"/></svg>`,
 };
 
 // ─────────────────────────────────────────────────────────────
@@ -42,16 +47,16 @@ const STATE = {
   dateRange: { start: null, end: null },
   activeTopicId: null,
   calendarMonth: { left: null, right: null },
+  expandedReplies: {},
 };
 
-let discourseApi = null; // Store the API object for global use
+let discourseApi = null;
 
 // ─────────────────────────────────────────────────────────────
-// UTILITY: Is this the target category route?
+// UTILITY
 // ─────────────────────────────────────────────────────────────
 function isTargetRoute() {
-  const path = window.location.pathname;
-  return path.startsWith("/c/ga-updates") || path.includes("/c/ga-updates");
+  return window.location.pathname.includes("/c/ga-updates");
 }
 
 function addBodyClass() {
@@ -83,187 +88,112 @@ function getTopicTag(topic) {
   if (!topic) return null;
   const tags = topic.tags || [];
   for (const t of tags) {
-    const tagName = typeof t === "string" ? t : t?.name || t?.id || String(t);
-    if (TAG_CLASSES[tagName.toLowerCase()]) return tagName;
+    const name = typeof t === "string" ? t : (t?.name || t?.id || String(t));
+    if (TAG_CLASSES[name.toLowerCase()]) return name;
   }
   const first = tags[0];
   if (!first) return null;
-  return typeof first === "string"
-    ? first
-    : first?.name || first?.id || String(first);
+  return typeof first === "string" ? first : (first?.name || first?.id || String(first));
 }
 
 // ─────────────────────────────────────────────────────────────
 // CALENDAR HELPERS
 // ─────────────────────────────────────────────────────────────
-const MONTH_NAMES = [
-  "January",
-  "February",
-  "March",
-  "April",
-  "May",
-  "June",
-  "July",
-  "August",
-  "September",
-  "October",
-  "November",
-  "December",
-];
-const DOW = ["Su", "Mo", "Tu", "We", "Th", "Fr", "Sa"];
+const MONTH_NAMES = ["January","February","March","April","May","June","July","August","September","October","November","December"];
+const DOW = ["Su","Mo","Tu","We","Th","Fr","Sa"];
 
 function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
   const firstDay = new Date(year, month, 1).getDay();
   const daysInMonth = new Date(year, month + 1, 0).getDate();
   const today = new Date();
-
-  let html = `<div class="gc-calendar">
-    <div class="gc-cal-header">${MONTH_NAMES[month]} ${year}</div>
-    <div class="gc-cal-grid">`;
-
-  DOW.forEach((d) => {
-    html += `<div class="gc-cal-dow">${d}</div>`;
-  });
-
-  // Leading empty cells
-  for (let i = 0; i < firstDay; i++) {
-    html += `<div class="gc-cal-day other-month"></div>`;
-  }
-
+  let html = `<div class="gc-calendar"><div class="gc-cal-header">${MONTH_NAMES[month]} ${year}</div><div class="gc-cal-grid">`;
+  DOW.forEach((d) => { html += `<div class="gc-cal-dow">${d}</div>`; });
+  for (let i = 0; i < firstDay; i++) html += `<div class="gc-cal-day other-month"></div>`;
   for (let day = 1; day <= daysInMonth; day++) {
-    const date = new Date(year, month, day);
-    const ts = date.getTime();
+    const ts = new Date(year, month, day).getTime();
     let cls = "gc-cal-day";
-
-    if (
-      today.getDate() === day &&
-      today.getMonth() === month &&
-      today.getFullYear() === year
-    ) {
-      cls += " today";
-    }
-    if (rangeStart && Math.abs(ts - rangeStart) < 86400000)
-      cls += " range-start";
+    if (today.getDate() === day && today.getMonth() === month && today.getFullYear() === year) cls += " today";
+    if (rangeStart && Math.abs(ts - rangeStart) < 86400000) cls += " range-start";
     if (rangeEnd && Math.abs(ts - rangeEnd) < 86400000) cls += " range-end";
-    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd)
-      cls += " in-range";
-
+    if (rangeStart && rangeEnd && ts > rangeStart && ts < rangeEnd) cls += " in-range";
     html += `<div class="${cls}" data-ts="${ts}">${day}</div>`;
   }
-
   html += `</div></div>`;
   return html;
 }
 
 // ─────────────────────────────────────────────────────────────
-// BUILD HERO BANNER HTML
+// HERO BANNER
 // ─────────────────────────────────────────────────────────────
 function buildHeroBanner() {
-  return `
-    <div id="gc-hero-banner">
-      <h1 class="gc-hero-title">Gasing Academy News <span class="gc-hero-emoji">📰</span></h1>
-      <p class="gc-hero-subtitle">Ikuti berita dan perkembangan terkini seputar Gasing!</p>
-      <div class="gc-search-wrapper">
-        <span class="gc-search-icon">${SVG.search}</span>
-        <input class="gc-search-input" type="text" id="gc-search-input" placeholder="Search topic..." />
-      </div>
+  return `<div id="gc-hero-banner">
+    <h1 class="gc-hero-title">Gasing Academy News <span class="gc-hero-emoji">📰</span></h1>
+    <p class="gc-hero-subtitle">Ikuti berita dan perkembangan terkini seputar Gasing!</p>
+    <div class="gc-search-wrapper">
+      <span class="gc-search-icon">${SVG.search}</span>
+      <input class="gc-search-input" type="text" id="gc-search-input" placeholder="Search topic..." />
     </div>
-  `;
+  </div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
-// BUILD ACTION BAR HTML
+// ACTION BAR
 // ─────────────────────────────────────────────────────────────
 function buildActionBar() {
-  return `
-    <div id="gc-action-bar">
-      <div class="gc-action-bar-inner">
-        <div class="gc-pills">
-          <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge" id="gc-badge-latest">—</span></button>
-          <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge" id="gc-badge-trending">—</span></button>
-        </div>
-        <div class="gc-bar-divider"></div>
-        <div class="gc-icon-buttons">
-          <button class="gc-icon-btn" id="gc-date-btn" title="Filter by date">${SVG.calendar}</button>
-          <button class="gc-icon-btn" id="gc-filter-btn" title="Filter by category">${SVG.filter}</button>
-        </div>
-      </div>
+  return `<div id="gc-action-bar"><div class="gc-action-bar-inner">
+    <div class="gc-pills">
+      <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge" id="gc-badge-latest">—</span></button>
+      <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge" id="gc-badge-trending">—</span></button>
     </div>
-  `;
+    <div class="gc-bar-divider"></div>
+    <div class="gc-icon-buttons">
+      <button class="gc-icon-btn" id="gc-date-btn">${SVG.calendar}</button>
+      <button class="gc-icon-btn" id="gc-filter-btn">${SVG.filter}</button>
+    </div>
+  </div></div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
-// BUILD FILTER POPUP HTML
+// FILTER / DATE POPUPS
 // ─────────────────────────────────────────────────────────────
 function buildFilterPopup() {
   const filters = ["Pendidikan", "Pelatihan", "Dunia", "Lainnya"];
-  const items = filters
-    .map(
-      (f) => `
+  return `<div id="gc-filter-popup">${filters.map((f) => `
     <div class="gc-filter-item">
-      <input type="checkbox" id="gc-filter-${f.toLowerCase()}" data-filter="${f.toLowerCase()}"
-        ${STATE.selectedFilters.includes(f.toLowerCase()) ? "checked" : ""} />
+      <input type="checkbox" id="gc-filter-${f.toLowerCase()}" data-filter="${f.toLowerCase()}" ${STATE.selectedFilters.includes(f.toLowerCase()) ? "checked" : ""} />
       <label for="gc-filter-${f.toLowerCase()}">${f}</label>
-    </div>
-  `,
-    )
-    .join("");
-  return `<div id="gc-filter-popup">${items}</div>`;
+    </div>`).join("")}</div>`;
 }
 
-// ─────────────────────────────────────────────────────────────
-// BUILD DATE POPUP HTML
-// ─────────────────────────────────────────────────────────────
 function buildDatePopup() {
   const now = new Date();
   if (!STATE.calendarMonth.left) {
-    STATE.calendarMonth.left = {
-      year: now.getFullYear(),
-      month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1,
-    };
-    STATE.calendarMonth.right = {
-      year: now.getFullYear(),
-      month: now.getMonth(),
-    };
+    STATE.calendarMonth.left = { year: now.getFullYear(), month: now.getMonth() - 1 < 0 ? 11 : now.getMonth() - 1 };
+    STATE.calendarMonth.right = { year: now.getFullYear(), month: now.getMonth() };
   }
   const { left, right } = STATE.calendarMonth;
-
-  return `
-    <div id="gc-date-popup">
-      <div class="gc-date-header">
-        <button id="gc-date-prev">${SVG.chevronLeft}</button>
-        <span></span>
-        <button id="gc-date-next">${SVG.chevronRight}</button>
-      </div>
-      <div class="gc-calendars">
-        ${buildCalendarHTML(left.year, left.month, STATE.dateRange.start, STATE.dateRange.end)}
-        ${buildCalendarHTML(right.year, right.month, STATE.dateRange.start, STATE.dateRange.end)}
-      </div>
+  return `<div id="gc-date-popup">
+    <div class="gc-date-header">
+      <button id="gc-date-prev">${SVG.chevronLeft}</button><span></span><button id="gc-date-next">${SVG.chevronRight}</button>
     </div>
-  `;
+    <div class="gc-calendars">
+      ${buildCalendarHTML(left.year, left.month, STATE.dateRange.start, STATE.dateRange.end)}
+      ${buildCalendarHTML(right.year, right.month, STATE.dateRange.start, STATE.dateRange.end)}
+    </div>
+  </div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
-// BUILD TOPIC CARD HTML
+// TOPIC CARD
 // ─────────────────────────────────────────────────────────────
 function buildTopicCard(topic) {
   if (!topic) return "";
   const tag = getTopicTag(topic);
   const tagHtml = tag ? renderTag(tag) : "";
-  const img = topic.image_url
-    ? `<div class="gc-card-thumbnail"><img src="${topic.image_url}" alt="" loading="lazy" /></div>`
-    : "";
-  const excerpt = topic.excerpt
-    ? `<p class="gc-card-excerpt">${topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 100)}...</p>`
-    : "";
+  const img = topic.image_url ? `<div class="gc-card-thumbnail"><img src="${topic.image_url}" alt="" loading="lazy" /></div>` : "";
+  const excerpt = topic.excerpt ? `<p class="gc-card-excerpt">${topic.excerpt.replace(/<[^>]*>/g, "").substring(0, 100)}...</p>` : "";
   const avatar = topic.posters?.[0]?.user?.avatar_template
-    ? `<img class="gc-avatar" src="${topic.posters[0].user.avatar_template.replace("{size}", "24")}" alt="" />`
-    : "";
-  const likes = topic.like_count || 0;
-  const replies = topic.posts_count ? topic.posts_count - 1 : 0;
-  const views = topic.views || 0;
-  const date = moment(topic.created_at).format("D MMM YYYY");
-
+    ? `<img class="gc-avatar" src="${topic.posters[0].user.avatar_template.replace("{size}", "24")}" alt="" />` : "";
   return `
     <div class="gc-topic-card" data-topic-id="${topic.id}" data-topic-slug="${topic.slug}">
       ${img}
@@ -273,217 +203,190 @@ function buildTopicCard(topic) {
         ${excerpt}
         <div class="gc-card-meta">
           ${avatar}
-          <span class="gc-meta-item">${SVG.heart} ${likes}</span>
-          <span class="gc-meta-item">${SVG.chat} ${replies}</span>
-          <span class="gc-meta-item">${SVG.eye} ${views}</span>
-          <span class="gc-meta-item" style="margin-left:auto">${date}</span>
+          <span class="gc-meta-item">${SVG.heart} ${topic.like_count || 0}</span>
+          <span class="gc-meta-item">${SVG.chat} ${topic.posts_count ? topic.posts_count - 1 : 0}</span>
+          <span class="gc-meta-item">${SVG.eye} ${topic.views || 0}</span>
+          <span class="gc-meta-item" style="margin-left:auto">${moment(topic.created_at).format("D MMM YYYY")}</span>
         </div>
       </div>
-    </div>
-  `;
+    </div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
-// BUILD TOPIC DETAIL PANEL HTML
+// COMMENT HELPERS
+// ─────────────────────────────────────────────────────────────
+function getLikeData(post) {
+  const a = post.actions_summary?.find((x) => x.id === 2);
+  return { count: a?.count || 0, liked: a?.acted || false };
+}
+
+function getUserRole(post) {
+  if (post.user_title) return post.user_title;
+  if (post.primary_group_name) return post.primary_group_name;
+  if (post.staff) return "Trainer Utama";
+  if ((post.trust_level || 0) >= 3) return "Trainer Kelas";
+  return "";
+}
+
+// ─────────────────────────────────────────────────────────────
+// BUILD SINGLE COMMENT
+// ─────────────────────────────────────────────────────────────
+function buildCommentHTML(post, isNested) {
+  const av = (post.avatar_template || "").replace("{size}", "40");
+  const role = getUserRole(post);
+  const timeAgo = moment(post.created_at).fromNow();
+  const { count: likeCount, liked } = getLikeData(post);
+  const hasReplies = (post.reply_count || 0) > 0;
+  const isExpanded = STATE.expandedReplies[post.id] || false;
+
+  return `
+    <div class="gc-comment${isNested ? " gc-comment--nested" : ""}" data-post-id="${post.id}" data-post-number="${post.post_number}">
+      <div class="gc-comment-avatar-wrap">
+        <img class="gc-comment-avatar" src="${av}" alt="${post.name || post.username}" loading="lazy" onerror="this.style.visibility='hidden'" />
+      </div>
+      <div class="gc-comment-body">
+        <div class="gc-comment-header">
+          <span class="gc-comment-author">${post.name || post.username}</span>
+          ${role ? `<span class="gc-comment-role">${role}</span>` : ""}
+          <span class="gc-comment-time">${timeAgo}</span>
+        </div>
+        <div class="gc-comment-text">${post.cooked}</div>
+        <div class="gc-comment-actions">
+          ${hasReplies ? `
+            <button class="gc-replies-pill" data-post-id="${post.id}" data-expanded="${isExpanded}">
+              ${isExpanded ? SVG.chevronUp : SVG.chevronDown}
+              ${post.reply_count} Balasan
+            </button>` : ""}
+          <button class="gc-comment-like${liked ? " is-liked" : ""}" data-post-id="${post.id}">
+            ${liked ? SVG.heartFilled : SVG.heartOutline}
+            <span class="gc-like-count">${likeCount > 0 ? likeCount : ""}</span>
+          </button>
+          <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
+          <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
+            ${SVG.reply} Balas
+          </button>
+        </div>
+        ${hasReplies ? `<div class="gc-nested-replies" data-parent-post-id="${post.id}"${isExpanded ? "" : ` style="display:none"`}></div>` : ""}
+      </div>
+    </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// BUILD TOPIC DETAIL
 // ─────────────────────────────────────────────────────────────
 function buildTopicDetail(topic, posts) {
   if (!topic) {
-    return `
-      <div id="gc-empty-detail">
-        ${SVG.newspaper}
-        <p>Pilih artikel untuk membaca</p>
-      </div>
-    `;
+    return `<div id="gc-empty-detail">${SVG.newspaper}<p>Pilih artikel untuk membaca</p></div>`;
   }
 
   const tag = getTopicTag(topic);
   const tagHtml = tag ? renderTag(tag) : "";
-  const date = moment(topic.created_at).format("D MMM YYYY");
   const likes = topic.like_count || 0;
-  const replies = topic.reply_count || 0;
+  const replies = topic.reply_count || (topic.posts_count ? topic.posts_count - 1 : 0);
   const views = topic.views || 0;
 
-  // First post (OP)
   const firstPost = posts?.[0];
-  const cooked = firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`;
+  let bodyText = (firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`).trim();
 
-  // Reply posts (comments)
-  const replyPosts = posts?.slice(1) || [];
-  const commentsHtml = replyPosts
-    .map((post) => {
-      const avatarUrl = post.avatar_template?.replace("{size}", "32") || "";
-      const isReply = post.reply_to_post_number > 0;
-      const role =
-        post.user_title ||
-        (post.staff
-          ? "Trainer Utama"
-          : post.trust_level >= 2
-            ? "Trainer Kelas"
-            : "");
-      const timeAgo = moment(post.created_at).fromNow();
-
-      // Dynamic like data from actions_summary
-      const likeAction = post.actions_summary?.find((a) => a.id === 2);
-      const likeCount = likeAction?.count || 0;
-      const userLiked = likeAction?.acted || false;
-
-      return `
-      <div class="gc-comment ${isReply ? "gc-comment--reply" : ""}" data-post-id="${post.id}">
-        <img class="gc-comment-avatar" src="${avatarUrl}" alt="${post.username}" />
-        <div class="gc-comment-content">
-          <div class="gc-comment-header">
-            <span class="gc-comment-author">${post.name || post.username}</span>
-            ${role ? `<span class="gc-comment-role">${role}</span>` : ""}
-            <span class="gc-comment-time">${timeAgo}</span>
-          </div>
-          <div class="gc-comment-text">${post.cooked}</div>
-          <div class="gc-comment-actions">
-            <button class="gc-comment-like ${userLiked ? "liked" : ""}" data-post-id="${post.id}" title="${userLiked ? "Batal Suka" : "Suka"}">
-              ${SVG.heart} ${likeCount}
-            </button>
-            <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
-            <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
-              ${SVG.reply} Balas
-            </button>
-            ${post.reply_count > 0 ? `<button class="gc-reply-badge" data-post-id="${post.id}">${post.reply_count} Balasan</button>` : ""}
-          </div>
-        </div>
-      </div>
-    `;
-    })
-    .join("");
-
-  // Subtitle: the plain-text excerpt shown directly below the title.
-  // Comes from topic.excerpt (same text as the card excerpt in the left feed).
-  const subtitleText = topic.excerpt
-    ? topic.excerpt.replace(/<[^>]*>/g, "").trim()
-    : "";
-
-  // Body text: full cooked HTML with images in their natural position.
-  // Strip the opening paragraph from cooked if it duplicates the subtitle
-  // (Discourse copies the excerpt as the first <p> in the post body).
-  let bodyText = cooked.trim();
+  const subtitleText = topic.excerpt ? topic.excerpt.replace(/<[^>]*>/g, "").trim() : "";
   if (subtitleText) {
-    // Normalise both strings to bare words for comparison (strip tags + collapse whitespace)
-    const normalise = (s) =>
-      s
-        .replace(/<[^>]*>/g, "")
-        .replace(/\s+/g, " ")
-        .trim()
-        .toLowerCase();
-    const normSub = normalise(subtitleText).substring(0, 80); // compare first 80 chars
-    // Match the first <p>…</p> block and remove it only if it starts with the subtitle text
-    bodyText = bodyText
-      .replace(/^(<p>)([\s\S]*?)(<\/p>)/, (match, open, inner, close) => {
-        const normInner = normalise(inner).substring(0, 80);
-        return normInner.startsWith(normSub) ? "" : match;
-      })
-      .trim();
+    const norm = (s) => s.replace(/<[^>]*>/g, "").replace(/\s+/g, " ").trim().toLowerCase();
+    const ns = norm(subtitleText).substring(0, 80);
+    bodyText = bodyText.replace(/^(<p>)([\s\S]*?)(<\/p>)/, (m, o, inner, c) =>
+      norm(inner).substring(0, 80).startsWith(ns) ? "" : m
+    ).trim();
   }
 
-  // Reusable stats markup
-  const statsRow = `
-    <span class="gc-stat">${SVG.heart} ${likes}</span>
-    <span class="gc-stat">${SVG.chat} ${replies}</span>
-    <span class="gc-stat">${SVG.eye} ${views}</span>
-    <div class="gc-detail-actions">
-      <button class="gc-action-icon gc-topic-bookmark-btn" title="Simpan">${SVG.bookmark}</button>
-      <button class="gc-action-icon gc-topic-share-btn" title="Bagikan">${SVG.share}</button>
-    </div>
-  `;
+  const topLevelPosts = posts?.slice(1) || [];
+  const commentsHtml = topLevelPosts.map((p) => buildCommentHTML(p, false)).join("");
 
   return `
     <div class="gc-detail-inner">
-
-      <div class="gc-detail-date">${date} ${tagHtml}</div>
+      <div class="gc-detail-date">${moment(topic.created_at).format("D MMM YYYY")} ${tagHtml}</div>
       <h2 class="gc-detail-title">${topic.title}</h2>
       ${subtitleText ? `<p class="gc-detail-subtitle">${subtitleText}</p>` : ""}
-
       <hr class="gc-detail-sep" />
-
-      <div class="gc-detail-stats">${statsRow}</div>
-
+      <div class="gc-stats-row gc-stats-top">
+        <div class="gc-stats-left">
+          <span class="gc-stat">${SVG.heart}<span class="gc-stat-value">${likes}</span></span>
+          <span class="gc-stat">${SVG.chat}<span class="gc-stat-value">${replies}</span></span>
+          <span class="gc-stat">${SVG.eye}<span class="gc-stat-value">${views}</span></span>
+        </div>
+        <div class="gc-stats-right">
+          <button class="gc-action-icon gc-topic-bookmark-btn">${SVG.bookmark}</button>
+          <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
+        </div>
+      </div>
       <div class="gc-detail-body">${bodyText}</div>
 
-      <button class="gc-reply-btn" data-topic-id="${topic.id}">${SVG.reply} Balas</button>
+      <!-- COMMENTS HEADER — matches reference image exactly -->
+      <div class="gc-comments-header">
+        <div class="gc-comments-stats-row">
+          <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
+          <span class="gc-cstat">${SVG.chat}<span>${replies}</span></span>
+          <span class="gc-cstat">${SVG.eye}<span>${views}</span></span>
+          <button class="gc-action-icon gc-topic-bookmark-btn">${SVG.bookmark}</button>
+          <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
+        </div>
+        <button class="gc-main-reply-btn" data-topic-id="${topic.id}">
+          ${SVG.reply} Balas
+        </button>
+      </div>
 
       <hr class="gc-detail-sep-bottom" />
 
-      <div class="gc-detail-bottom-stats">${statsRow}</div>
-
-      ${replyPosts.length > 0 ? `<div class="gc-comments">${commentsHtml}</div>` : ""}
-
-    </div>
-  `;
+      ${topLevelPosts.length > 0 ? `<div class="gc-comments" id="gc-comments-list">${commentsHtml}</div>` : ""}
+    </div>`;
 }
 
 // ─────────────────────────────────────────────────────────────
-// FETCH TOPICS from API
+// FETCH FUNCTIONS
 // ─────────────────────────────────────────────────────────────
 async function fetchCategoryTopics() {
   try {
     const res = await fetch("/c/ga-updates.json?no_definitions=true", {
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
+      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
     });
     if (!res.ok) return [];
     const data = await res.json();
     return data.topic_list?.topics || [];
-  } catch (e) {
-    console.warn("[GasingTheme] Failed to fetch topics:", e);
-    return [];
-  }
+  } catch (e) { return []; }
 }
 
-// ─────────────────────────────────────────────────────────────
-// FETCH TOPIC POSTS
-// ─────────────────────────────────────────────────────────────
 async function fetchTopicPosts(topicId, topicSlug) {
   try {
     const res = await fetch(`/t/${topicSlug}/${topicId}.json`, {
-      headers: {
-        Accept: "application/json",
-        "X-Requested-With": "XMLHttpRequest",
-      },
+      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
     });
     if (!res.ok) return { topic: null, posts: [] };
     const data = await res.json();
-    return {
-      topic: data,
-      posts: data.post_stream?.posts || [],
-    };
-  } catch (e) {
-    console.warn("[GasingTheme] Failed to fetch topic posts:", e);
-    return { topic: null, posts: [] };
-  }
+    return { topic: data, posts: data.post_stream?.posts || [] };
+  } catch (e) { return { topic: null, posts: [] }; }
+}
+
+async function fetchPostReplies(topicId, postNumber) {
+  try {
+    const res = await fetch(`/t/${topicId}/posts.json?post_number=${postNumber}&asc=true`, {
+      headers: { Accept: "application/json", "X-Requested-With": "XMLHttpRequest" },
+    });
+    if (!res.ok) return [];
+    const data = await res.json();
+    return (data.post_stream?.posts || []).filter((p) => p.reply_to_post_number === postNumber);
+  } catch (e) { return []; }
 }
 
 // ─────────────────────────────────────────────────────────────
-// MASTER RENDER: inject the full layout into the page
+// MASTER RENDER
 // ─────────────────────────────────────────────────────────────
-let _renderTimeout = null;
-
 async function renderLayout() {
   if (!isTargetRoute()) return;
-
   addBodyClass();
 
-  // Find or create the wrapper
-  let outlet = document.getElementById("main-outlet");
-  if (!outlet) return;
+  const outlet = document.getElementById("main-outlet");
+  if (!outlet || document.getElementById("gc-category-wrapper")) return;
 
-  // Prevent double render
-  if (document.getElementById("gc-category-wrapper")) {
-    // Already rendered, just refresh feed
-    return;
-  }
-
-  // Hide existing Discourse content temporarily
   outlet.style.opacity = "0";
 
-  // Build wrapper
   const wrapper = document.createElement("div");
   wrapper.id = "gc-category-wrapper";
   wrapper.innerHTML = `
@@ -491,64 +394,35 @@ async function renderLayout() {
     ${buildActionBar()}
     <div id="gc-master-detail">
       <div id="gc-topic-feed">
-        ${[1, 2, 3, 4, 5]
-          .map(
-            () => `
-          <div class="gc-topic-card" style="pointer-events:none">
-            <div class="gc-card-body">
-              <div class="gc-skeleton" style="height:14px;width:60%;margin-bottom:6px"></div>
-              <div class="gc-skeleton" style="height:11px;width:90%;margin-bottom:4px"></div>
-              <div class="gc-skeleton" style="height:11px;width:70%"></div>
-            </div>
-          </div>
-        `,
-          )
-          .join("")}
+        ${[1,2,3,4,5].map(() => `<div class="gc-topic-card" style="pointer-events:none"><div class="gc-card-body">
+          <div class="gc-skeleton" style="height:14px;width:60%;margin-bottom:6px"></div>
+          <div class="gc-skeleton" style="height:11px;width:90%;margin-bottom:4px"></div>
+          <div class="gc-skeleton" style="height:11px;width:70%"></div>
+        </div></div>`).join("")}
       </div>
       <div id="gc-topic-detail">
-        <div id="gc-empty-detail">
-          ${SVG.newspaper}
-          <p>Pilih artikel untuk membaca</p>
-        </div>
+        <div id="gc-empty-detail">${SVG.newspaper}<p>Pilih artikel untuk membaca</p></div>
       </div>
-    </div>
-  `;
+    </div>`;
 
-  // Insert after #main-outlet's first child, or prepend to outlet
-  const mainContainer = outlet.querySelector(".container") || outlet;
-  mainContainer.prepend(wrapper);
-
+  (outlet.querySelector(".container") || outlet).prepend(wrapper);
   outlet.style.opacity = "1";
 
-  // Fetch real topics
   const topics = await fetchCategoryTopics();
   const feed = document.getElementById("gc-topic-feed");
 
-  // Update badge counts dynamically
-  const latestCount = topics.length;
-  const TRENDING_VIEW_THRESHOLD = 50;
-  const trendingTopics = topics.filter(
-    (t) =>
-      (t.views || 0) >= TRENDING_VIEW_THRESHOLD || (t.like_count || 0) >= 10,
-  );
-  const trendingCount = trendingTopics.length;
-
   const latestBadge = document.getElementById("gc-badge-latest");
   const trendingBadge = document.getElementById("gc-badge-trending");
-  if (latestBadge) latestBadge.textContent = latestCount;
-  if (trendingBadge) trendingBadge.textContent = trendingCount;
+  if (latestBadge) latestBadge.textContent = topics.length;
+  if (trendingBadge) trendingBadge.textContent = topics.filter((t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10).length;
+
   if (feed) {
-    if (topics.length === 0) {
+    if (!topics.length) {
       feed.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gc-text-muted);font-size:0.82rem">Tidak ada artikel ditemukan.</div>`;
     } else {
       feed.innerHTML = topics.map((t) => buildTopicCard(t)).join("");
       bindTopicCardClicks(topics);
-
-      // Auto-select first topic
-      const firstCard = feed.querySelector(".gc-topic-card");
-      if (firstCard) {
-        firstCard.click();
-      }
+      feed.querySelector(".gc-topic-card")?.click();
     }
   }
 
@@ -566,215 +440,289 @@ function bindTopicCardClicks(topics) {
   feed.addEventListener("click", async (e) => {
     const card = e.target.closest(".gc-topic-card");
     if (!card) return;
-
     const topicId = parseInt(card.dataset.topicId);
     const topicSlug = card.dataset.topicSlug;
     if (!topicId) return;
 
-    // Mark active
-    feed
-      .querySelectorAll(".gc-topic-card")
-      .forEach((c) => c.classList.remove("active"));
+    feed.querySelectorAll(".gc-topic-card").forEach((c) => c.classList.remove("active"));
     card.classList.add("active");
     STATE.activeTopicId = topicId;
+    STATE.expandedReplies = {};
 
-    // Show loading
     const detail = document.getElementById("gc-topic-detail");
     if (detail) {
-      detail.innerHTML = `
-        <div class="gc-detail-inner">
-          ${[1, 2, 3]
-            .map(
-              () => `
-            <div class="gc-skeleton" style="height:18px;width:80%;margin-bottom:10px"></div>
-            <div class="gc-skeleton" style="height:12px;width:95%;margin-bottom:6px"></div>
-            <div class="gc-skeleton" style="height:200px;width:100%;margin-bottom:10px;border-radius:10px"></div>
-          `,
-            )
-            .join("")}
-        </div>
-      `;
+      detail.innerHTML = `<div class="gc-detail-inner">${[1,2,3].map(() => `
+        <div class="gc-skeleton" style="height:18px;width:80%;margin-bottom:10px"></div>
+        <div class="gc-skeleton" style="height:12px;width:95%;margin-bottom:6px"></div>
+        <div class="gc-skeleton" style="height:200px;width:100%;margin-bottom:10px;border-radius:10px"></div>
+      `).join("")}</div>`;
     }
 
     const { topic, posts } = await fetchTopicPosts(topicId, topicSlug);
-    const topicMeta = topics.find((t) => t.id === topicId);
-
     if (detail) {
-      detail.innerHTML = buildTopicDetail(topic || topicMeta, posts);
+      detail.innerHTML = buildTopicDetail(topic || topics.find((t) => t.id === topicId), posts);
       detail.scrollTop = 0;
-      bindDetailEventListeners(detail, topic || topicMeta, posts);
+      bindDetailActions(detail, topic, posts);
     }
   });
 }
 
 // ─────────────────────────────────────────────────────────────
-// BIND ACTION BAR (pills, filter, date)
+// BIND DETAIL ACTIONS
 // ─────────────────────────────────────────────────────────────
-function bindActionBar(topics) {
-  const TRENDING_VIEW_THRESHOLD = 50;
-
-  // Pill toggles
-  document.addEventListener("click", (e) => {
-    const pill = e.target.closest(".gc-pill");
-    if (pill) {
-      document
-        .querySelectorAll(".gc-pill")
-        .forEach((p) => p.classList.remove("active"));
-      pill.classList.add("active");
-      STATE.activeFilter = pill.dataset.pill;
-
-      // Filter feed based on pill selection
-      const feed = document.getElementById("gc-topic-feed");
-      if (feed) {
-        const cards = feed.querySelectorAll(".gc-topic-card");
-        cards.forEach((card) => {
-          const topicId = parseInt(card.dataset.topicId);
-          const topic = topics.find((t) => t.id === topicId);
-          if (!topic) return;
-
-          if (STATE.activeFilter === "trending") {
-            const isTrending =
-              (topic.views || 0) >= TRENDING_VIEW_THRESHOLD ||
-              (topic.like_count || 0) >= 10;
-            card.style.display = isTrending ? "" : "none";
-          } else {
-            card.style.display = "";
-          }
-        });
-      }
-    }
+function bindDetailActions(container, topic, posts) {
+  // Main reply → topic
+  container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!discourseApi?.currentUser) return;
+      discourseApi.container.lookup("controller:composer").open({ action: "reply", topic });
+    });
   });
 
-  // Filter popup toggle
-  const filterBtn = document.getElementById("gc-filter-btn");
-  if (filterBtn) {
-    filterBtn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      closeAllPopups();
-      STATE.filterOpen = !STATE.filterOpen;
-      if (STATE.filterOpen) {
-        filterBtn.classList.add("active");
-        const popup = document.createElement("div");
-        popup.innerHTML = buildFilterPopup();
-        const iconBtns = document.querySelector(".gc-icon-buttons");
-        iconBtns.style.position = "relative";
-        iconBtns.appendChild(popup.firstElementChild);
-        bindFilterPopup();
+  // Bookmark topic
+  container.querySelectorAll(".gc-topic-bookmark-btn").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!discourseApi?.currentUser || !topic) return;
+      try {
+        await ajax(`/t/${topic.id}/bookmark`, { type: "PUT" });
+        btn.classList.toggle("is-bookmarked");
+      } catch (err) { popupAjaxError(err); }
+    });
+  });
+
+  // Share topic
+  container.querySelectorAll(".gc-topic-share-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!topic) return;
+      const url = `${window.location.origin}/t/${topic.slug}/${topic.id}`;
+      if (navigator.share) {
+        navigator.share({ title: topic.title, url });
+      } else {
+        navigator.clipboard?.writeText(url).then(() => {
+          btn.classList.add("is-copied");
+          setTimeout(() => btn.classList.remove("is-copied"), 1500);
+        });
       }
     });
-  }
+  });
 
-  // Date popup toggle
-  const dateBtn = document.getElementById("gc-date-btn");
-  if (dateBtn) {
-    dateBtn.addEventListener("click", (e) => {
+  // Like / Unlike per comment
+  container.querySelectorAll(".gc-comment-like").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      if (!discourseApi?.currentUser) return;
+      const postId = btn.dataset.postId;
+      const isLiked = btn.classList.contains("is-liked");
+      const countEl = btn.querySelector(".gc-like-count");
+      const currentCount = parseInt(countEl?.textContent || "0") || 0;
+
+      try {
+        const result = await ajax(`/post_actions${isLiked ? `/${postId}` : ""}`, {
+          type: isLiked ? "DELETE" : "POST",
+          data: isLiked
+            ? { post_action_type_id: 2 }
+            : { id: postId, post_action_type_id: 2, flag_topic: false },
+        });
+
+        btn.classList.toggle("is-liked");
+        const nowLiked = btn.classList.contains("is-liked");
+        const newLikeAction = result?.post?.actions_summary?.find((a) => a.id === 2);
+        const newCount = newLikeAction?.count ?? currentCount + (nowLiked ? 1 : -1);
+
+        btn.innerHTML = `${nowLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${newCount > 0 ? newCount : ""}</span>`;
+      } catch (err) { popupAjaxError(err); }
+    });
+  });
+
+  // More (...) menu
+  container.querySelectorAll(".gc-comment-more").forEach((btn) => {
+    btn.addEventListener("click", (e) => {
       e.stopPropagation();
-      closeAllPopups();
-      STATE.dateOpen = !STATE.dateOpen;
-      if (STATE.dateOpen) {
-        dateBtn.classList.add("active");
-        const popup = document.createElement("div");
-        popup.innerHTML = buildDatePopup();
-        const iconBtns = document.querySelector(".gc-icon-buttons");
-        iconBtns.style.position = "relative";
-        iconBtns.appendChild(popup.firstElementChild);
-        bindDatePopup();
+      document.querySelectorAll(".gc-more-menu").forEach((m) => m.remove());
+
+      const postId = btn.dataset.postId;
+      const post = posts.find((p) => String(p.id) === String(postId));
+      const canEdit = post && (post.yours || discourseApi?.currentUser?.staff);
+
+      const menu = document.createElement("div");
+      menu.className = "gc-more-menu";
+      menu.innerHTML = `
+        ${canEdit ? `<button class="gc-more-item" data-action="edit">${SVG.save} Edit</button>` : ""}
+        <button class="gc-more-item" data-action="bookmark">${SVG.bookmark} Simpan</button>
+        <button class="gc-more-item gc-more-item--danger" data-action="report">${SVG.report} Laporkan</button>
+        ${canEdit ? `<button class="gc-more-item gc-more-item--danger" data-action="delete">${SVG.report} Hapus</button>` : ""}
+      `;
+
+      btn.style.position = "relative";
+      btn.appendChild(menu);
+
+      menu.querySelector('[data-action="bookmark"]')?.addEventListener("click", async () => {
+        try { await ajax(`/post_actions`, { type: "POST", data: { id: postId, post_action_type_id: 1, flag_topic: false } }); }
+        catch (err) { popupAjaxError(err); }
+        menu.remove();
+      });
+
+      menu.querySelector('[data-action="report"]')?.addEventListener("click", () => {
+        if (discourseApi && post) {
+          discourseApi.container.lookup("controller:modals")?.show("flag", { post, flagTopic: false });
+        }
+        menu.remove();
+      });
+
+      menu.querySelector('[data-action="delete"]')?.addEventListener("click", async () => {
+        try {
+          await ajax(`/posts/${postId}`, { type: "DELETE" });
+          btn.closest(".gc-comment")?.remove();
+        } catch (err) { popupAjaxError(err); }
+        menu.remove();
+      });
+
+      setTimeout(() => {
+        document.addEventListener("click", () => menu.remove(), { once: true });
+      }, 0);
+    });
+  });
+
+  // Per-comment Balas → reply to specific post
+  container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
+    btn.addEventListener("click", () => {
+      if (!discourseApi?.currentUser) return;
+      const postNumber = btn.dataset.postNumber;
+      const targetPost = posts.find((p) => String(p.post_number) === String(postNumber));
+      if (!targetPost) return;
+      discourseApi.container.lookup("controller:composer").open({ action: "reply", post: targetPost, topic });
+    });
+  });
+
+  // Replies pill → expand / collapse nested
+  container.querySelectorAll(".gc-replies-pill").forEach((btn) => {
+    btn.addEventListener("click", async () => {
+      const postId = btn.dataset.postId;
+      const isExpanded = btn.dataset.expanded === "true";
+      const commentEl = btn.closest(".gc-comment");
+      const nestedContainer = commentEl?.querySelector(".gc-nested-replies");
+      if (!nestedContainer) return;
+
+      if (isExpanded) {
+        nestedContainer.style.display = "none";
+        btn.dataset.expanded = "false";
+        STATE.expandedReplies[postId] = false;
+        const countText = btn.textContent.trim().replace(/^\S+\s+/, "");
+        btn.innerHTML = `${SVG.chevronDown} ${countText}`;
+      } else {
+        if (!nestedContainer.innerHTML.trim()) {
+          btn.classList.add("is-loading");
+          const post = posts.find((p) => String(p.id) === String(postId));
+          const topicId = topic?.id || STATE.activeTopicId;
+          if (post && topicId) {
+            const replies = await fetchPostReplies(topicId, post.post_number);
+            if (replies.length > 0) {
+              nestedContainer.innerHTML = replies.map((r) => buildCommentHTML(r, true)).join("");
+              bindDetailActions(nestedContainer, topic, [...posts, ...replies]);
+            } else {
+              nestedContainer.innerHTML = `<p class="gc-no-replies">Belum ada balasan.</p>`;
+            }
+          }
+          btn.classList.remove("is-loading");
+        }
+        nestedContainer.style.display = "";
+        btn.dataset.expanded = "true";
+        STATE.expandedReplies[postId] = true;
+        const countText = btn.textContent.trim().replace(/^\S+\s+/, "");
+        btn.innerHTML = `${SVG.chevronUp} ${countText}`;
       }
     });
-  }
+  });
+}
 
-  // Close popups on outside click
+// ─────────────────────────────────────────────────────────────
+// ACTION BAR BINDINGS
+// ─────────────────────────────────────────────────────────────
+function bindActionBar(topics) {
   document.addEventListener("click", (e) => {
-    if (
-      !e.target.closest("#gc-filter-popup") &&
-      !e.target.closest("#gc-filter-btn") &&
-      !e.target.closest("#gc-date-popup") &&
-      !e.target.closest("#gc-date-btn")
-    ) {
+    const pill = e.target.closest(".gc-pill");
+    if (!pill) return;
+    document.querySelectorAll(".gc-pill").forEach((p) => p.classList.remove("active"));
+    pill.classList.add("active");
+    STATE.activeFilter = pill.dataset.pill;
+
+    const feed = document.getElementById("gc-topic-feed");
+    feed?.querySelectorAll(".gc-topic-card").forEach((card) => {
+      const t = topics.find((x) => x.id === parseInt(card.dataset.topicId));
+      if (!t) return;
+      card.style.display = STATE.activeFilter === "trending"
+        ? ((t.views || 0) >= 50 || (t.like_count || 0) >= 10 ? "" : "none")
+        : "";
+    });
+  });
+
+  document.getElementById("gc-filter-btn")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeAllPopups();
+    STATE.filterOpen = true;
+    document.getElementById("gc-filter-btn")?.classList.add("active");
+    const el = document.createElement("div");
+    el.innerHTML = buildFilterPopup();
+    document.querySelector(".gc-icon-buttons").appendChild(el.firstElementChild);
+    bindFilterPopup();
+  });
+
+  document.getElementById("gc-date-btn")?.addEventListener("click", (e) => {
+    e.stopPropagation();
+    closeAllPopups();
+    STATE.dateOpen = true;
+    document.getElementById("gc-date-btn")?.classList.add("active");
+    const el = document.createElement("div");
+    el.innerHTML = buildDatePopup();
+    document.querySelector(".gc-icon-buttons").appendChild(el.firstElementChild);
+    bindDatePopup();
+  });
+
+  document.addEventListener("click", (e) => {
+    if (!e.target.closest("#gc-filter-popup,#gc-filter-btn,#gc-date-popup,#gc-date-btn")) {
       closeAllPopups();
     }
   });
 }
 
 function closeAllPopups() {
-  const fp = document.getElementById("gc-filter-popup");
-  if (fp) fp.remove();
-  const dp = document.getElementById("gc-date-popup");
-  if (dp) dp.remove();
-
+  document.getElementById("gc-filter-popup")?.remove();
+  document.getElementById("gc-date-popup")?.remove();
   document.getElementById("gc-filter-btn")?.classList.remove("active");
   document.getElementById("gc-date-btn")?.classList.remove("active");
   STATE.filterOpen = false;
   STATE.dateOpen = false;
 }
 
-// ─────────────────────────────────────────────────────────────
-// BIND FILTER POPUP
-// ─────────────────────────────────────────────────────────────
 function bindFilterPopup() {
-  const popup = document.getElementById("gc-filter-popup");
-  if (!popup) return;
-
-  popup.querySelectorAll("input[type='checkbox']").forEach((cb) => {
+  document.getElementById("gc-filter-popup")?.querySelectorAll("input[type='checkbox']").forEach((cb) => {
     cb.addEventListener("change", () => {
       const val = cb.dataset.filter;
-      if (cb.checked) {
-        if (!STATE.selectedFilters.includes(val))
-          STATE.selectedFilters.push(val);
-      } else {
-        STATE.selectedFilters = STATE.selectedFilters.filter((f) => f !== val);
-      }
-      filterTopicFeed();
+      if (cb.checked) { if (!STATE.selectedFilters.includes(val)) STATE.selectedFilters.push(val); }
+      else { STATE.selectedFilters = STATE.selectedFilters.filter((f) => f !== val); }
+      document.querySelectorAll(".gc-topic-card").forEach((card) => {
+        const tag = card.querySelector(".gc-tag");
+        if (!STATE.selectedFilters.length) { card.style.display = ""; return; }
+        card.style.display = STATE.selectedFilters.some((f) => (tag?.className || "").includes(f)) ? "" : "none";
+      });
     });
   });
 }
 
-function filterTopicFeed() {
-  const cards = document.querySelectorAll(".gc-topic-card");
-  cards.forEach((card) => {
-    const tag = card.querySelector(".gc-tag");
-    if (STATE.selectedFilters.length === 0) {
-      card.style.display = "";
-      return;
-    }
-    const tagClass = tag ? tag.className : "";
-    const matches = STATE.selectedFilters.some((f) => tagClass.includes(f));
-    card.style.display = matches ? "" : "none";
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-// BIND DATE POPUP
-// ─────────────────────────────────────────────────────────────
 function bindDatePopup() {
   const popup = document.getElementById("gc-date-popup");
   if (!popup) return;
-
-  // Prev/Next nav
-  popup.querySelector("#gc-date-prev")?.addEventListener("click", () => {
-    navigateCalendar(-1);
-  });
-  popup.querySelector("#gc-date-next")?.addEventListener("click", () => {
-    navigateCalendar(1);
-  });
-
-  // Day clicks
+  popup.querySelector("#gc-date-prev")?.addEventListener("click", () => navigateCalendar(-1));
+  popup.querySelector("#gc-date-next")?.addEventListener("click", () => navigateCalendar(1));
   popup.querySelectorAll(".gc-cal-day").forEach((day) => {
     const ts = parseInt(day.dataset.ts);
     if (!ts) return;
-
     day.addEventListener("click", () => {
-      if (
-        !STATE.dateRange.start ||
-        (STATE.dateRange.start && STATE.dateRange.end)
-      ) {
+      if (!STATE.dateRange.start || (STATE.dateRange.start && STATE.dateRange.end)) {
         STATE.dateRange = { start: ts, end: null };
       } else {
-        if (ts < STATE.dateRange.start) {
-          STATE.dateRange = { start: ts, end: STATE.dateRange.start };
-        } else {
-          STATE.dateRange.end = ts;
-        }
+        STATE.dateRange = ts < STATE.dateRange.start
+          ? { start: ts, end: STATE.dateRange.start }
+          : { start: STATE.dateRange.start, end: ts };
       }
       refreshDatePopup();
     });
@@ -782,195 +730,38 @@ function bindDatePopup() {
 }
 
 function navigateCalendar(dir) {
-  const l = STATE.calendarMonth.left;
-  const r = STATE.calendarMonth.right;
-  let lm = l.month + dir;
-  let ly = l.year;
-  let rm = r.month + dir;
-  let ry = r.year;
-
-  if (lm < 0) {
-    lm = 11;
-    ly--;
-  }
-  if (lm > 11) {
-    lm = 0;
-    ly++;
-  }
-  if (rm < 0) {
-    rm = 11;
-    ry--;
-  }
-  if (rm > 11) {
-    rm = 0;
-    ry++;
-  }
-
-  STATE.calendarMonth = {
-    left: { year: ly, month: lm },
-    right: { year: ry, month: rm },
+  const adj = (y, m) => {
+    m += dir; if (m < 0) { m = 11; y--; } if (m > 11) { m = 0; y++; }
+    return { year: y, month: m };
   };
+  STATE.calendarMonth = { left: adj(STATE.calendarMonth.left.year, STATE.calendarMonth.left.month), right: adj(STATE.calendarMonth.right.year, STATE.calendarMonth.right.month) };
   refreshDatePopup();
 }
 
 function refreshDatePopup() {
-  const oldPopup = document.getElementById("gc-date-popup");
-  if (!oldPopup) return;
+  const old = document.getElementById("gc-date-popup");
+  if (!old) return;
   const iconBtns = document.querySelector(".gc-icon-buttons");
-  oldPopup.remove();
-  const popup = document.createElement("div");
-  popup.innerHTML = buildDatePopup();
-  iconBtns.appendChild(popup.firstElementChild);
+  old.remove();
+  const el = document.createElement("div");
+  el.innerHTML = buildDatePopup();
+  iconBtns.appendChild(el.firstElementChild);
   bindDatePopup();
 }
 
-// ─────────────────────────────────────────────────────────────
-// BIND SEARCH
-// ─────────────────────────────────────────────────────────────
 function bindSearch(topics) {
-  const input = document.getElementById("gc-search-input");
-  if (!input) return;
-
-  input.addEventListener("input", (e) => {
+  document.getElementById("gc-search-input")?.addEventListener("input", (e) => {
     const q = e.target.value.toLowerCase().trim();
-    const cards = document.querySelectorAll(".gc-topic-card");
-    cards.forEach((card) => {
-      const title =
-        card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
-      const excerpt =
-        card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
-      card.style.display =
-        !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
+    document.querySelectorAll(".gc-topic-card").forEach((card) => {
+      const title = card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
+      const excerpt = card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
+      card.style.display = !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
     });
   });
 }
 
 // ─────────────────────────────────────────────────────────────
-// BIND CONTEXT MENUS (Simpan / Laporkan)
-// ─────────────────────────────────────────────────────────────
-function bindContextMenus(container, posts) {
-  container.querySelectorAll(".gc-comment-more").forEach((btn) => {
-    btn.addEventListener("click", (e) => {
-      e.stopPropagation();
-      // Remove existing context menus
-      document.querySelectorAll(".gc-context-menu").forEach((m) => m.remove());
-
-      const postId = e.currentTarget.dataset.postId;
-      const menu = document.createElement("div");
-      menu.className = "gc-context-menu";
-      menu.innerHTML = `
-        <div class="gc-context-item" data-action="bookmark">${SVG.save} Simpan</div>
-        <div class="gc-context-item" data-action="report">${SVG.report} Laporkan</div>
-      `;
-      btn.closest(".gc-comment-content").style.position = "relative";
-      btn.closest(".gc-comment-content").appendChild(menu);
-
-      // Bookmark Action
-      menu
-        .querySelector('[data-action="bookmark"]')
-        .addEventListener("click", async () => {
-          try {
-            await ajax(`/post_actions`, {
-              type: "POST",
-              data: { id: postId, post_action_type_id: 1, flag_topic: false },
-            });
-            // Optionally show a success notification
-          } catch (error) {
-            popupAjaxError(error);
-          }
-          menu.remove();
-        });
-
-      // Report Action
-      menu
-        .querySelector('[data-action="report"]')
-        .addEventListener("click", () => {
-          if (discourseApi) {
-            const post = posts.find((p) => p.id == postId);
-            discourseApi.container.lookup("controller:modals").show("flag", {
-              post: post,
-              flagTopic: false,
-            });
-          }
-          menu.remove();
-        });
-
-      setTimeout(() => {
-        document.addEventListener("click", () => menu.remove(), { once: true });
-      }, 0);
-    });
-  });
-}
-
-// ─────────────────────────────────────────────────────────────
-// BIND DYNAMIC DETAIL VIEW ACTIONS
-// ─────────────────────────────────────────────────────────────
-function bindDetailEventListeners(container, topic, posts) {
-  if (!discourseApi?.currentUser) return;
-
-  // Per-post Like button
-  container.querySelectorAll(".gc-comment-like").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      const postId = btn.dataset.postId;
-      const isLiked = btn.classList.contains("liked");
-      try {
-        const result = await ajax(
-          `/post_actions${isLiked ? `/${postId}` : ""}`,
-          {
-            type: isLiked ? "DELETE" : "POST",
-            data: isLiked
-              ? { post_action_type_id: 2 }
-              : { id: postId, post_action_type_id: 2, flag_topic: false },
-          },
-        );
-
-        btn.classList.toggle("liked");
-        const newCount = result.post.actions_summary.find(
-          (a) => a.id === 2,
-        ).count;
-        btn.innerHTML = `${SVG.heart} ${newCount}`;
-      } catch (error) {
-        popupAjaxError(error);
-      }
-    });
-  });
-
-  // Per-post Reply button
-  container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      const postNumber = btn.dataset.postNumber;
-      const targetPost = posts.find((p) => p.post_number == postNumber);
-      if (targetPost && discourseApi) {
-        const composer = discourseApi.container.lookup("controller:composer");
-        composer.open({
-          action: "reply",
-          post: targetPost,
-          topic: topic,
-        });
-      }
-    });
-  });
-
-  // Main topic Reply button
-  const mainReplyBtn = container.querySelector(".gc-reply-btn");
-  if (mainReplyBtn) {
-    mainReplyBtn.addEventListener("click", () => {
-      if (discourseApi) {
-        const composer = discourseApi.container.lookup("controller:composer");
-        composer.open({
-          action: "reply",
-          topic: topic,
-        });
-      }
-    });
-  }
-
-  // Bind context menus for comments
-  bindContextMenus(container, posts);
-}
-
-// ─────────────────────────────────────────────────────────────
-// CLEANUP: remove the custom layout when navigating away
+// CLEANUP
 // ─────────────────────────────────────────────────────────────
 function cleanupLayout() {
   document.getElementById("gc-category-wrapper")?.remove();
@@ -981,61 +772,34 @@ function cleanupLayout() {
 // API INITIALIZER
 // ─────────────────────────────────────────────────────────────
 export default apiInitializer("1.8.0", (api) => {
-  discourseApi = api; // Store for global access
+  discourseApi = api;
 
-  // Hook into Discourse's page change events
   api.onPageChange((url) => {
-    // Clean up first
     cleanupLayout();
-
-    if (url.includes("/c/ga-updates") || url.includes("/c/ga-updates")) {
+    if (url.includes("/c/ga-updates")) {
       addBodyClass();
-      // Small delay to let Discourse render its base elements
-      later(() => {
-        scheduleOnce("afterRender", this, renderLayout);
-      }, 150);
+      later(() => scheduleOnce("afterRender", this, renderLayout), 150);
     }
   });
 
-  // Also run on initial page load if we're already on the route
   api.registerBehaviorTransformer?.("discovery-layout", () => {
-    if (isTargetRoute()) {
-      later(renderLayout, 200);
-    }
+    if (isTargetRoute()) later(renderLayout, 200);
   });
 
-  // Fallback: watch for DOM readiness
   if (isTargetRoute()) {
-    if (
-      document.readyState === "complete" ||
-      document.readyState === "interactive"
-    ) {
+    if (document.readyState === "complete" || document.readyState === "interactive") {
       later(renderLayout, 300);
     } else {
-      document.addEventListener("DOMContentLoaded", () =>
-        later(renderLayout, 300),
-      );
+      document.addEventListener("DOMContentLoaded", () => later(renderLayout, 300));
     }
   }
 
-  // Handle Ember route transitions via router service
   try {
-    const container = getOwner(api);
-    if (container) {
-      const router = container.lookup("service:router");
-      if (router) {
-        router.on("routeDidChange", () => {
-          const path = window.location.pathname;
-          if (path.includes("/c/ga-updates")) {
-            cleanupLayout();
-            later(renderLayout, 200);
-          } else {
-            cleanupLayout();
-          }
-        });
-      }
-    }
-  } catch (e) {
-    // Silent fail — router hook is best-effort
-  }
+    const router = getOwner(api)?.lookup("service:router");
+    router?.on("routeDidChange", () => {
+      const path = window.location.pathname;
+      cleanupLayout();
+      if (path.includes("/c/ga-updates")) later(renderLayout, 200);
+    });
+  } catch (e) {}
 });
