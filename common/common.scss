@@ -7,37 +7,36 @@
    1. CSS VARIABLES / COLOR PALETTE
    ---------------------------------------------------------- */
 :root {
-  --gc-blue-primary: #4a6cf7;
-  --gc-blue-dark: #1b2e7b;
-  --gc-blue-medium: #3b5bdb;
-  --gc-blue-light: #eef2ff;
-  --gc-teal-header: #2bb5e0;
-  --gc-hero-grad-start: #2bb5e0;
-  --gc-hero-grad-end: #4a7cf7;
-  --gc-card-bg: #ffffff;
-  --gc-card-border: #e8ecf4;
-  --gc-card-hover: #f7f9ff;
-  --gc-text-primary: #1a1f36;
-  --gc-text-secondary: #6b7280;
-  --gc-text-muted: #9ca3af;
-  --gc-tag-pelatihan: #ff9500;
-  --gc-tag-pendidikan: #4a6cf7;
-  --gc-tag-dunia: #10b981;
-  --gc-tag-lainnya: #8b5cf6;
-  --gc-divider: #e5e7eb;
-  --gc-search-bg: rgba(255, 255, 255, 0.18);
-  --gc-search-border: rgba(255, 255, 255, 0.4);
-  --gc-pill-active-bg: #1b2e7b;
-  --gc-pill-active-text: #ffffff;
-  --gc-pill-bg: #ffffff;
-  --gc-pill-border: #d1d5db;
-  --gc-icon-btn-bg: #ffffff;
-  --gc-popup-shadow: 0 8px 32px rgba(74, 108, 247, 0.15);
+  --gc-blue-primary: #{$gc_blue_primary};
+  --gc-blue-dark: #{$gc_blue_dark};
+  --gc-blue-medium: #{$gc_blue_medium};
+  --gc-blue-light: #{$gc_blue_light};
+  --gc-hero-grad-start: #{$gc_hero_grad_start};
+  --gc-hero-grad-end: #{$gc_hero_grad_end};
+  --gc-card-bg: #{$gc_card_bg};
+  --gc-card-border: #{$gc_card_border};
+  --gc-card-hover: #{$gc_card_hover};
+  --gc-text-primary: #{$gc_text_primary};
+  --gc-text-secondary: #{$gc_text_secondary};
+  --gc-text-muted: #{$gc_text_muted};
+  --gc-tag-pelatihan: #{$gc_tag_pelatihan};
+  --gc-tag-pendidikan: #{$gc_tag_pendidikan};
+  --gc-tag-dunia: #{$gc_tag_dunia};
+  --gc-tag-lainnya: #{$gc_tag_lainnya};
+  --gc-divider: #{$gc_divider};
+  --gc-search-bg: rgba(#{unquote("#" + $gc_pill_bg)}, 0.18);
+  --gc-search-border: rgba(#{unquote("#" + $gc_pill_bg)}, 0.4);
+  --gc-pill-active-bg: #{$gc_pill_active_bg};
+  --gc-pill-active-text: #{$gc_pill_active_text};
+  --gc-pill-bg: #{$gc_pill_bg};
+  --gc-pill-border: #{$gc_pill_border};
+  --gc-icon-btn-bg: #{$gc_icon_btn_bg};
+  --gc-popup-shadow: 0 8px 32px rgba(#{unquote("#" + $gc_blue_primary)}, 0.15);
   --gc-radius-card: 12px;
   --gc-radius-pill: 999px;
   --gc-radius-popup: 10px;
   --gc-list-width: 340px;
-  --gc-font-body: "Nunito", "Segoe UI", sans-serif;
+  --gc-font-body: #{$gc_font_body};
 }
 
 /* ----------------------------------------------------------

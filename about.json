@@ -5,8 +5,118 @@
   "component": true,
   "authors": "Ery Prasetyo",
   "theme_version": "1.0.0",
-  "minimum_discourse_version": "3.1.0",
+  "minimum_discourse_version": "3.1.0.beta4",
   "assets": {},
   "color_schemes": [],
-  "screenshots": []
+  "screenshots": [],
+  "settings": [
+    {
+      "name": "gc_font_body",
+      "type": "string",
+      "default": "\"Nunito\", \"Segoe UI\", sans-serif",
+      "description": "Font utama yang digunakan di seluruh komponen. Contoh: \"Nunito\", sans-serif"
+    },
+    {
+      "name": "gc_blue_primary",
+      "type": "color",
+      "default": "4A6CF7",
+      "description": "Warna aksen utama (tombol, link aktif, ikon)."
+    },
+    {
+      "name": "gc_blue_dark",
+      "type": "color",
+      "default": "1B2E7B",
+      "description": "Warna biru lebih gelap, digunakan untuk hover tombol atau state aktif."
+    },
+    {
+      "name": "gc_blue_medium",
+      "type": "color",
+      "default": "3B5BDB",
+      "description": "Warna biru medium."
+    },
+    {
+      "name": "gc_blue_light",
+      "type": "color",
+      "default": "EEF2FF",
+      "description": "Warna biru sangat terang, untuk latar belakang sorotan atau badge."
+    },
+    {
+      "name": "gc_hero_grad_start",
+      "type": "color",
+      "default": "2BB5E0",
+      "description": "Warna awal untuk gradasi pada hero banner."
+    },
+    {
+      "name": "gc_hero_grad_end",
+      "type": "color",
+      "default": "4A7CF7",
+      "description": "Warna akhir untuk gradasi pada hero banner."
+    },
+    {
+      "name": "gc_card_bg",
+      "type": "color",
+      "default": "FFFFFF",
+      "description": "Warna latar belakang untuk kartu (card) dan panel detail."
+    },
+    {
+      "name": "gc_card_border",
+      "type": "color",
+      "default": "E8ECF4",
+      "description": "Warna border untuk kartu dan pembatas."
+    },
+    {
+      "name": "gc_card_hover",
+      "type": "color",
+      "default": "F7F9FF",
+      "description": "Warna latar belakang kartu saat di-hover."
+    },
+    {
+      "name": "gc_text_primary",
+      "type": "color",
+      "default": "1A1F36",
+      "description": "Warna teks utama (judul, konten)."
+    },
+    {
+      "name": "gc_text_secondary",
+      "type": "color",
+      "default": "6B7280",
+      "description": "Warna teks sekunder (sub-judul, deskripsi)."
+    },
+    {
+      "name": "gc_text_muted",
+      "type": "color",
+      "default": "9CA3AF",
+      "description": "Warna teks yang lebih pudar (metadata, timestamp)."
+    },
+    {
+      "name": "gc_tag_pelatihan",
+      "type": "color",
+      "default": "FF9500",
+      "description": "Warna teks untuk tag 'Pelatihan'."
+    },
+    {
+      "name": "gc_tag_pendidikan",
+      "type": "color",
+      "default": "4A6CF7",
+      "description": "Warna teks untuk tag 'Pendidikan'."
+    },
+    {
+      "name": "gc_tag_dunia",
+      "type": "color",
+      "default": "10B981",
+      "description": "Warna teks untuk tag 'Dunia'."
+    },
+    {
+      "name": "gc_tag_lainnya",
+      "type": "color",
+      "default": "8B5CF6",
+      "description": "Warna teks untuk tag 'Lainnya'."
+    },
+    { "name": "gc_divider", "type": "color", "default": "E5E7EB" },
+    { "name": "gc_pill_active_bg", "type": "color", "default": "1B2E7B" },
+    { "name": "gc_pill_active_text", "type": "color", "default": "FFFFFF" },
+    { "name": "gc_pill_bg", "type": "color", "default": "FFFFFF" },
+    { "name": "gc_pill_border", "type": "color", "default": "D1D5DB" },
+    { "name": "gc_icon_btn_bg", "type": "color", "default": "FFFFFF" }
+  ]
 }
