@@ -172,7 +172,7 @@ body.category-ga-updates {
   background: #ffffff;
   border-bottom: 1.5px solid var(--gc-card-border);
   position: relative;
-  z-index: 10;
+  z-index: 1100; /* Increased to stay above sidebar when popups open */
 
   .gc-action-bar-inner {
     display: inline-flex;
@@ -351,6 +351,11 @@ body.category-ga-updates {
     display: flex;
     flex-direction: column;
     height: 100%;
+  }
+
+  /* Make sure composer is always above the sidebar and popups */
+  #reply-control {
+    z-index: 1500 !important;
   }
 }
 
