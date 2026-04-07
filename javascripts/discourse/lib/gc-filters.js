@@ -23,7 +23,7 @@ export function applyAllFilters() {
 
     // 1. Trending filter
     if (STATE.activeFilter === "trending") {
-      if ((t.views || 0) < 50 && (t.like_count || 0) < 10) {
+      if ((t.views || 0) < 5 && (t.like_count || 0) < 1) {
         card.style.display = "none";
         return;
       }
