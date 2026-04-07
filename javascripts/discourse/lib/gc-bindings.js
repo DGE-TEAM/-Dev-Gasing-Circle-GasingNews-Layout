@@ -11,6 +11,7 @@ import { buildCommentHTML, buildTopicDetail } from "./gc-comments";
 import { fetchTopicPosts, fetchPostReplies, fetchCategoryTopics } from "./gc-fetch";
 import { extractTagsFromTopics } from "./gc-tags";
 import { applyAllFilters } from "./gc-filters";
+import { isTrending } from "./gc-utils";
 
 // ─── Composer ────────────────────────────────────────────────
 
@@ -178,9 +179,7 @@ export function bindLoadMore() {
       const trendingBadge = document.getElementById("gc-badge-trending");
       if (latestBadge) latestBadge.textContent = STATE.allTopics.length;
       if (trendingBadge)
-        trendingBadge.textContent = STATE.allTopics.filter(
-          (t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10,
-        ).length;
+        trendingBadge.textContent = STATE.allTopics.filter(isTrending).length;
 
       applyAllFilters();
     }

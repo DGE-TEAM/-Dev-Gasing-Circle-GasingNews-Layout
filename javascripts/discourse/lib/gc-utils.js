@@ -42,3 +42,7 @@ export function cleanupBodyClass() {
     STATE.currentBodyClass = null;
   }
 }
+
+export function isTrending(topic) {
+  return (topic.views || 0) >= 5 || (topic.like_count || 0) >= 1;
+}

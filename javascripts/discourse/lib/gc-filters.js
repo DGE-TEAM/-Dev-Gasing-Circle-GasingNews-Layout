@@ -3,6 +3,7 @@
 // ─────────────────────────────────────────────────────────────
 
 import { STATE } from "./gc-state";
+import { isTrending } from "./gc-utils";
 
 /**
  * Applies all active filters (trending, tag, date range, search) to every
@@ -23,7 +24,7 @@ export function applyAllFilters() {
 
     // 1. Trending filter
     if (STATE.activeFilter === "trending") {
-      if ((t.views || 0) < 5 && (t.like_count || 0) < 1) {
+      if (!isTrending(t)) {
         card.style.display = "none";
         return;
       }

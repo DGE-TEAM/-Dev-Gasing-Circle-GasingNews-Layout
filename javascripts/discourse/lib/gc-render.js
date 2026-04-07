@@ -4,7 +4,7 @@
 
 import { STATE } from "./gc-state";
 import { SVG } from "./gc-icons";
-import { isTargetRoute, getCategorySlugFromPath, addBodyClass, cleanupBodyClass } from "./gc-utils";
+import { isTargetRoute, getCategorySlugFromPath, addBodyClass, cleanupBodyClass, isTrending } from "./gc-utils";
 import { extractTagsFromTopics } from "./gc-tags";
 import { buildHeroBanner, buildActionBar, buildLoadMoreButton, buildTopicCard } from "./gc-builders";
 import { fetchCategoryTopics, getCategoryInfoFromSite } from "./gc-fetch";
@@ -74,9 +74,7 @@ export async function renderLayout() {
 
   if (latestBadge) latestBadge.textContent = topics.length;
   if (trendingBadge)
-    trendingBadge.textContent = topics.filter(
-      (t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10,
-    ).length;
+    trendingBadge.textContent = topics.filter(isTrending).length;
 
   if (feed) {
     if (!topics.length) {
