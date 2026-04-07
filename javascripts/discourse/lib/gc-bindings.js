@@ -201,14 +201,23 @@ async function flagPostFallback(postId) {
 
 // ─── Edit Post ───────────────────────────────────────────────
 
-export async function openEditComposer(postId) {
+export async function openEditComposer(postId, topicModel) {
   try {
     const res = await ajax(`/posts/${postId}`, { type: "GET" });
-    const post = res?.post || res;
+    const postData = res?.post || res;
+    
+    let postModel = postData;
+    if (Post && Post.create && postData?.id) {
+      postModel = Post.create(postData);
+      if (topicModel) {
+        postModel.set("topic", topicModel);
+      }
+    }
+
     openComposer({
       action: "edit",
-      post,
-      draftKey: post.draft_key || `post_${postId}`,
+      post: postModel,
+      draftKey: postData.draft_key || `post_${postId}`,
     });
   } catch (err) {
     popupAjaxError(err);
@@ -435,7 +444,6 @@ export function bindDetailActions(container, topic, posts) {
       menu.className = "gc-more-menu";
       menu.innerHTML = `
         ${canEdit ? `<button class="gc-more-item" data-action="edit">${SVG.save} Edit</button>` : ""}
-        <button class="gc-more-item" data-action="bookmark">${SVG.bookmark} Simpan</button>
         ${currentUser ? `<button class="gc-more-item gc-more-item--danger" data-action="report">${SVG.report} Laporkan</button>` : ""}
         ${canEdit ? `<button class="gc-more-item gc-more-item--danger" data-action="delete">${SVG.report} Hapus</button>` : ""}
       `;
@@ -444,33 +452,15 @@ export function bindDetailActions(container, topic, posts) {
       btn.appendChild(menu);
 
       menu.querySelector('[data-action="edit"]')?.addEventListener("click", () => {
-        openEditComposer(postId);
+        let topicModel = topic;
+        if (Topic && Topic.create && topic?.id) {
+          topicModel = Topic.create(topic);
+        }
+        openEditComposer(postId, topicModel);
         menu.remove();
       });
 
-      menu.querySelector('[data-action="bookmark"]')?.addEventListener("click", async (ev) => {
-        ev.preventDefault();
-        ev.stopPropagation();
-        if (!requireLogin()) {
-          menu.remove();
-          return;
-        }
-        try {
-          const targetPost = posts.find((p) => String(p.id) === String(postId));
-          const isAlreadyBookmarked = targetPost?.bookmarked || false;
-          if (isAlreadyBookmarked && targetPost?.bookmark_id) {
-            await ajax(`/bookmarks/${targetPost.bookmark_id}`, { type: "DELETE" });
-          } else {
-            await ajax("/bookmarks", {
-              type: "POST",
-              data: { bookmarkable_type: "Post", bookmarkable_id: postId },
-            });
-          }
-        } catch (err) {
-          popupAjaxError(err);
-        }
-        menu.remove();
-      });
+
 
       menu.querySelector('[data-action="report"]')?.addEventListener("click", () => {
         if (post) openFlagModal(post);
