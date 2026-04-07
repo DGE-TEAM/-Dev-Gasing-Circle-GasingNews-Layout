@@ -695,14 +695,31 @@ body.category-ga-updates {
      ───────────────────────────────────────────────────────── */
   .gc-comments-header {
     display: flex;
-    align-items: center;
-    justify-content: space-between;
+    flex-direction: column;
     padding: 10px 0 10px;
+
+    .gc-main-reply-wrap {
+      display: flex;
+      justify-content: flex-end;
+      margin-bottom: 12px;
+    }
 
     .gc-comments-stats-row {
       display: flex;
       align-items: center;
-      gap: 12px;
+      justify-content: space-between;
+
+      .gc-cstat-left {
+        display: flex;
+        align-items: center;
+        gap: 14px;
+      }
+
+      .gc-cstat-right {
+        display: flex;
+        align-items: center;
+        gap: 6px;
+      }
 
       /* stats icons */
       .gc-cstat {
@@ -917,8 +934,14 @@ body.category-ga-updates {
     .gc-comment-actions {
       display: flex;
       align-items: center;
-      gap: 2px;
       margin-top: 4px;
+    }
+
+    .gc-comment-actions-right {
+      display: flex;
+      align-items: center;
+      gap: 2px;
+      margin-left: auto;
     }
 
     /* Replies pill — light blue, left-most */
@@ -1049,7 +1072,6 @@ body.category-ga-updates {
       font-weight: 700;
       font-family: var(--gc-font-body);
       transition: background 0.15s;
-      margin-left: auto; /* push to right side */
 
       svg {
         width: 13px;

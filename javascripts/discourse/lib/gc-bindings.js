@@ -381,6 +381,7 @@ export function bindDetailActions(container, topic, posts) {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
+      if (btn.disabled || btn.hasAttribute("disabled")) return;
       if (!requireLogin()) return;
       const postId = btn.dataset.postId;
       const isLiked = btn.classList.contains("is-liked");

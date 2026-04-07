@@ -9,7 +9,9 @@ import { renderTag, getTopicTag } from "./gc-tags";
 
 export function getLikeData(post) {
   const a = post.actions_summary?.find((x) => x.id === 2);
-  return { count: a?.count || 0, liked: a?.acted || false };
+  let canAct = a?.can_act;
+  if (post.yours) canAct = false;
+  return { count: a?.count || 0, liked: a?.acted || false, canAct };
 }
 
 export function getUserRole(post) {
@@ -24,7 +26,7 @@ export function buildCommentHTML(post, isNested) {
   const av = (post.avatar_template || "").replace("{size}", "40");
   const role = getUserRole(post);
   const timeAgo = moment(post.created_at).fromNow();
-  const { count: likeCount, liked } = getLikeData(post);
+  const { count: likeCount, liked, canAct } = getLikeData(post);
   const hasReplies = (post.reply_count || 0) > 0;
   const isExpanded = STATE.expandedReplies[post.id] || false;
 
@@ -49,14 +51,16 @@ export function buildCommentHTML(post, isNested) {
             </button>`
               : ""
           }
-          <button class="gc-comment-like${liked ? " is-liked" : ""}" data-post-id="${post.id}">
-            ${liked ? SVG.heartFilled : SVG.heartOutline}
-            <span class="gc-like-count">${likeCount > 0 ? likeCount : ""}</span>
-          </button>
-          <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
-          <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
-            ${SVG.reply} Balas
-          </button>
+          <div class="gc-comment-actions-right">
+            <button class="gc-comment-like${liked ? " is-liked" : ""}" data-post-id="${post.id}" ${canAct === false ? 'disabled style="cursor: not-allowed; opacity: 0.5;" title="Anda tidak dapat menyukai komentar ini."' : ""}>
+              ${liked ? SVG.heartFilled : SVG.heartOutline}
+              <span class="gc-like-count">${likeCount > 0 ? likeCount : ""}</span>
+            </button>
+            <button class="gc-comment-more" data-post-id="${post.id}">${SVG.more}</button>
+            <button class="gc-comment-reply-btn" data-post-id="${post.id}" data-post-number="${post.post_number}" data-username="${post.username}">
+              ${SVG.reply} Balas
+            </button>
+          </div>
         </div>
         ${hasReplies ? `<div class="gc-nested-replies" data-parent-post-id="${post.id}"${isExpanded ? "" : ` style="display:none"`}></div>` : ""}
       </div>
@@ -125,16 +129,22 @@ export function buildTopicDetail(topic, posts) {
       <div class="gc-detail-body">${bodyText}</div>
 
       <div class="gc-comments-header">
-        <div class="gc-comments-stats-row">
-          <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
-          <span class="gc-cstat">${SVG.chat}<span>${replies}</span></span>
-          <span class="gc-cstat">${SVG.eye}<span>${views}</span></span>
-          <button class="gc-action-icon gc-topic-bookmark-btn${bookmarkAttrs}"${bookmarkData}>${SVG.bookmark}</button>
-          <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
+        <div class="gc-main-reply-wrap">
+          <button class="gc-main-reply-btn" data-topic-id="${topic.id}">
+            ${SVG.reply} Balas
+          </button>
         </div>
-        <button class="gc-main-reply-btn" data-topic-id="${topic.id}">
-          ${SVG.reply} Balas
-        </button>
+        <div class="gc-comments-stats-row">
+          <div class="gc-cstat-left">
+            <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
+            <span class="gc-cstat">${SVG.chat}<span>${replies}</span></span>
+            <span class="gc-cstat">${SVG.eye}<span>${views}</span></span>
+          </div>
+          <div class="gc-cstat-right">
+            <button class="gc-action-icon gc-topic-bookmark-btn${bookmarkAttrs}"${bookmarkData}>${SVG.bookmark}</button>
+            <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
+          </div>
+        </div>
       </div>
 
       <hr class="gc-detail-sep-bottom" />
