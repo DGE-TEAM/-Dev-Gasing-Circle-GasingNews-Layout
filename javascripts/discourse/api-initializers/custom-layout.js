@@ -1,11 +1,11 @@
 // =============================================================
 // GASING CIRCLE — Academy News Theme Component
 // File: javascripts/discourse/api-initializers/custom-layout.js
-// Version: 2.1.0 — Comment Section Redesign (Pixel-Perfect)
+// Version: 3.0.0 — Dynamic Category, Date Filter Fix, Pagination
 // =============================================================
 
 import { apiInitializer } from "discourse/lib/api";
-import { later, scheduleOnce } from "@ember/runloop";
+import { later } from "@ember/runloop";
 import { getOwner } from "@ember/application";
 import { ajax } from "discourse/lib/ajax";
 import { popupAjaxError } from "discourse/lib/ajax-error";
@@ -40,46 +40,81 @@ const SVG = {
 // STATE
 // ─────────────────────────────────────────────────────────────
 const STATE = {
+  // Filters
   activeFilter: "latest",
   filterOpen: false,
   dateOpen: false,
   selectedFilters: [],
+  searchQuery: "",
   dateRange: { start: null, end: null },
+  // UI
   activeTopicId: null,
   calendarMonth: { left: null, right: null },
   expandedReplies: {},
+  // Pagination
+  allTopics: [],
+  moreTopicsUrl: null,
+  isLoadingMore: false,
+  // Dynamic category
+  categorySlug: null,
+  categoryInfo: null,
+  availableTags: [],
+  currentBodyClass: null,
 };
 
 let discourseApi = null;
 
 // ─────────────────────────────────────────────────────────────
-// UTILITY
+// UTILITY — Dynamic Category Detection
 // ─────────────────────────────────────────────────────────────
+
+/**
+ * Extracts the category slug from the current URL.
+ * Handles: /c/slug, /c/slug/123, /c/parent/child, /c/parent/child/123, /c/slug/l/latest
+ */
+function getCategorySlugFromPath() {
+  const parts = window.location.pathname.split("/").filter(Boolean);
+  const cIdx = parts.indexOf("c");
+  if (cIdx === -1) return null;
+  // Take parts after "c", strip page numbers and filter keywords
+  const slugParts = parts
+    .slice(cIdx + 1)
+    .filter(
+      (p) =>
+        !/^\d+$/.test(p) &&
+        p !== "l" &&
+        !["latest", "top", "new", "unread", "hot"].includes(p),
+    );
+  return slugParts.join("/") || null;
+}
+
 function isTargetRoute() {
-  return window.location.pathname.includes("/c/ga-updates");
+  return /\/c\/[^/]/.test(window.location.pathname);
 }
 
 function addBodyClass() {
-  if (isTargetRoute()) {
-    document.body.classList.add("category-ga-updates");
-  } else {
-    document.body.classList.remove("category-ga-updates");
+  const slug = getCategorySlugFromPath();
+  if (!slug) return;
+  const cls = `gc-category-${slug.replace(/\//g, "-")}`;
+  document.body.classList.add(cls);
+  STATE.currentBodyClass = cls;
+}
+
+function cleanupBodyClass() {
+  if (STATE.currentBodyClass) {
+    document.body.classList.remove(STATE.currentBodyClass);
+    STATE.currentBodyClass = null;
   }
 }
 
 // ─────────────────────────────────────────────────────────────
-// TAG HELPERS
+// TAG HELPERS — Dynamic (no hardcoded list)
 // ─────────────────────────────────────────────────────────────
-const TAG_CLASSES = {
-  pelatihan: "gc-tag--pelatihan",
-  pendidikan: "gc-tag--pendidikan",
-  dunia: "gc-tag--dunia",
-  lainnya: "gc-tag--lainnya",
-};
 
 function renderTag(tagName) {
   if (!tagName) return "";
-  const cls = TAG_CLASSES[tagName.toLowerCase()] || "gc-tag--lainnya";
+  // CSS class is derived dynamically from tag name
+  const cls = `gc-tag--${tagName.toLowerCase().replace(/[\s/]+/g, "-")}`;
   const label = tagName.charAt(0).toUpperCase() + tagName.slice(1);
   return `<span class="gc-tag ${cls}">${label}</span>`;
 }
@@ -87,15 +122,25 @@ function renderTag(tagName) {
 function getTopicTag(topic) {
   if (!topic) return null;
   const tags = topic.tags || [];
-  for (const t of tags) {
-    const name = typeof t === "string" ? t : t?.name || t?.id || String(t);
-    if (TAG_CLASSES[name.toLowerCase()]) return name;
-  }
   const first = tags[0];
   if (!first) return null;
   return typeof first === "string"
     ? first
     : first?.name || first?.id || String(first);
+}
+
+/**
+ * Extracts unique tag names from an array of topics.
+ */
+function extractTagsFromTopics(topics) {
+  const seen = new Set();
+  topics.forEach((t) => {
+    (t.tags || []).forEach((tag) => {
+      const name = typeof tag === "string" ? tag : tag?.name || tag?.id || "";
+      if (name) seen.add(name);
+    });
+  });
+  return [...seen];
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -148,12 +193,20 @@ function buildCalendarHTML(year, month, rangeStart, rangeEnd) {
 }
 
 // ─────────────────────────────────────────────────────────────
-// HERO BANNER
+// HERO BANNER — Dynamic from category metadata
 // ─────────────────────────────────────────────────────────────
-function buildHeroBanner() {
+function buildHeroBanner(categoryInfo) {
+  const title = categoryInfo?.name || "Category News";
+  const rawDesc =
+    categoryInfo?.description_text || categoryInfo?.description || "";
+  const desc =
+    rawDesc
+      .replace(/<[^>]*>/g, "")
+      .trim()
+      .substring(0, 160) || "Ikuti berita dan perkembangan terkini!";
   return `<div id="gc-hero-banner">
-    <h1 class="gc-hero-title">Gasing Academy News <span class="gc-hero-emoji">📰</span></h1>
-    <p class="gc-hero-subtitle">Ikuti berita dan perkembangan terkini seputar Gasing!</p>
+    <h1 class="gc-hero-title">${title} <span class="gc-hero-emoji">📰</span></h1>
+    <p class="gc-hero-subtitle">${desc}</p>
     <div class="gc-search-wrapper">
       <span class="gc-search-icon">${SVG.search}</span>
       <input class="gc-search-input" type="text" id="gc-search-input" placeholder="Search topic..." />
@@ -179,21 +232,29 @@ function buildActionBar() {
 }
 
 // ─────────────────────────────────────────────────────────────
-// FILTER / DATE POPUPS
+// FILTER POPUP — Tags extracted dynamically from fetched topics
 // ─────────────────────────────────────────────────────────────
 function buildFilterPopup() {
-  const filters = ["Pendidikan", "Pelatihan", "Dunia", "Lainnya"];
-  return `<div id="gc-filter-popup">${filters
-    .map(
-      (f) => `
-    <div class="gc-filter-item">
-      <input type="checkbox" id="gc-filter-${f.toLowerCase()}" data-filter="${f.toLowerCase()}" ${STATE.selectedFilters.includes(f.toLowerCase()) ? "checked" : ""} />
-      <label for="gc-filter-${f.toLowerCase()}">${f}</label>
-    </div>`,
-    )
+  const tags = STATE.availableTags;
+  if (!tags.length) {
+    return `<div id="gc-filter-popup"><p class="gc-filter-empty" style="padding:8px 12px;font-size:0.82rem;color:var(--gc-text-muted)">Tidak ada tag tersedia.</p></div>`;
+  }
+  return `<div id="gc-filter-popup">${tags
+    .map((tag) => {
+      const val = tag.toLowerCase();
+      const id = `gc-filter-${val.replace(/[\s/]+/g, "-")}`;
+      const label = tag.charAt(0).toUpperCase() + tag.slice(1);
+      return `<div class="gc-filter-item">
+        <input type="checkbox" id="${id}" data-filter="${val}" ${STATE.selectedFilters.includes(val) ? "checked" : ""} />
+        <label for="${id}">${label}</label>
+      </div>`;
+    })
     .join("")}</div>`;
 }
 
+// ─────────────────────────────────────────────────────────────
+// DATE POPUP
+// ─────────────────────────────────────────────────────────────
 function buildDatePopup() {
   const now = new Date();
   if (!STATE.calendarMonth.left) {
@@ -207,14 +268,27 @@ function buildDatePopup() {
     };
   }
   const { left, right } = STATE.calendarMonth;
+  const hasRange = STATE.dateRange.start || STATE.dateRange.end;
   return `<div id="gc-date-popup">
     <div class="gc-date-header">
-      <button id="gc-date-prev">${SVG.chevronLeft}</button><span></span><button id="gc-date-next">${SVG.chevronRight}</button>
+      <button id="gc-date-prev">${SVG.chevronLeft}</button>
+      <span></span>
+      <button id="gc-date-next">${SVG.chevronRight}</button>
     </div>
     <div class="gc-calendars">
       ${buildCalendarHTML(left.year, left.month, STATE.dateRange.start, STATE.dateRange.end)}
       ${buildCalendarHTML(right.year, right.month, STATE.dateRange.start, STATE.dateRange.end)}
     </div>
+    ${hasRange ? `<div class="gc-date-actions"><button id="gc-date-clear" class="gc-date-clear-btn">Hapus Filter</button></div>` : ""}
+  </div>`;
+}
+
+// ─────────────────────────────────────────────────────────────
+// LOAD MORE BUTTON
+// ─────────────────────────────────────────────────────────────
+function buildLoadMoreButton() {
+  return `<div id="gc-load-more-wrap">
+    <button id="gc-load-more-btn" class="gc-load-more-btn">Muat Lebih Banyak</button>
   </div>`;
 }
 
@@ -235,7 +309,7 @@ function buildTopicCard(topic) {
     ? `<img class="gc-avatar" src="${topic.posters[0].user.avatar_template.replace("{size}", "24")}" alt="" />`
     : "";
   return `
-    <div class="gc-topic-card" data-topic-id="${topic.id}" data-topic-slug="${topic.slug}">
+    <div class="gc-topic-card" data-topic-id="${topic.id}" data-topic-slug="${topic.slug}" data-created-at="${topic.created_at}">
       ${img}
       <div class="gc-card-body">
         ${tagHtml}
@@ -294,8 +368,7 @@ function buildCommentHTML(post, isNested) {
         <div class="gc-comment-actions">
           ${
             hasReplies
-              ? `
-            <button class="gc-replies-pill" data-post-id="${post.id}" data-expanded="${isExpanded}">
+              ? `<button class="gc-replies-pill" data-post-id="${post.id}" data-expanded="${isExpanded}">
               ${isExpanded ? SVG.chevronUp : SVG.chevronDown}
               ${post.reply_count} Balasan
             </button>`
@@ -378,7 +451,6 @@ function buildTopicDetail(topic, posts) {
       </div>
       <div class="gc-detail-body">${bodyText}</div>
 
-      <!-- COMMENTS HEADER — matches reference image exactly -->
       <div class="gc-comments-header">
         <div class="gc-comments-stats-row">
           <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
@@ -401,19 +473,49 @@ function buildTopicDetail(topic, posts) {
 // ─────────────────────────────────────────────────────────────
 // FETCH FUNCTIONS
 // ─────────────────────────────────────────────────────────────
-async function fetchCategoryTopics() {
+
+/**
+ * Fetches topics for the current category (or a pagination URL).
+ * Returns { topics, moreUrl, categoryData }.
+ */
+async function fetchCategoryTopics(url) {
+  const slug = STATE.categorySlug;
+  if (!slug && !url) return { topics: [], moreUrl: null, categoryData: null };
+  const fetchUrl = url || `/c/${slug}.json?no_definitions=true`;
   try {
-    const res = await fetch("/c/ga-updates.json?no_definitions=true", {
+    const res = await fetch(fetchUrl, {
       headers: {
         Accept: "application/json",
         "X-Requested-With": "XMLHttpRequest",
       },
     });
-    if (!res.ok) return [];
+    if (!res.ok) return { topics: [], moreUrl: null, categoryData: null };
     const data = await res.json();
-    return data.topic_list?.topics || [];
+    return {
+      topics: data.topic_list?.topics || [],
+      moreUrl: data.topic_list?.more_topics_url || null,
+      categoryData: data.category || null,
+    };
   } catch (e) {
-    return [];
+    return { topics: [], moreUrl: null, categoryData: null };
+  }
+}
+
+/**
+ * Looks up category metadata from the Discourse site service (synchronous).
+ */
+function getCategoryInfoFromSite(slug) {
+  if (!slug || !discourseApi) return null;
+  try {
+    const site = discourseApi.container?.lookup("service:site");
+    const categories = site?.categories || [];
+    const slugParts = slug.split("/");
+    const lastSlug = slugParts[slugParts.length - 1];
+    return (
+      categories.find((c) => c.slug === lastSlug || c.slug === slug) || null
+    );
+  } catch (e) {
+    return null;
   }
 }
 
@@ -445,7 +547,6 @@ async function fetchPostReplies(topicId, postNumber) {
       },
     );
     if (!res.ok) return [];
-
     const data = await res.json();
     return (data.post_stream?.posts || []).filter(
       (p) => p.reply_to_post_number === postNumber && p.post_type === 1,
@@ -456,21 +557,92 @@ async function fetchPostReplies(topicId, postNumber) {
 }
 
 // ─────────────────────────────────────────────────────────────
+// UNIFIED FILTER — applies all active filters to topic cards
+// ─────────────────────────────────────────────────────────────
+function applyAllFilters() {
+  const topics = STATE.allTopics;
+  const { start, end } = STATE.dateRange;
+  const q = STATE.searchQuery.toLowerCase().trim();
+
+  document.querySelectorAll("#gc-topic-feed .gc-topic-card").forEach((card) => {
+    const topicId = parseInt(card.dataset.topicId);
+    const t = topics.find((x) => x.id === topicId);
+    if (!t) {
+      card.style.display = "none";
+      return;
+    }
+
+    // 1. Trending filter
+    if (STATE.activeFilter === "trending") {
+      if ((t.views || 0) < 50 && (t.like_count || 0) < 10) {
+        card.style.display = "none";
+        return;
+      }
+    }
+
+    // 2. Tag filter
+    if (STATE.selectedFilters.length) {
+      const topicTags = (t.tags || []).map((tag) =>
+        (typeof tag === "string" ? tag : tag?.name || "").toLowerCase(),
+      );
+      if (!STATE.selectedFilters.some((f) => topicTags.includes(f))) {
+        card.style.display = "none";
+        return;
+      }
+    }
+
+    // 3. Date range filter
+    if (start || end) {
+      const created = new Date(t.created_at).getTime();
+      if (start && created < start) {
+        card.style.display = "none";
+        return;
+      }
+      // Include the full end day (add 23:59:59 ms)
+      if (end && created > end + 86399999) {
+        card.style.display = "none";
+        return;
+      }
+    }
+
+    // 4. Search filter
+    if (q) {
+      const title = (t.title || "").toLowerCase();
+      const excerpt = (t.excerpt || "").replace(/<[^>]*>/g, "").toLowerCase();
+      if (!title.includes(q) && !excerpt.includes(q)) {
+        card.style.display = "none";
+        return;
+      }
+    }
+
+    card.style.display = "";
+  });
+}
+
+// ─────────────────────────────────────────────────────────────
 // MASTER RENDER
 // ─────────────────────────────────────────────────────────────
 async function renderLayout() {
   if (!isTargetRoute()) return;
+
+  // Resolve current category slug and store in STATE
+  STATE.categorySlug = getCategorySlugFromPath();
+  if (!STATE.categorySlug) return;
+
   addBodyClass();
 
   const outlet = document.getElementById("main-outlet");
   if (!outlet || document.getElementById("gc-category-wrapper")) return;
+
+  // Try synchronous lookup from Discourse site service first
+  STATE.categoryInfo = getCategoryInfoFromSite(STATE.categorySlug);
 
   outlet.style.opacity = "0";
 
   const wrapper = document.createElement("div");
   wrapper.id = "gc-category-wrapper";
   wrapper.innerHTML = `
-    ${buildHeroBanner()}
+    ${buildHeroBanner(STATE.categoryInfo)}
     ${buildActionBar()}
     <div id="gc-master-detail">
       <div id="gc-topic-feed">
@@ -492,11 +664,28 @@ async function renderLayout() {
   (outlet.querySelector(".container") || outlet).prepend(wrapper);
   outlet.style.opacity = "1";
 
-  const topics = await fetchCategoryTopics();
-  const feed = document.getElementById("gc-topic-feed");
+  const { topics, moreUrl, categoryData } = await fetchCategoryTopics();
 
+  // Update hero banner with API category data if site service had no info
+  if (!STATE.categoryInfo && categoryData) {
+    STATE.categoryInfo = categoryData;
+    const heroEl = document.getElementById("gc-hero-banner");
+    if (heroEl) {
+      const tmp = document.createElement("div");
+      tmp.innerHTML = buildHeroBanner(STATE.categoryInfo);
+      heroEl.replaceWith(tmp.firstElementChild);
+    }
+  }
+
+  // Store all state
+  STATE.allTopics = topics;
+  STATE.moreTopicsUrl = moreUrl;
+  STATE.availableTags = extractTagsFromTopics(topics);
+
+  const feed = document.getElementById("gc-topic-feed");
   const latestBadge = document.getElementById("gc-badge-latest");
   const trendingBadge = document.getElementById("gc-badge-trending");
+
   if (latestBadge) latestBadge.textContent = topics.length;
   if (trendingBadge)
     trendingBadge.textContent = topics.filter(
@@ -508,21 +697,31 @@ async function renderLayout() {
       feed.innerHTML = `<div style="padding:20px;text-align:center;color:var(--gc-text-muted);font-size:0.82rem">Tidak ada artikel ditemukan.</div>`;
     } else {
       feed.innerHTML = topics.map((t) => buildTopicCard(t)).join("");
-      bindTopicCardClicks(topics);
+
+      if (STATE.moreTopicsUrl) {
+        const wrap = document.createElement("div");
+        wrap.innerHTML = buildLoadMoreButton();
+        feed.appendChild(wrap.firstElementChild);
+      }
+
+      bindTopicCardClicks();
+      bindLoadMore();
       feed.querySelector(".gc-topic-card")?.click();
     }
   }
 
-  bindActionBar(topics);
-  bindSearch(topics);
+  bindActionBar();
+  bindSearch();
 }
 
 // ─────────────────────────────────────────────────────────────
 // BIND TOPIC CARD CLICKS
+// Uses event delegation + STATE.allTopics so newly loaded topics work
 // ─────────────────────────────────────────────────────────────
-function bindTopicCardClicks(topics) {
+function bindTopicCardClicks() {
   const feed = document.getElementById("gc-topic-feed");
-  if (!feed) return;
+  if (!feed || feed._clickBound) return;
+  feed._clickBound = true;
 
   feed.addEventListener("click", async (e) => {
     const card = e.target.closest(".gc-topic-card");
@@ -552,56 +751,217 @@ function bindTopicCardClicks(topics) {
     }
 
     const { topic, posts } = await fetchTopicPosts(topicId, topicSlug);
+    const fallbackTopic = STATE.allTopics.find((t) => t.id === topicId);
     if (detail) {
-      detail.innerHTML = buildTopicDetail(
-        topic || topics.find((t) => t.id === topicId),
-        posts,
-      );
+      detail.innerHTML = buildTopicDetail(topic || fallbackTopic, posts);
       detail.scrollTop = 0;
-      bindDetailActions(detail, topic, posts);
+      bindDetailActions(detail, topic || fallbackTopic, posts);
     }
   });
+}
+
+// ─────────────────────────────────────────────────────────────
+// BIND LOAD MORE — appends next page of topics to feed
+// ─────────────────────────────────────────────────────────────
+function bindLoadMore() {
+  document
+    .getElementById("gc-load-more-btn")
+    ?.addEventListener("click", async () => {
+      if (STATE.isLoadingMore || !STATE.moreTopicsUrl) return;
+      STATE.isLoadingMore = true;
+
+      const btn = document.getElementById("gc-load-more-btn");
+      if (btn) {
+        btn.disabled = true;
+        btn.textContent = "Memuat...";
+      }
+
+      const { topics: newTopics, moreUrl } = await fetchCategoryTopics(
+        STATE.moreTopicsUrl,
+      );
+      STATE.moreTopicsUrl = moreUrl;
+      STATE.allTopics = [...STATE.allTopics, ...newTopics];
+      STATE.availableTags = extractTagsFromTopics(STATE.allTopics);
+
+      // Remove current load-more button
+      document.getElementById("gc-load-more-wrap")?.remove();
+
+      const feed = document.getElementById("gc-topic-feed");
+      if (feed && newTopics.length) {
+        const frag = document.createDocumentFragment();
+        newTopics.forEach((t) => {
+          const div = document.createElement("div");
+          div.innerHTML = buildTopicCard(t);
+          if (div.firstElementChild) frag.appendChild(div.firstElementChild);
+        });
+        feed.appendChild(frag);
+
+        // Add new load-more button if there are more pages
+        if (STATE.moreTopicsUrl) {
+          const wrap = document.createElement("div");
+          wrap.innerHTML = buildLoadMoreButton();
+          feed.appendChild(wrap.firstElementChild);
+          bindLoadMore();
+        }
+
+        // Update badges
+        const latestBadge = document.getElementById("gc-badge-latest");
+        const trendingBadge = document.getElementById("gc-badge-trending");
+        if (latestBadge) latestBadge.textContent = STATE.allTopics.length;
+        if (trendingBadge)
+          trendingBadge.textContent = STATE.allTopics.filter(
+            (t) => (t.views || 0) >= 50 || (t.like_count || 0) >= 10,
+          ).length;
+
+        // Re-apply active filters so newly appended cards respect current state
+        applyAllFilters();
+      }
+
+      STATE.isLoadingMore = false;
+    });
+}
+
+// ─────────────────────────────────────────────────────────────
+// COMPOSER HELPER — kompatibel Discourse v3.x ke atas
+// ─────────────────────────────────────────────────────────────
+function openComposer(opts) {
+  const composerService = discourseApi.container?.lookup("service:composer");
+  if (composerService) {
+    return composerService.open(opts);
+  }
+  const composerController = discourseApi.container?.lookup(
+    "controller:composer",
+  );
+  if (composerController) {
+    return composerController.open(opts);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// BOOKMARK HELPER
+// ─────────────────────────────────────────────────────────────
+async function toggleBookmark(btn, bookmarkableType, bookmarkableId) {
+  const isBookmarked = btn.classList.contains("is-bookmarked");
+  try {
+    if (isBookmarked) {
+      const bookmarkId = btn.dataset.bookmarkId;
+      if (bookmarkId) {
+        await ajax(`/bookmarks/${bookmarkId}`, { type: "DELETE" });
+      }
+      btn.classList.remove("is-bookmarked");
+      delete btn.dataset.bookmarkId;
+    } else {
+      const result = await ajax("/bookmarks", {
+        type: "POST",
+        data: {
+          bookmarkable_type: bookmarkableType,
+          bookmarkable_id: bookmarkableId,
+        },
+      });
+      if (result?.id) {
+        btn.dataset.bookmarkId = result.id;
+      }
+      btn.classList.add("is-bookmarked");
+    }
+  } catch (err) {
+    popupAjaxError(err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// FLAG/REPORT HELPER
+// ─────────────────────────────────────────────────────────────
+function openFlagModal(post) {
+  const modalService = discourseApi.container?.lookup("service:modal");
+  if (modalService?.show) {
+    import("discourse/components/modal/flag-post")
+      .then((module) => {
+        modalService.show(module.default, {
+          model: { flagTarget: post, flagTopic: false },
+        });
+      })
+      .catch(() => {
+        flagPostFallback(post.id);
+      });
+    return;
+  }
+  const modalsController = discourseApi.container?.lookup("controller:modals");
+  if (modalsController?.show) {
+    modalsController.show("flag", { post, flagTopic: false });
+    return;
+  }
+  flagPostFallback(post.id);
+}
+
+async function flagPostFallback(postId) {
+  if (!window.confirm("Laporkan komentar ini sebagai tidak pantas?")) return;
+  try {
+    await ajax("/post_actions", {
+      type: "POST",
+      data: { id: postId, post_action_type_id: 4, flag_topic: false },
+    });
+  } catch (err) {
+    popupAjaxError(err);
+  }
+}
+
+// ─────────────────────────────────────────────────────────────
+// EDIT POST HELPER
+// ─────────────────────────────────────────────────────────────
+async function openEditComposer(postId) {
+  try {
+    const res = await ajax(`/posts/${postId}`, { type: "GET" });
+    const post = res?.post || res;
+    openComposer({
+      action: "edit",
+      post,
+      draftKey: post.draft_key || `post_${postId}`,
+    });
+  } catch (err) {
+    popupAjaxError(err);
+  }
 }
 
 // ─────────────────────────────────────────────────────────────
 // BIND DETAIL ACTIONS
 // ─────────────────────────────────────────────────────────────
 function bindDetailActions(container, topic, posts) {
-  // Main reply → topic
+  const currentUser = discourseApi?.currentUser;
+
+  // Main reply
   container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (!discourseApi?.currentUser) return;
-      discourseApi.container
-        .lookup("controller:composer")
-        .open({ action: "reply", topic });
+      if (!currentUser) {
+        discourseApi?.container
+          ?.lookup("route:application")
+          ?._router?.transitionTo("login");
+        return;
+      }
+      openComposer({ action: "reply", topic, draftKey: topic?.draft_key });
     });
   });
 
   // Bookmark topic
   container.querySelectorAll(".gc-topic-bookmark-btn").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      if (!discourseApi?.currentUser || !topic) return;
-      try {
-        await ajax(`/t/${topic.id}/bookmark`, { type: "PUT" });
-        btn.classList.toggle("is-bookmarked");
-      } catch (err) {
-        popupAjaxError(err);
-      }
+      if (!currentUser || !topic) return;
+      await toggleBookmark(btn, "Topic", topic.id);
     });
   });
 
   // Share topic
   container.querySelectorAll(".gc-topic-share-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
+    btn.addEventListener("click", async () => {
       if (!topic) return;
-      const url = `${window.location.origin}/t/${topic.slug}/${topic.id}`;
+      const url = `${window.location.origin}/t/${topic.slug || topic.id}/${topic.id}`;
       if (navigator.share) {
-        navigator.share({ title: topic.title, url });
-      } else {
-        navigator.clipboard?.writeText(url).then(() => {
-          btn.classList.add("is-copied");
-          setTimeout(() => btn.classList.remove("is-copied"), 1500);
-        });
+        try {
+          await navigator.share({ title: topic.title, url });
+        } catch (_) {}
+      } else if (navigator.clipboard) {
+        await navigator.clipboard.writeText(url);
+        btn.classList.add("is-copied");
+        setTimeout(() => btn.classList.remove("is-copied"), 1500);
       }
     });
   });
@@ -609,39 +969,46 @@ function bindDetailActions(container, topic, posts) {
   // Like / Unlike per comment
   container.querySelectorAll(".gc-comment-like").forEach((btn) => {
     btn.addEventListener("click", async () => {
-      if (!discourseApi?.currentUser) return;
+      if (!currentUser) return;
       const postId = btn.dataset.postId;
       const isLiked = btn.classList.contains("is-liked");
       const countEl = btn.querySelector(".gc-like-count");
       const currentCount = parseInt(countEl?.textContent || "0") || 0;
 
+      const optimisticCount = currentCount + (isLiked ? -1 : 1);
+      btn.classList.toggle("is-liked");
+      const nowLiked = btn.classList.contains("is-liked");
+      btn.innerHTML = `${nowLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${optimisticCount > 0 ? optimisticCount : ""}</span>`;
+
       try {
-        const result = await ajax(
-          `/post_actions${isLiked ? `/${postId}` : ""}`,
-          {
-            type: isLiked ? "DELETE" : "POST",
-            data: isLiked
-              ? { post_action_type_id: 2 }
-              : { id: postId, post_action_type_id: 2, flag_topic: false },
-          },
-        );
-
-        btn.classList.toggle("is-liked");
-        const nowLiked = btn.classList.contains("is-liked");
-        const newLikeAction = result?.post?.actions_summary?.find(
-          (a) => a.id === 2,
-        );
-        const newCount =
-          newLikeAction?.count ?? currentCount + (nowLiked ? 1 : -1);
-
-        btn.innerHTML = `${nowLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${newCount > 0 ? newCount : ""}</span>`;
+        if (isLiked) {
+          await ajax(`/post_actions/${postId}`, {
+            type: "DELETE",
+            data: { post_action_type_id: 2 },
+          });
+        } else {
+          const result = await ajax("/post_actions", {
+            type: "POST",
+            data: { id: postId, post_action_type_id: 2, flag_topic: false },
+          });
+          const serverCount = result?.post?.actions_summary?.find(
+            (a) => a.id === 2,
+          )?.count;
+          if (serverCount !== undefined) {
+            btn.querySelector(".gc-like-count").textContent =
+              serverCount > 0 ? serverCount : "";
+          }
+        }
       } catch (err) {
+        btn.classList.toggle("is-liked");
+        const rolledBack = btn.classList.contains("is-liked");
+        btn.innerHTML = `${rolledBack ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${currentCount > 0 ? currentCount : ""}</span>`;
         popupAjaxError(err);
       }
     });
   });
 
-  // More (...) menu
+  // More (...) dropdown
   container.querySelectorAll(".gc-comment-more").forEach((btn) => {
     btn.addEventListener("click", (e) => {
       e.stopPropagation();
@@ -649,14 +1016,15 @@ function bindDetailActions(container, topic, posts) {
 
       const postId = btn.dataset.postId;
       const post = posts.find((p) => String(p.id) === String(postId));
-      const canEdit = post && (post.yours || discourseApi?.currentUser?.staff);
+      const canEdit =
+        post && (post.yours || currentUser?.staff || currentUser?.moderator);
 
       const menu = document.createElement("div");
       menu.className = "gc-more-menu";
       menu.innerHTML = `
         ${canEdit ? `<button class="gc-more-item" data-action="edit">${SVG.save} Edit</button>` : ""}
         <button class="gc-more-item" data-action="bookmark">${SVG.bookmark} Simpan</button>
-        <button class="gc-more-item gc-more-item--danger" data-action="report">${SVG.report} Laporkan</button>
+        ${currentUser ? `<button class="gc-more-item gc-more-item--danger" data-action="report">${SVG.report} Laporkan</button>` : ""}
         ${canEdit ? `<button class="gc-more-item gc-more-item--danger" data-action="delete">${SVG.report} Hapus</button>` : ""}
       `;
 
@@ -664,13 +1032,31 @@ function bindDetailActions(container, topic, posts) {
       btn.appendChild(menu);
 
       menu
+        .querySelector('[data-action="edit"]')
+        ?.addEventListener("click", () => {
+          openEditComposer(postId);
+          menu.remove();
+        });
+
+      menu
         .querySelector('[data-action="bookmark"]')
         ?.addEventListener("click", async () => {
+          if (!currentUser) return;
           try {
-            await ajax(`/post_actions`, {
-              type: "POST",
-              data: { id: postId, post_action_type_id: 1, flag_topic: false },
-            });
+            const targetPost = posts.find(
+              (p) => String(p.id) === String(postId),
+            );
+            const isAlreadyBookmarked = targetPost?.bookmarked || false;
+            if (isAlreadyBookmarked && targetPost?.bookmark_id) {
+              await ajax(`/bookmarks/${targetPost.bookmark_id}`, {
+                type: "DELETE",
+              });
+            } else {
+              await ajax("/bookmarks", {
+                type: "POST",
+                data: { bookmarkable_type: "Post", bookmarkable_id: postId },
+              });
+            }
           } catch (err) {
             popupAjaxError(err);
           }
@@ -680,17 +1066,17 @@ function bindDetailActions(container, topic, posts) {
       menu
         .querySelector('[data-action="report"]')
         ?.addEventListener("click", () => {
-          if (discourseApi && post) {
-            discourseApi.container
-              .lookup("controller:modals")
-              ?.show("flag", { post, flagTopic: false });
-          }
+          if (post) openFlagModal(post);
           menu.remove();
         });
 
       menu
         .querySelector('[data-action="delete"]')
         ?.addEventListener("click", async () => {
+          if (!window.confirm("Hapus komentar ini?")) {
+            menu.remove();
+            return;
+          }
           try {
             await ajax(`/posts/${postId}`, { type: "DELETE" });
             btn.closest(".gc-comment")?.remove();
@@ -706,22 +1092,30 @@ function bindDetailActions(container, topic, posts) {
     });
   });
 
-  // Per-comment Balas → reply to specific post
+  // Per-comment "Balas"
   container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
     btn.addEventListener("click", () => {
-      if (!discourseApi?.currentUser) return;
+      if (!currentUser) {
+        discourseApi?.container
+          ?.lookup("route:application")
+          ?._router?.transitionTo("login");
+        return;
+      }
       const postNumber = btn.dataset.postNumber;
       const targetPost = posts.find(
         (p) => String(p.post_number) === String(postNumber),
       );
-      if (!targetPost) return;
-      discourseApi.container
-        .lookup("controller:composer")
-        .open({ action: "reply", post: targetPost, topic });
+      if (!targetPost || !topic) return;
+      openComposer({
+        action: "reply",
+        topic,
+        post: targetPost,
+        draftKey: targetPost.draft_key || `post_${targetPost.id}`,
+      });
     });
   });
 
-  // Replies pill → expand / collapse nested
+  // Replies pill — expand / collapse nested comments
   container.querySelectorAll(".gc-replies-pill").forEach((btn) => {
     btn.addEventListener("click", async () => {
       const postId = btn.dataset.postId;
@@ -730,15 +1124,18 @@ function bindDetailActions(container, topic, posts) {
       const nestedContainer = commentEl?.querySelector(".gc-nested-replies");
       if (!nestedContainer) return;
 
+      const replyCount = btn.textContent.trim().match(/\d+/)?.[0] || "0";
+      const countText = `${replyCount} Balasan`;
+
       if (isExpanded) {
         nestedContainer.style.display = "none";
         btn.dataset.expanded = "false";
         STATE.expandedReplies[postId] = false;
-        const countText = btn.textContent.trim().replace(/^\S+\s+/, "");
         btn.innerHTML = `${SVG.chevronDown} ${countText}`;
       } else {
         if (!nestedContainer.innerHTML.trim()) {
           btn.classList.add("is-loading");
+          btn.disabled = true;
           const post = posts.find((p) => String(p.id) === String(postId));
           const topicId = topic?.id || STATE.activeTopicId;
           if (post && topicId) {
@@ -753,11 +1150,11 @@ function bindDetailActions(container, topic, posts) {
             }
           }
           btn.classList.remove("is-loading");
+          btn.disabled = false;
         }
         nestedContainer.style.display = "";
         btn.dataset.expanded = "true";
         STATE.expandedReplies[postId] = true;
-        const countText = btn.textContent.trim().replace(/^\S+\s+/, "");
         btn.innerHTML = `${SVG.chevronUp} ${countText}`;
       }
     });
@@ -767,7 +1164,8 @@ function bindDetailActions(container, topic, posts) {
 // ─────────────────────────────────────────────────────────────
 // ACTION BAR BINDINGS
 // ─────────────────────────────────────────────────────────────
-function bindActionBar(topics) {
+function bindActionBar() {
+  // Pills — use applyAllFilters for unified filtering
   document.addEventListener("click", (e) => {
     const pill = e.target.closest(".gc-pill");
     if (!pill) return;
@@ -776,18 +1174,7 @@ function bindActionBar(topics) {
       .forEach((p) => p.classList.remove("active"));
     pill.classList.add("active");
     STATE.activeFilter = pill.dataset.pill;
-
-    const feed = document.getElementById("gc-topic-feed");
-    feed?.querySelectorAll(".gc-topic-card").forEach((card) => {
-      const t = topics.find((x) => x.id === parseInt(card.dataset.topicId));
-      if (!t) return;
-      card.style.display =
-        STATE.activeFilter === "trending"
-          ? (t.views || 0) >= 10 || (t.like_count || 0) >= 2
-            ? ""
-            : "none"
-          : "";
-    });
+    applyAllFilters();
   });
 
   document.getElementById("gc-filter-btn")?.addEventListener("click", (e) => {
@@ -851,18 +1238,7 @@ function bindFilterPopup() {
             (f) => f !== val,
           );
         }
-        document.querySelectorAll(".gc-topic-card").forEach((card) => {
-          const tag = card.querySelector(".gc-tag");
-          if (!STATE.selectedFilters.length) {
-            card.style.display = "";
-            return;
-          }
-          card.style.display = STATE.selectedFilters.some((f) =>
-            (tag?.className || "").includes(f),
-          )
-            ? ""
-            : "none";
-        });
+        applyAllFilters();
       });
     });
 }
@@ -870,12 +1246,21 @@ function bindFilterPopup() {
 function bindDatePopup() {
   const popup = document.getElementById("gc-date-popup");
   if (!popup) return;
+
   popup
     .querySelector("#gc-date-prev")
     ?.addEventListener("click", () => navigateCalendar(-1));
   popup
     .querySelector("#gc-date-next")
     ?.addEventListener("click", () => navigateCalendar(1));
+
+  // Clear date filter button
+  popup.querySelector("#gc-date-clear")?.addEventListener("click", () => {
+    STATE.dateRange = { start: null, end: null };
+    applyAllFilters();
+    refreshDatePopup();
+  });
+
   popup.querySelectorAll(".gc-cal-day").forEach((day) => {
     const ts = parseInt(day.dataset.ts);
     if (!ts) return;
@@ -891,6 +1276,8 @@ function bindDatePopup() {
             ? { start: ts, end: STATE.dateRange.start }
             : { start: STATE.dateRange.start, end: ts };
       }
+      // Apply filter immediately after each selection, then refresh calendar UI
+      applyAllFilters();
       refreshDatePopup();
     });
   });
@@ -927,17 +1314,10 @@ function refreshDatePopup() {
   bindDatePopup();
 }
 
-function bindSearch(topics) {
+function bindSearch() {
   document.getElementById("gc-search-input")?.addEventListener("input", (e) => {
-    const q = e.target.value.toLowerCase().trim();
-    document.querySelectorAll(".gc-topic-card").forEach((card) => {
-      const title =
-        card.querySelector(".gc-card-title")?.textContent.toLowerCase() || "";
-      const excerpt =
-        card.querySelector(".gc-card-excerpt")?.textContent.toLowerCase() || "";
-      card.style.display =
-        !q || title.includes(q) || excerpt.includes(q) ? "" : "none";
-    });
+    STATE.searchQuery = e.target.value;
+    applyAllFilters();
   });
 }
 
@@ -946,7 +1326,19 @@ function bindSearch(topics) {
 // ─────────────────────────────────────────────────────────────
 function cleanupLayout() {
   document.getElementById("gc-category-wrapper")?.remove();
-  document.body.classList.remove("category-ga-updates");
+  cleanupBodyClass();
+  // Reset all state for fresh render on next route
+  STATE.allTopics = [];
+  STATE.moreTopicsUrl = null;
+  STATE.isLoadingMore = false;
+  STATE.categorySlug = null;
+  STATE.categoryInfo = null;
+  STATE.availableTags = [];
+  STATE.selectedFilters = [];
+  STATE.searchQuery = "";
+  STATE.dateRange = { start: null, end: null };
+  STATE.activeFilter = "latest";
+  STATE.calendarMonth = { left: null, right: null };
 }
 
 // ─────────────────────────────────────────────────────────────
@@ -955,11 +1347,10 @@ function cleanupLayout() {
 export default apiInitializer("1.8.0", (api) => {
   discourseApi = api;
 
-  api.onPageChange((url) => {
+  api.onPageChange((_url) => {
     cleanupLayout();
-    if (url.includes("/c/ga-updates")) {
-      addBodyClass();
-      later(() => scheduleOnce("afterRender", this, renderLayout), 150);
+    if (isTargetRoute()) {
+      later(renderLayout, 150);
     }
   });
 
@@ -983,9 +1374,8 @@ export default apiInitializer("1.8.0", (api) => {
   try {
     const router = getOwner(api)?.lookup("service:router");
     router?.on("routeDidChange", () => {
-      const path = window.location.pathname;
       cleanupLayout();
-      if (path.includes("/c/ga-updates")) later(renderLayout, 200);
+      if (isTargetRoute()) later(renderLayout, 200);
     });
   } catch (e) {}
 });
