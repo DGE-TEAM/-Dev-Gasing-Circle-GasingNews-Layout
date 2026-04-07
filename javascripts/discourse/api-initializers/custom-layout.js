@@ -783,7 +783,7 @@ function bindActionBar(topics) {
       if (!t) return;
       card.style.display =
         STATE.activeFilter === "trending"
-          ? (t.views || 0) >= 50 || (t.like_count || 0) >= 10
+          ? (t.views || 0) >= 10 || (t.like_count || 0) >= 2
             ? ""
             : "none"
           : "";
