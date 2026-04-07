@@ -29,21 +29,138 @@ export async function toggleBookmark(btn, bookmarkableType, bookmarkableId) {
   const isBookmarked = btn.classList.contains("is-bookmarked");
   try {
     if (isBookmarked) {
-      const bookmarkId = btn.dataset.bookmarkId;
-      if (bookmarkId) await ajax(`/bookmarks/${bookmarkId}`, { type: "DELETE" });
-      btn.classList.remove("is-bookmarked");
-      delete btn.dataset.bookmarkId;
+      // Already bookmarked → show Edit / Delete menu
+      showBookmarkManageMenu(btn, btn.dataset.bookmarkId);
     } else {
+      // Not yet bookmarked → create bookmark, then show reminder menu
+      btn.classList.add("gc-bookmark-animating");
       const result = await ajax("/bookmarks", {
         type: "POST",
         data: { bookmarkable_type: bookmarkableType, bookmarkable_id: bookmarkableId },
       });
-      if (result?.id) btn.dataset.bookmarkId = result.id;
+      const bookmarkId = result?.id || null;
+      if (bookmarkId) btn.dataset.bookmarkId = bookmarkId;
       btn.classList.add("is-bookmarked");
+      setTimeout(() => btn.classList.remove("gc-bookmark-animating"), 400);
+      // Show reminder menu after creating bookmark (native Discourse behavior)
+      showBookmarkReminderMenu(btn, bookmarkId);
     }
   } catch (err) {
     popupAjaxError(err);
   }
+}
+
+// Menu shown immediately after creating a bookmark — "Also set a reminder?"
+function showBookmarkReminderMenu(btn, bookmarkId) {
+  document.querySelectorAll(".gc-bookmark-menu").forEach((m) => m.remove());
+
+  const menu = document.createElement("div");
+  menu.className = "gc-bookmark-menu";
+  menu.innerHTML = `
+    <div class="gc-bm-header">
+      ${SVG.checkCircle} Bookmarked!
+    </div>
+    <div class="gc-bm-title">Also set a reminder?</div>
+    <button class="gc-bm-option" data-rem="2">In two hours</button>
+    <button class="gc-bm-option" data-rem="24">Tomorrow</button>
+    <button class="gc-bm-option" data-rem="72">In three days</button>
+    <div class="gc-bm-divider"></div>
+    <button class="gc-bm-option gc-bm-muted" data-action="dismiss">No reminder</button>
+  `;
+
+  positionMenu(menu, btn);
+
+  menu.querySelectorAll(".gc-bm-option").forEach((opt) => {
+    opt.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const rem = opt.dataset.rem;
+      const action = opt.dataset.action;
+      try {
+        if (rem && bookmarkId) {
+          const date = new Date(Date.now() + parseInt(rem) * 60 * 60 * 1000).toISOString();
+          await ajax(`/bookmarks/${bookmarkId}`, {
+            type: "PUT",
+            data: { reminder_at: date },
+          });
+        }
+        // "dismiss" just closes without setting reminder
+      } catch (err) {
+        popupAjaxError(err);
+      }
+      menu.remove();
+    });
+  });
+
+  autoCloseMenu(menu, btn);
+}
+
+// Menu shown when clicking an already-bookmarked button — Edit / Delete
+function showBookmarkManageMenu(btn, bookmarkId) {
+  document.querySelectorAll(".gc-bookmark-menu").forEach((m) => m.remove());
+
+  const menu = document.createElement("div");
+  menu.className = "gc-bookmark-menu";
+  menu.innerHTML = `
+    <div class="gc-bm-header">
+      ${SVG.bookmark} Bookmark ini
+    </div>
+    <button class="gc-bm-option" data-action="edit-2h">${SVG.calendar} Set reminder: 2 jam lagi</button>
+    <button class="gc-bm-option" data-action="edit-24h">${SVG.calendar} Set reminder: Besok</button>
+    <div class="gc-bm-divider"></div>
+    <button class="gc-bm-option gc-bm-danger" data-action="delete">${SVG.report} Hapus Bookmark</button>
+  `;
+
+  positionMenu(menu, btn);
+
+  menu.querySelectorAll(".gc-bm-option").forEach((opt) => {
+    opt.addEventListener("click", async (e) => {
+      e.stopPropagation();
+      const action = opt.dataset.action;
+      try {
+        if (action === "delete") {
+          if (bookmarkId) await ajax(`/bookmarks/${bookmarkId}`, { type: "DELETE" });
+          btn.classList.remove("is-bookmarked");
+          delete btn.dataset.bookmarkId;
+          // Sync sibling buttons
+          document.querySelectorAll(".gc-topic-bookmark-btn").forEach((b) => {
+            if (b === btn) return;
+            b.classList.remove("is-bookmarked");
+            delete b.dataset.bookmarkId;
+          });
+        } else if (action === "edit-2h" && bookmarkId) {
+          const date = new Date(Date.now() + 2 * 60 * 60 * 1000).toISOString();
+          await ajax(`/bookmarks/${bookmarkId}`, { type: "PUT", data: { reminder_at: date } });
+        } else if (action === "edit-24h" && bookmarkId) {
+          const date = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+          await ajax(`/bookmarks/${bookmarkId}`, { type: "PUT", data: { reminder_at: date } });
+        }
+      } catch (err) {
+        popupAjaxError(err);
+      }
+      menu.remove();
+    });
+  });
+
+  autoCloseMenu(menu, btn);
+}
+
+function positionMenu(menu, btn) {
+  document.body.appendChild(menu);
+  const rect = btn.getBoundingClientRect();
+  menu.style.position = "absolute";
+  menu.style.top = `${rect.bottom + window.scrollY + 8}px`;
+  let left = rect.left + window.scrollX + rect.width / 2 - 100;
+  if (left < 10) left = 10;
+  if (left + 200 > window.innerWidth) left = window.innerWidth - 210;
+  menu.style.left = `${left}px`;
+}
+
+function autoCloseMenu(menu, btn) {
+  setTimeout(() => {
+    document.addEventListener("click", (e) => {
+      if (!menu.contains(e.target) && e.target !== btn) menu.remove();
+    }, { once: true });
+  }, 0);
 }
 
 // ─── Flag / Report ───────────────────────────────────────────
@@ -211,6 +328,19 @@ export function bindDetailActions(container, topic, posts) {
     btn.addEventListener("click", async () => {
       if (!currentUser || !topic) return;
       await toggleBookmark(btn, "Topic", topic.id);
+      // Sync all other bookmark buttons in the same detail view
+      const isNowBookmarked = btn.classList.contains("is-bookmarked");
+      const newBookmarkId = btn.dataset.bookmarkId;
+      container.querySelectorAll(".gc-topic-bookmark-btn").forEach((b) => {
+        if (b === btn) return;
+        if (isNowBookmarked) {
+          b.classList.add("is-bookmarked");
+          if (newBookmarkId) b.dataset.bookmarkId = newBookmarkId;
+        } else {
+          b.classList.remove("is-bookmarked");
+          delete b.dataset.bookmarkId;
+        }
+      });
     });
   });
 

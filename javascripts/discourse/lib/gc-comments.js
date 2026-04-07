@@ -74,6 +74,10 @@ export function buildTopicDetail(topic, posts) {
   const replies =
     topic.reply_count || (topic.posts_count ? topic.posts_count - 1 : 0);
   const views = topic.views || 0;
+  const isBookmarked = topic.bookmarked || false;
+  const bookmarkId = topic.bookmark_id || "";
+  const bookmarkAttrs = `${isBookmarked ? " is-bookmarked" : ""}` ;
+  const bookmarkData = bookmarkId ? ` data-bookmark-id="${bookmarkId}"` : "";
 
   const firstPost = posts?.[0];
   let bodyText = (firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`).trim();
@@ -114,7 +118,7 @@ export function buildTopicDetail(topic, posts) {
           <span class="gc-stat">${SVG.eye}<span class="gc-stat-value">${views}</span></span>
         </div>
         <div class="gc-stats-right">
-          <button class="gc-action-icon gc-topic-bookmark-btn">${SVG.bookmark}</button>
+          <button class="gc-action-icon gc-topic-bookmark-btn${bookmarkAttrs}"${bookmarkData}>${SVG.bookmark}</button>
           <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
         </div>
       </div>
@@ -125,7 +129,7 @@ export function buildTopicDetail(topic, posts) {
           <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
           <span class="gc-cstat">${SVG.chat}<span>${replies}</span></span>
           <span class="gc-cstat">${SVG.eye}<span>${views}</span></span>
-          <button class="gc-action-icon gc-topic-bookmark-btn">${SVG.bookmark}</button>
+          <button class="gc-action-icon gc-topic-bookmark-btn${bookmarkAttrs}"${bookmarkData}>${SVG.bookmark}</button>
           <button class="gc-action-icon gc-topic-share-btn">${SVG.share}</button>
         </div>
         <button class="gc-main-reply-btn" data-topic-id="${topic.id}">

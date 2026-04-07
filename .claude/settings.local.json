@@ -1,0 +1,10 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:github.com)",
+      "WebSearch",
+      "WebFetch(domain:raw.githubusercontent.com)",
+      "Bash(curl -s \"https://raw.githubusercontent.com/discourse/discourse/main/app/assets/javascripts/discourse/app/components/bookmark-button.js\")"
+    ]
+  }
+}
