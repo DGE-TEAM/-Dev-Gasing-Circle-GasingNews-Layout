@@ -23,6 +23,7 @@ export const STATE = {
   categoryInfo: null,
   availableTags: [],
   currentBodyClass: null,
+  preventNextRoute: false,
 };
 
 // Wrapped in object so consuming modules always read the live reference.

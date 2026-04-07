@@ -1418,7 +1418,9 @@ body.category-ga-updates {
   }
 
   .gc-bm-option {
-    display: block;
+    display: flex;
+    align-items: center;
+    gap: 6px;
     width: 100%;
     text-align: left;
     background: none;
@@ -1428,6 +1430,13 @@ body.category-ga-updates {
     color: var(--gc-text-secondary);
     cursor: pointer;
     transition: background 0.1s, color 0.1s;
+
+    svg {
+      width: 14px;
+      height: 14px;
+      flex-shrink: 0;
+      color: currentColor;
+    }
 
     &:hover {
       background: var(--gc-blue-light);

@@ -6,8 +6,7 @@
 
 import { apiInitializer } from "discourse/lib/api";
 import { later } from "@ember/runloop";
-import { getOwner } from "@ember/application";
-import { API } from "../lib/gc-state";
+import { STATE, API } from "../lib/gc-state";
 import { isTargetRoute } from "../lib/gc-utils";
 import { renderLayout, cleanupLayout } from "../lib/gc-render";
 
@@ -38,8 +37,37 @@ export default apiInitializer("1.8.0", (api) => {
     }
   }
 
+  api.onAppEvent("composer:saved", () => {
+    if (isTargetRoute()) {
+      STATE.preventNextRoute = true;
+      // Auto-clear safeguard
+      setTimeout(() => {
+        STATE.preventNextRoute = false;
+      }, 1500);
+
+      // Automatically refresh the current topic reading panel
+      if (STATE.activeTopicId) {
+        setTimeout(() => {
+          const activeCard = document.querySelector(
+            `.gc-topic-card[data-topic-id="${STATE.activeTopicId}"]`
+          );
+          if (activeCard) activeCard.click();
+        }, 300);
+      }
+    }
+  });
+
   try {
-    const router = getOwner(api)?.lookup("service:router");
+    const router = api.container?.lookup("service:router");
+
+    router?.on("routeWillChange", (transition) => {
+      if (STATE.preventNextRoute) {
+        STATE.preventNextRoute = false;
+        transition.abort();
+        return;
+      }
+    });
+
     router?.on("routeDidChange", () => {
       cleanupLayout();
       if (isTargetRoute()) later(renderLayout, 200);

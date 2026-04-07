@@ -12,6 +12,8 @@ import { fetchTopicPosts, fetchPostReplies, fetchCategoryTopics } from "./gc-fet
 import { extractTagsFromTopics } from "./gc-tags";
 import { applyAllFilters } from "./gc-filters";
 import { isTrending } from "./gc-utils";
+import Topic from "discourse/models/topic";
+import Post from "discourse/models/post";
 
 // ─── Composer ────────────────────────────────────────────────
 
@@ -308,25 +310,38 @@ export function bindLoadMore() {
 // ─── Detail Actions ──────────────────────────────────────────
 
 export function bindDetailActions(container, topic, posts) {
-  const currentUser = API.instance?.currentUser;
+  const currentUser = API.instance?.getCurrentUser?.();
+
+  const requireLogin = () => {
+    if (!currentUser) {
+      API.instance?.container?.lookup("route:application")?._router?.transitionTo("login");
+      return false;
+    }
+    return true;
+  };
 
   // Main reply
   container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (!currentUser) {
-        API.instance?.container
-          ?.lookup("route:application")
-          ?._router?.transitionTo("login");
-        return;
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!requireLogin()) return;
+      
+      let topicModel = topic;
+      if (Topic && Topic.create && topic?.id) {
+        topicModel = Topic.create(topic);
       }
-      openComposer({ action: "reply", topic, draftKey: topic?.draft_key });
+
+      openComposer({ action: "reply", topic: topicModel, draftKey: topicModel?.draft_key });
     });
   });
 
   // Bookmark topic
   container.querySelectorAll(".gc-topic-bookmark-btn").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      if (!currentUser || !topic) return;
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!requireLogin() || !topic) return;
       await toggleBookmark(btn, "Topic", topic.id);
       // Sync all other bookmark buttons in the same detail view
       const isNowBookmarked = btn.classList.contains("is-bookmarked");
@@ -363,8 +378,10 @@ export function bindDetailActions(container, topic, posts) {
 
   // Like / Unlike per comment
   container.querySelectorAll(".gc-comment-like").forEach((btn) => {
-    btn.addEventListener("click", async () => {
-      if (!currentUser) return;
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!requireLogin()) return;
       const postId = btn.dataset.postId;
       const isLiked = btn.classList.contains("is-liked");
       const countEl = btn.querySelector(".gc-like-count");
@@ -404,6 +421,7 @@ export function bindDetailActions(container, topic, posts) {
   // More (...) dropdown
   container.querySelectorAll(".gc-comment-more").forEach((btn) => {
     btn.addEventListener("click", (e) => {
+      e.preventDefault();
       e.stopPropagation();
       document.querySelectorAll(".gc-more-menu").forEach((m) => m.remove());
 
@@ -429,8 +447,13 @@ export function bindDetailActions(container, topic, posts) {
         menu.remove();
       });
 
-      menu.querySelector('[data-action="bookmark"]')?.addEventListener("click", async () => {
-        if (!currentUser) return;
+      menu.querySelector('[data-action="bookmark"]')?.addEventListener("click", async (ev) => {
+        ev.preventDefault();
+        ev.stopPropagation();
+        if (!requireLogin()) {
+          menu.remove();
+          return;
+        }
         try {
           const targetPost = posts.find((p) => String(p.id) === String(postId));
           const isAlreadyBookmarked = targetPost?.bookmarked || false;
@@ -475,22 +498,35 @@ export function bindDetailActions(container, topic, posts) {
 
   // Per-comment "Balas"
   container.querySelectorAll(".gc-comment-reply-btn").forEach((btn) => {
-    btn.addEventListener("click", () => {
-      if (!currentUser) {
-        API.instance?.container
-          ?.lookup("route:application")
-          ?._router?.transitionTo("login");
-        return;
-      }
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (!requireLogin()) return;
+      
       const postNumber = btn.dataset.postNumber;
       const targetPost = posts.find(
         (p) => String(p.post_number) === String(postNumber),
       );
       if (!targetPost || !topic) return;
+
+      let topicModel = topic;
+      if (Topic && Topic.create && topic?.id) {
+        topicModel = Topic.create(topic);
+      }
+
+      let postModel = targetPost;
+      if (Post && Post.create && targetPost?.id) {
+        postModel = Post.create(targetPost);
+        // Discourse composer expects the topic relation to be present on the post
+        postModel.set("topic", topicModel);
+      } else {
+        postModel.topic = topicModel;
+      }
+
       openComposer({
         action: "reply",
-        topic,
-        post: targetPost,
+        topic: topicModel,
+        post: postModel,
         draftKey: targetPost.draft_key || `post_${targetPost.id}`,
       });
     });

@@ -31,7 +31,7 @@ export function buildCommentHTML(post, isNested) {
   return `
     <div class="gc-comment${isNested ? " gc-comment--nested" : ""}" data-post-id="${post.id}" data-post-number="${post.post_number}">
       <div class="gc-comment-avatar-wrap">
-        <img class="gc-comment-avatar" src="${av}" alt="${post.name || post.username}" loading="lazy" onerror="this.style.visibility='hidden'" />
+        <img class="gc-comment-avatar" src="${av}" alt="${post.name || post.username}" loading="lazy" />
       </div>
       <div class="gc-comment-body">
         <div class="gc-comment-header">
