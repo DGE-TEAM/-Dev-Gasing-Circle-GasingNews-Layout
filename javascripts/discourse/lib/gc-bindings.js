@@ -330,10 +330,21 @@ export function bindDetailActions(container, topic, posts) {
   };
 
   // Main reply
-  container.querySelectorAll(".gc-main-reply-btn").forEach((btn) => {
+  container.querySelectorAll(".gc-main-reply-btn, .gc-topic-reply-btn").forEach((btn) => {
     btn.addEventListener("click", async (e) => {
       e.preventDefault();
       e.stopPropagation();
+
+      if (btn.dataset.scroll === "true") {
+        const detailWrap = document.getElementById("gc-topic-detail");
+        const commentsHeader = document.querySelector(".gc-comments-header");
+        if (detailWrap && commentsHeader) {
+          const wrapRect = detailWrap.getBoundingClientRect();
+          const headerRect = commentsHeader.getBoundingClientRect();
+          detailWrap.scrollBy({ top: headerRect.top - wrapRect.top - 20, behavior: "smooth" });
+        }
+      }
+
       if (!requireLogin()) return;
       
       let topicModel = topic;
@@ -342,6 +353,56 @@ export function bindDetailActions(container, topic, posts) {
       }
 
       openComposer({ action: "reply", topic: topicModel, draftKey: topicModel?.draft_key });
+    });
+  });
+
+  // Like / Unlike for topic (first post)
+  container.querySelectorAll(".gc-topic-like-btn").forEach((btn) => {
+    btn.addEventListener("click", async (e) => {
+      e.preventDefault();
+      e.stopPropagation();
+      if (btn.disabled || btn.hasAttribute("disabled") || btn.style.cursor === "not-allowed") return;
+      if (!requireLogin()) return;
+      
+      const postId = btn.dataset.postId;
+      if (!postId) return;
+
+      const isLiked = btn.classList.contains("is-liked");
+      const currentCount = parseInt(btn.querySelector(".gc-like-count")?.textContent || "0") || 0;
+      const optimisticCount = currentCount + (isLiked ? -1 : 1);
+
+      const updateButtons = (liked, count) => {
+        document.querySelectorAll(".gc-topic-like-btn").forEach((b) => {
+          b.classList.toggle("is-liked", liked);
+          const existingSvg = b.querySelector("svg");
+          if (existingSvg) existingSvg.outerHTML = liked ? SVG.heartFilled : SVG.heartOutline;
+          const countEl = b.querySelector(".gc-like-count");
+          if (countEl) countEl.textContent = count > 0 ? count : "0"; 
+        });
+      };
+
+      updateButtons(!isLiked, optimisticCount);
+
+      try {
+        if (isLiked) {
+          await ajax(`/post_actions/${postId}`, {
+            type: "DELETE",
+            data: { post_action_type_id: 2 },
+          });
+        } else {
+          const result = await ajax("/post_actions", {
+            type: "POST",
+            data: { id: postId, post_action_type_id: 2, flag_topic: false },
+          });
+          const serverCount = result?.post?.actions_summary?.find((a) => a.id === 2)?.count;
+          if (serverCount !== undefined) {
+             updateButtons(true, serverCount);
+          }
+        }
+      } catch (err) {
+        updateButtons(isLiked, currentCount);
+        popupAjaxError(err);
+      }
     });
   });
 

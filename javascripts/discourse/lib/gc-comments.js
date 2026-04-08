@@ -84,6 +84,11 @@ export function buildTopicDetail(topic, posts) {
   const bookmarkData = bookmarkId ? ` data-bookmark-id="${bookmarkId}"` : "";
 
   const firstPost = posts?.[0];
+  const fpLike = firstPost ? getLikeData(firstPost) : null;
+  const topicLikeCount = fpLike ? fpLike.count : likes;
+  const topicLiked = fpLike ? fpLike.liked : false;
+  const topicCanAct = fpLike ? fpLike.canAct : true;
+
   let bodyText = (firstPost?.cooked || `<p>${topic.excerpt || ""}</p>`).trim();
 
   const subtitleText = topic.excerpt
@@ -117,8 +122,12 @@ export function buildTopicDetail(topic, posts) {
       <hr class="gc-detail-sep" />
       <div class="gc-stats-row gc-stats-top">
         <div class="gc-stats-left">
-          <span class="gc-stat">${SVG.heart}<span class="gc-stat-value">${likes}</span></span>
-          <span class="gc-stat">${SVG.chat}<span class="gc-stat-value">${replies}</span></span>
+          <span class="gc-stat gc-topic-like-btn${topicLiked ? " is-liked" : ""}" data-post-id="${firstPost?.id || ""}" ${topicCanAct === false ? 'style="cursor: not-allowed; opacity: 0.5;" title="Anda tidak dapat menyukai postingan ini."' : 'style="cursor: pointer;"'}>
+            ${topicLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-stat-value gc-like-count">${topicLikeCount}</span>
+          </span>
+          <span class="gc-stat gc-topic-reply-btn" data-scroll="true" style="cursor: pointer;">
+            ${SVG.chat}<span class="gc-stat-value">${replies}</span>
+          </span>
           <span class="gc-stat">${SVG.eye}<span class="gc-stat-value">${views}</span></span>
         </div>
         <div class="gc-stats-right">
@@ -136,8 +145,12 @@ export function buildTopicDetail(topic, posts) {
         </div>
         <div class="gc-comments-stats-row">
           <div class="gc-cstat-left">
-            <span class="gc-cstat">${SVG.heartOutline}<span>${likes}</span></span>
-            <span class="gc-cstat">${SVG.chat}<span>${replies}</span></span>
+            <span class="gc-cstat gc-topic-like-btn${topicLiked ? " is-liked" : ""}" data-post-id="${firstPost?.id || ""}" ${topicCanAct === false ? 'style="cursor: not-allowed; opacity: 0.5;" title="Anda tidak dapat menyukai postingan ini."' : 'style="cursor: pointer;"'}>
+              ${topicLiked ? SVG.heartFilled : SVG.heartOutline}<span class="gc-like-count">${topicLikeCount}</span>
+            </span>
+            <span class="gc-cstat gc-topic-reply-btn" style="cursor: pointer;">
+              ${SVG.chat}<span>${replies}</span>
+            </span>
             <span class="gc-cstat">${SVG.eye}<span>${views}</span></span>
           </div>
           <div class="gc-cstat-right">
