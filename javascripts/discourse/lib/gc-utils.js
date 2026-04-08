@@ -5,16 +5,20 @@
 import { STATE } from "./gc-state";
 
 /**
- * Returns the target category slug from theme settings,
- * falling back to "ga-updates" if not configured.
+ * Returns the target category slug from theme settings.
+ * Discourse injects theme settings as a global `settings` object into theme JS.
+ * Falls back to "ga-updates" if the setting is not configured.
  */
 export function getTargetCategorySlug() {
   try {
-    const settings = window.Discourse?.SiteSettings || {};
-    return (settings.gc_category_slug || "ga-updates").trim().toLowerCase();
-  } catch (_) {
-    return "ga-updates";
-  }
+    // `settings` is the global theme settings object injected by Discourse.
+    // It reads from settings.yml — NOT from window.Discourse.SiteSettings.
+    // eslint-disable-next-line no-undef
+    if (typeof settings !== "undefined" && settings.gc_category_slug) {
+      return String(settings.gc_category_slug).trim().toLowerCase();
+    }
+  } catch (_) {}
+  return "ga-updates";
 }
 
 /**
