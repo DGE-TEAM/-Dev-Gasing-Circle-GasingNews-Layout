@@ -33,6 +33,16 @@ gc_primary_light_color:
 # ----------------------------------------------------------
 # HERO BANNER
 # ----------------------------------------------------------
+gc_hero_title:
+  default: "Gasing Academy News 📢"
+  type: string
+  description: "Judul utama hero banner (termasuk emoji jika diinginkan)"
+
+gc_hero_subtitle:
+  default: "Ikuti berita dan perkembangan terkini seputar Gasing!"
+  type: string
+  description: "Teks deskripsi di bawah judul hero banner"
+
 gc_hero_start_color:
   default: "#00BCD4"
   type: string

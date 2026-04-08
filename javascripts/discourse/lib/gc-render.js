@@ -29,7 +29,7 @@ export async function renderLayout() {
   const wrapper = document.createElement("div");
   wrapper.id = "gc-category-wrapper";
   wrapper.innerHTML = `
-    ${buildHeroBanner(STATE.categoryInfo)}
+    ${buildHeroBanner()}
     ${buildActionBar()}
     <div id="gc-master-detail">
       <div id="gc-topic-feed">
@@ -53,15 +53,8 @@ export async function renderLayout() {
 
   const { topics, moreUrl, categoryData } = await fetchCategoryTopics();
 
-  // Update hero banner with API category data if site service had no info
   if (!STATE.categoryInfo && categoryData) {
     STATE.categoryInfo = categoryData;
-    const heroEl = document.getElementById("gc-hero-banner");
-    if (heroEl) {
-      const tmp = document.createElement("div");
-      tmp.innerHTML = buildHeroBanner(STATE.categoryInfo);
-      heroEl.replaceWith(tmp.firstElementChild);
-    }
   }
 
   STATE.allTopics = topics;

@@ -5,6 +5,8 @@ en:
     gc_primary_color: "Warna utama (tombol, state aktif, tautan)"
     gc_primary_dark_color: "Warna utama gelap (hover tombol, pill aktif)"
     gc_primary_light_color: "Warna utama terang (latar badge, hover background)"
+    gc_hero_title: "Judul utama hero banner (termasuk emoji jika diinginkan)"
+    gc_hero_subtitle: "Teks deskripsi di bawah judul hero banner"
     gc_hero_start_color: "Warna awal gradasi hero banner (kiri)"
     gc_hero_end_color: "Warna akhir gradasi hero banner (kanan)"
     gc_page_bg_color: "Warna latar halaman utama"

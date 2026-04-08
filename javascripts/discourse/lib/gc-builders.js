@@ -9,35 +9,37 @@ import { SVG } from "./gc-icons";
 import { renderTag, getTopicTag } from "./gc-tags";
 import { buildCalendarHTML } from "./gc-calendar";
 
-export function buildHeroBanner(categoryInfo) {
-  const title = categoryInfo?.name || "Category News";
-  const rawDesc =
-    categoryInfo?.description_text || categoryInfo?.description || "";
-  const desc =
-    rawDesc
-      .replace(/<[^>]*>/g, "")
-      .trim()
-      .substring(0, 160) || "Ikuti berita dan perkembangan terkini!";
+export function buildHeroBanner() {
+  /* eslint-disable no-undef */
+  const title =
+    (typeof settings !== "undefined" && settings.gc_hero_title?.trim()) ||
+    "Gasing Academy News 📢";
+  const subtitle =
+    (typeof settings !== "undefined" && settings.gc_hero_subtitle?.trim()) ||
+    "Ikuti berita dan perkembangan terkini!";
+  /* eslint-enable no-undef */
   return `<div id="gc-hero-banner">
-    <h1 class="gc-hero-title">${title} <span class="gc-hero-emoji">📰</span></h1>
-    <p class="gc-hero-subtitle">${desc}</p>
-    <div class="gc-search-wrapper">
-      <span class="gc-search-icon">${SVG.search}</span>
-      <input class="gc-search-input" type="text" id="gc-search-input" placeholder="Search topic..." />
-    </div>
+    <h1 class="gc-hero-title">${title}</h1>
+    <p class="gc-hero-subtitle">${subtitle}</p>
   </div>`;
 }
 
 export function buildActionBar() {
   return `<div id="gc-action-bar"><div class="gc-action-bar-inner">
-    <div class="gc-pills">
-      <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge" id="gc-badge-latest">—</span></button>
-      <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge" id="gc-badge-trending">—</span></button>
+    <div class="gc-bar-left">
+      <div class="gc-pills">
+        <button class="gc-pill active" data-pill="latest">Latest <span class="gc-pill-badge" id="gc-badge-latest">—</span></button>
+        <button class="gc-pill" data-pill="trending">Trending <span class="gc-pill-badge" id="gc-badge-trending">—</span></button>
+      </div>
+      <div class="gc-bar-divider"></div>
+      <div class="gc-icon-buttons">
+        <button class="gc-icon-btn gc-filter-btn-label" id="gc-filter-btn">${SVG.filter} Filter</button>
+        <button class="gc-icon-btn" id="gc-date-btn">${SVG.calendar}</button>
+      </div>
     </div>
-    <div class="gc-bar-divider"></div>
-    <div class="gc-icon-buttons">
-      <button class="gc-icon-btn gc-filter-btn-label" id="gc-filter-btn">${SVG.filter} Filter</button>
-      <button class="gc-icon-btn" id="gc-date-btn">${SVG.calendar}</button>
+    <div class="gc-search-wrapper">
+      <span class="gc-search-icon">${SVG.search}</span>
+      <input class="gc-search-input" type="text" id="gc-search-input" placeholder="Cari topik..." />
     </div>
   </div></div>`;
 }
