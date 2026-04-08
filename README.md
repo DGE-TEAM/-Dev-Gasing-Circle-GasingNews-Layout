@@ -13,9 +13,10 @@ This Discourse Theme Component transforms the `/c/ga-updates` category page into
 - ✅ Filter popup (Pendidikan, Pelatihan, Dunia, Lainnya)
 - ✅ Date-range picker popup with dual-calendar
 - ✅ Full topic reading pane with comments thread
+- ✅ Post & Comment Interactions (Like, Reply, Smart Scroll) without page redirects
 - ✅ Context menu (Simpan / Laporkan) on comment actions
 - ✅ Client-side search in hero bar
-- ✅ Responsive (collapses to single column on mobile)
+- ✅ Responsive (collapses to single column on mobile / fixes Discourse sidebar overlaps)
 - ✅ Scoped to `/c/ga-updates` — does NOT affect other categories
 
 ---
@@ -34,16 +35,13 @@ This Discourse Theme Component transforms the `/c/ga-updates` category page into
 
 1. Create a new **Theme Component** in Admin → Customize → Themes → New
 2. Set the name: `Gasing Circle Academy News`
-3. Use the **Edit CSS/HTML** tab to paste the contents of each file:
-   - `common/common.scss` → **CSS** tab (Common)
-   - `common/head_tag.html` → **HTML** tab → `</head>`
-   - `javascripts/discourse/api-initializers/custom-layout.js` → **JS** tab
+3. Upload/Update files retaining the current directory structure.
 
 ---
 
 ## File Structure
 
-```
+```text
 gasing-circle-theme/
 ├── about.json                          # Theme metadata
 ├── common/
@@ -54,8 +52,20 @@ gasing-circle-theme/
 │       └── en.yml                      # Locale strings
 └── javascripts/
     └── discourse/
-        └── api-initializers/
-            └── custom-layout.js        # Main JS: layout injection, API calls, popups
+        ├── api-initializers/
+        │   └── custom-layout.js        # Entry point: layout injection & initialization
+        └── lib/
+            ├── gc-bindings.js          # Event listeners (click handlers, scrolls)
+            ├── gc-builders.js          # HTML builders & DOM elements creation
+            ├── gc-calendar.js          # Date picker & calendar logic
+            ├── gc-comments.js          # Comments thread rendering & interaction logic
+            ├── gc-fetch.js             # API helpers to Discourse endpoints
+            ├── gc-filters.js           # Filter logic (tags, date ranges)
+            ├── gc-icons.js             # SVG icons
+            ├── gc-render.js            # Main view renderer (topic list, read pane)
+            ├── gc-state.js             # Shared state & configuration
+            ├── gc-tags.js              # Tag mapping & styling logic
+            └── gc-utils.js             # General helper functions (date formatting, etc.)
 ```
 
 ---
@@ -71,7 +81,7 @@ The **Master-Detail layout** is implemented as a **DOM injection layer** rather 
 
 ### Layout Strategy
 
-```
+```text
 #main-outlet
   └── #gc-category-wrapper          (injected by JS)
         ├── #gc-hero-banner         (teal gradient header + search)
@@ -89,19 +99,7 @@ The default Discourse `table.topic-list` is hidden via `display: none` using the
 
 ### Change the target route
 
-In `custom-layout.js`, update the `isTargetRoute()` function:
-
-```js
-function isTargetRoute() {
-  return window.location.pathname.startsWith("/c/your-category-slug");
-}
-```
-
-Also update the API fetch URL:
-
-```js
-const res = await fetch("/c/your-category-slug/YOUR_ID.json?no_definitions=true", ...);
-```
+In `custom-layout.js` / state modules, update the target variables defining the category slug `/c/your-category-slug`.
 
 ### Change the color palette
 
@@ -117,7 +115,7 @@ All colors are CSS variables in `common.scss` under the `:root` block:
 
 ### Add more filter tags
 
-In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` array, and update the `TAG_CLASSES` map accordingly.
+Update the filter configurations located in the `lib/` modules (e.g. `gc-filters.js`), and update the tag classes matrix accordingly.
 
 ---
 
@@ -126,7 +124,7 @@ In `custom-layout.js`, update the `buildFilterPopup()` function's `filters` arra
 1. **Discourse version compatibility**: Tested against Discourse 3.1+. The `api.onPageChange` hook is available in Plugin API v0.8+.
 2. **Topic detail fetch**: Each topic click triggers a network request to `/t/{slug}/{id}.json`. This is Discourse's standard JSON API and requires no authentication for public categories.
 3. **Image URLs**: Discourse sometimes serves images through its CDN optimizer. If thumbnails don't load, check your Discourse CDN settings.
-4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, replace the `fetchCategoryTopics()` call with `/c/ga-updates.json?order=activity` or the `top.json` endpoint.
+4. **Trending sort**: The "Trending" pill currently only changes the visual state. To wire it to real data, configure endpoints corresponding to Discourse's API (e.g. `top.json`).
 
 ---
 
