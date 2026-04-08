@@ -36,8 +36,8 @@ export function buildActionBar() {
     </div>
     <div class="gc-bar-divider"></div>
     <div class="gc-icon-buttons">
+      <button class="gc-icon-btn gc-filter-btn-label" id="gc-filter-btn">${SVG.filter} Filter</button>
       <button class="gc-icon-btn" id="gc-date-btn">${SVG.calendar}</button>
-      <button class="gc-icon-btn" id="gc-filter-btn">${SVG.filter}</button>
     </div>
   </div></div>`;
 }
