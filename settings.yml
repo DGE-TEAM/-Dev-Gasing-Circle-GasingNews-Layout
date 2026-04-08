@@ -5,6 +5,14 @@
 # ============================================================
 
 # ----------------------------------------------------------
+# TARGET KATEGORI
+# ----------------------------------------------------------
+gc_category_slug:
+  default: "ga-updates"
+  type: string
+  description: "Slug kategori tempat layout ini aktif (contoh: ga-updates). Cek URL /c/slug-nya di sini."
+
+# ----------------------------------------------------------
 # WARNA UTAMA (Brand / Accent)
 # ----------------------------------------------------------
 gc_primary_color:

@@ -5,6 +5,19 @@
 import { STATE } from "./gc-state";
 
 /**
+ * Returns the target category slug from theme settings,
+ * falling back to "ga-updates" if not configured.
+ */
+export function getTargetCategorySlug() {
+  try {
+    const settings = window.Discourse?.SiteSettings || {};
+    return (settings.gc_category_slug || "ga-updates").trim().toLowerCase();
+  } catch (_) {
+    return "ga-updates";
+  }
+}
+
+/**
  * Extracts the category slug from the current URL.
  * Handles: /c/slug, /c/slug/123, /c/parent/child, /c/parent/child/123, /c/slug/l/latest
  */
@@ -24,8 +37,17 @@ export function getCategorySlugFromPath() {
   return slugParts.join("/") || null;
 }
 
+/**
+ * Returns true ONLY when the current URL is the target category
+ * (e.g. /c/ga-updates, /c/ga-updates/123, /c/ga-updates/l/latest).
+ * Does NOT activate on other categories like /c/general or /c/support.
+ */
 export function isTargetRoute() {
-  return /\/c\/[^/]/.test(window.location.pathname);
+  const target = getTargetCategorySlug();
+  const pathname = window.location.pathname;
+  // Match exactly /c/<target> or /c/<target>/ followed by anything
+  const re = new RegExp(`^/c/${target}(/|$)`, "i");
+  return re.test(pathname);
 }
 
 export function addBodyClass() {
