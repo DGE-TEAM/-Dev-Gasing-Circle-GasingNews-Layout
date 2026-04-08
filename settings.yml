@@ -8,17 +8,17 @@
 # WARNA UTAMA (Brand / Accent)
 # ----------------------------------------------------------
 gc_primary_color:
-  default: "#4a6cf7"
+  default: "#1976D2"
   type: string
   description: "Warna utama (tombol, state aktif, tautan)"
 
 gc_primary_dark_color:
-  default: "#1b2e7b"
+  default: "#1565C0"
   type: string
   description: "Warna utama gelap (hover tombol, pill aktif)"
 
 gc_primary_light_color:
-  default: "#eef2ff"
+  default: "#E3F2FD"
   type: string
   description: "Warna utama terang (latar badge, hover background)"
 
@@ -26,12 +26,12 @@ gc_primary_light_color:
 # HERO BANNER
 # ----------------------------------------------------------
 gc_hero_start_color:
-  default: "#2bb5e0"
+  default: "#00BCD4"
   type: string
   description: "Warna awal gradasi hero banner (kiri)"
 
 gc_hero_end_color:
-  default: "#4a7cf7"
+  default: "#1565C0"
   type: string
   description: "Warna akhir gradasi hero banner (kanan)"
 
@@ -39,7 +39,7 @@ gc_hero_end_color:
 # LATAR / BACKGROUND
 # ----------------------------------------------------------
 gc_page_bg_color:
-  default: "#f4f6fb"
+  default: "#F5F5F5"
   type: string
   description: "Warna latar halaman utama"
 
@@ -49,7 +49,7 @@ gc_card_bg_color:
   description: "Warna latar kartu artikel dan panel detail"
 
 gc_card_border_color:
-  default: "#e8ecf4"
+  default: "#E0E0E0"
   type: string
   description: "Warna border/garis kartu artikel"
 
@@ -57,17 +57,17 @@ gc_card_border_color:
 # TEKS
 # ----------------------------------------------------------
 gc_text_primary_color:
-  default: "#1a1f36"
+  default: "#212121"
   type: string
   description: "Warna teks utama (judul, konten)"
 
 gc_text_secondary_color:
-  default: "#6b7280"
+  default: "#757575"
   type: string
   description: "Warna teks sekunder (deskripsi, komentar)"
 
 gc_text_muted_color:
-  default: "#9ca3af"
+  default: "#9E9E9E"
   type: string
   description: "Warna teks redup (metadata, tanggal, ikon)"
 
@@ -75,7 +75,7 @@ gc_text_muted_color:
 # GARIS PEMBATAS
 # ----------------------------------------------------------
 gc_divider_color:
-  default: "#e5e7eb"
+  default: "#E0E0E0"
   type: string
   description: "Warna garis pemisah / divider"
 
@@ -83,24 +83,24 @@ gc_divider_color:
 # TAG KATEGORI
 # ----------------------------------------------------------
 gc_tag_pelatihan_color:
-  default: "#ff9500"
+  default: "#FF9800"
   type: string
-  description: "Warna teks tag 'Pelatihan'"
+  description: "Warna latar/teks tag 'Pelatihan' (solid background)"
 
 gc_tag_pendidikan_color:
-  default: "#4a6cf7"
+  default: "#1976D2"
   type: string
-  description: "Warna teks tag 'Pendidikan'"
+  description: "Warna latar/teks tag 'Pendidikan' (solid background)"
 
 gc_tag_dunia_color:
-  default: "#10b981"
+  default: "#10B981"
   type: string
-  description: "Warna teks tag 'Dunia'"
+  description: "Warna latar/teks tag 'Dunia' (solid background)"
 
 gc_tag_lainnya_color:
-  default: "#8b5cf6"
+  default: "#8B5CF6"
   type: string
-  description: "Warna teks tag 'Lainnya'"
+  description: "Warna latar/teks tag 'Lainnya' (solid background)"
 
 # ----------------------------------------------------------
 # FONT

@@ -119,6 +119,7 @@ export function buildTopicDetail(topic, posts) {
       <div class="gc-detail-date">${moment(topic.created_at).format("D MMM YYYY")} ${tagHtml}</div>
       <h2 class="gc-detail-title">${topic.title}</h2>
       ${subtitleText ? `<p class="gc-detail-subtitle">${subtitleText}</p>` : ""}
+      ${firstPost?.name || firstPost?.username ? `<p class="gc-detail-author">By <strong>${firstPost.name || firstPost.username}</strong></p>` : ""}
       <hr class="gc-detail-sep" />
       <div class="gc-stats-row gc-stats-top">
         <div class="gc-stats-left">
