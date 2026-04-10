@@ -134,4 +134,4 @@ Chrome 90+, Firefox 88+, Safari 14+, Edge 90+
 
 ---
 
-_Built by Ery Prasetyo — Miracle Game / Gasing Community Platform_
+_Built by Ery Prasetyo for Gasing Community Platform_
